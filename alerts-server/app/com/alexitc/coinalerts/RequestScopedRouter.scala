@@ -1,4 +1,4 @@
-package com.alexitc
+package com.alexitc.coinalerts
 
 import javax.inject.Inject
 

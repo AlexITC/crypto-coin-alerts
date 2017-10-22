@@ -1,4 +1,4 @@
-package com.alexitc.models
+package com.alexitc.coinalerts.models
 
 import javax.inject._
 
