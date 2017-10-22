@@ -13,7 +13,7 @@ class AlertTaskModule
     extends SimpleModule(bind[AlertTaskRunner].toSelf.eagerly())
 
 /**
- * TODO: Use custom execution context
+ * Runs the alert task frequently.
  *
  * @param actorSystem
  * @param executionContext
@@ -28,7 +28,7 @@ class AlertTaskRunner @Inject() (
 
   // TODO: Read values from config
   actorSystem.scheduler.schedule(
-    initialDelay = 1.minute,
+    initialDelay = 30.seconds,
     interval = 5.minutes,
   )(runTask)
 
