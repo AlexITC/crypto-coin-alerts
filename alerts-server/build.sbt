@@ -29,8 +29,11 @@ libraryDependencies ++= Seq(guice, evolutions, jdbc)
 libraryDependencies += "com.typesafe.play" %% "anorm" % "2.5.3"
 
 libraryDependencies += "com.google.inject" % "guice" % "4.1.0"
+libraryDependencies += "org.scalactic" %% "scalactic" % "3.0.4"
 libraryDependencies += "com.alexitc" %% "play-request-tracer" % "0.1.0"
 libraryDependencies += "org.postgresql" % "postgresql" % "42.1.4"
+libraryDependencies += "commons-validator" % "commons-validator" % "1.6"
+libraryDependencies += "de.svenkubiak" % "jBCrypt" % "0.4.1"
 
 libraryDependencies += "org.slf4j" % "slf4j-api" % "1.7.25"
 libraryDependencies += "ch.qos.logback" % "logback-core" % "1.2.3"
