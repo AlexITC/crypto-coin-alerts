@@ -10,3 +10,10 @@ sealed trait ConflictError extends ApplicationError
 
 // play json validation errors
 case class JsonFieldValidationError(path: JsPath, errors: Seq[MessageKey]) extends InputValidationError
+
+// Create user errors
+sealed trait CreateUserError
+case object InvalidEmailFormat extends CreateUserError with InputValidationError
+case class InvalidEmailLength(maxLength: Int) extends CreateUserError with InputValidationError
+case class InvalidPasswordLength(validLength: Range) extends CreateUserError with InputValidationError
+case object EmailAlreadyExists extends CreateUserError with ConflictError
