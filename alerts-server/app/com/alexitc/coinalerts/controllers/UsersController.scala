@@ -8,12 +8,11 @@ import com.alexitc.coinalerts.services.UserService
 
 class UsersController @Inject() (userService: UserService) extends JsonController {
 
-  def create() = async[CreateUserModel, UserCreatedModel] { createUserModel =>
+  def create() = async { createUserModel: CreateUserModel =>
     val result = for {
       createdUser <- userService
           .create(createUserModel)
           .toFutureOr
-
     } yield UserCreatedModel(createdUser.id, createdUser.email)
 
     result.toFuture

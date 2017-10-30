@@ -77,6 +77,7 @@ class JsonController extends MessagesBaseController {
     )
   }
 
+  // TODO: catch exceptions
   private def toResult[M <: ModelDescription](
       response: FutureApplicationResult[M])(
       implicit lang: Lang,
