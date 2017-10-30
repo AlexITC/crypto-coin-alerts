@@ -2,3 +2,6 @@
 # This file defines all application routes (Higher priority routes first)
 # https://www.playframework.com/documentation/latest/ScalaRouting
 # ~~~~
+
+
+POST   /users          com.alexitc.coinalerts.controllers.UsersController.create()
