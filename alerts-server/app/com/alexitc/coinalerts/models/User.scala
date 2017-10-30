@@ -2,7 +2,9 @@ package com.alexitc.coinalerts.models
 
 import java.util.UUID
 
+import com.alexitc.coinalerts.commons.ModelCreated
 import org.mindrot.jbcrypt.BCrypt
+import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, JsString, Reads, Writes}
 
 case class User(id: UserId, email: UserEmail)
@@ -33,4 +35,22 @@ object UserHiddenPassword {
     val string = BCrypt.hashpw(userPassword.string, BCrypt.gensalt())
     new UserHiddenPassword(string)
   }
+}
+
+case class CreateUserModel(email: UserEmail, password: UserPassword)
+object CreateUserModel {
+  implicit val reads: Reads[CreateUserModel] = {
+    val builder = (JsPath \ "email").read[UserEmail] and
+        (JsPath \ "password").read[UserPassword]
+
+    builder(CreateUserModel.apply _)
+  }
+}
+
+case class UserCreatedModel(id: UserId, email: UserEmail) extends ModelCreated
+object UserCreatedModel {
+  implicit val writes: Writes[UserCreatedModel] = (
+      (JsPath \ "id").write[UserId] and
+          (JsPath \ "email").write[UserEmail]
+      )(unlift(UserCreatedModel.unapply))
 }
