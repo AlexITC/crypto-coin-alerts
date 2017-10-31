@@ -21,19 +21,12 @@ import scala.concurrent.{ExecutionContext, Future}
  * The controller handles the json serialization and deserialization as well
  * as the error responses and http status codes.
  */
-class JsonController extends MessagesBaseController {
+class JsonController @Inject() (components: JsonControllerComponents)
+    extends MessagesBaseController {
 
-  @Inject()
-  protected var controllerComponents: MessagesControllerComponents = _
+  protected implicit val ec = components.executionContext
 
-  @Inject()
-  protected var loggingAction: LoggingAction = _
-
-  @Inject()
-  protected implicit var ec: ExecutionContext = _
-
-  @Inject()
-  protected var errorRenderer: JsonErrorRenderer = _
+  protected def controllerComponents: MessagesControllerComponents = components.messagesControllerComponents
 
   /**
    * Execute an asynchronous action that receives the model [[R]]
@@ -47,7 +40,7 @@ class JsonController extends MessagesBaseController {
    */
   def async[R: Reads, M <: ModelDescription](
       block: R => FutureApplicationResult[M])(
-      implicit tjs: Writes[M]): Action[JsValue] = loggingAction.async(parse.json) { request =>
+      implicit tjs: Writes[M]): Action[JsValue] = components.loggingAction.async(parse.json) { request =>
 
     implicit val lang: Lang = messagesApi.preferred(request).lang
 
@@ -109,8 +102,8 @@ class JsonController extends MessagesBaseController {
 
     val jsonErrorList = errors
         .toList
-        .flatMap(errorRenderer.toPublicErrorList)
-        .map(errorRenderer.renderPublicError)
+        .flatMap(components.errorRenderer.toPublicErrorList)
+        .map(components.errorRenderer.renderPublicError)
 
     val json = Json.obj("errors" -> jsonErrorList)
 
@@ -118,4 +111,8 @@ class JsonController extends MessagesBaseController {
   }
 }
 
-
+class JsonControllerComponents @Inject() (
+    val messagesControllerComponents: MessagesControllerComponents,
+    val loggingAction: LoggingAction,
+    val errorRenderer: JsonErrorRenderer,
+    val executionContext: ExecutionContext)

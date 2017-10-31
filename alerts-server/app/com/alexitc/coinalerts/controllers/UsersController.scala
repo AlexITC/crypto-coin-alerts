@@ -6,7 +6,9 @@ import com.alexitc.coinalerts.commons.FutureOr.Implicits._
 import com.alexitc.coinalerts.models.{CreateUserModel, UserCreatedModel}
 import com.alexitc.coinalerts.services.UserService
 
-class UsersController @Inject() (userService: UserService) extends JsonController {
+class UsersController @Inject() (
+    components: JsonControllerComponents,
+    userService: UserService) extends JsonController(components) {
 
   def create() = async { createUserModel: CreateUserModel =>
     val result = for {
