@@ -30,7 +30,7 @@ class JsonController @Inject() (components: JsonControllerComponents)
 
   /**
    * Execute an asynchronous action that receives the model [[R]]
-   * and resurns the model [[M]] on success.
+   * and returns the model [[M]] on success.
    *
    * @param block
    * @param tjs
@@ -42,14 +42,30 @@ class JsonController @Inject() (components: JsonControllerComponents)
       block: R => FutureApplicationResult[M])(
       implicit tjs: Writes[M]): Action[JsValue] = components.loggingAction.async(parse.json) { request =>
 
-    implicit val lang: Lang = messagesApi.preferred(request).lang
-
     val result = for {
       input <- validate[R](request.body).toFutureOr
       output <- block(input).toFutureOr
     } yield output
 
+    val lang = messagesApi.preferred(request).lang
     toResult(result.toFuture)(lang, tjs)
+  }
+
+  /**
+   * Execute an asynchronous action that doesn't need an input model
+   * and returns the model [[M]] on success.
+   *
+   * @param block
+   * @param tjs
+   * @tparam M the output model type
+   * @return
+   */
+  def async[M <: ModelDescription](
+      block: => FutureApplicationResult[M])(
+      implicit tjs: Writes[M]): Action[JsValue] = components.loggingAction.async(parse.json) { request =>
+
+    val lang = messagesApi.preferred(request).lang
+    toResult(block)(lang, tjs)
   }
 
   private def validate[R: Reads](json: JsValue): ApplicationResult[R] = {
