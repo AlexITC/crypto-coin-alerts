@@ -25,6 +25,8 @@ resolvers += "jitpack" at "https://jitpack.io"
 lazy val root = (project in file("."))
     .enablePlugins(PlayScala)
 
+routesImport += "com.alexitc.coinalerts.commons.PlayBinders._"
+
 libraryDependencies ++= Seq(guice, evolutions, jdbc, specs2 % Test)
 libraryDependencies += "com.typesafe.play" %% "anorm" % "2.5.3"
 
