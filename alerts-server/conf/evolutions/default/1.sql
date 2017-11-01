@@ -28,7 +28,8 @@ CREATE TABLE user_verification_tokens(
   -- constraints
   CONSTRAINT user_verification_tokens_user_id_pk PRIMARY KEY (user_id),
   CONSTRAINT user_verification_tokens_user_id_fk FOREIGN KEY (user_id) REFERENCES users (user_id),
-  CONSTRAINT user_verification_tokens_token_is_not_empty CHECK (token <> '')
+  CONSTRAINT user_verification_tokens_token_is_not_empty CHECK (token <> ''),
+  CONSTRAINT user_verification_tokens_token_is_unique UNIQUE (token)
 );
 CREATE INDEX user_verification_tokens_token_index ON user_verification_tokens USING BTREE (TOKEN);
 
