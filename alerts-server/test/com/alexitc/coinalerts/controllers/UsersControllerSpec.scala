@@ -64,4 +64,19 @@ class UsersControllerSpec extends PlayAPISpec {
       status(response) mustEqual BAD_REQUEST
     }
   }
+
+  "POST /verification-tokens/:token" should {
+    "Allow to verify a user based on the token" in {
+      val email = RandomDataGenerator.email
+      val user = userDAL.create(email, RandomDataGenerator.hiddenPassword).get
+      val token = userDAL.createVerificationToken(user.id).get
+
+      val request = FakeRequest(POST, s"/verification-tokens/${token.string}")
+          .withHeaders(CONTENT_TYPE -> "application/json")
+          .withBody("{}")
+
+      val response = route(application, request).get
+      status(response) mustEqual OK
+    }
+  }
 }

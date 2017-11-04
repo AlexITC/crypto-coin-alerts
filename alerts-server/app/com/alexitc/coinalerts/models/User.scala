@@ -2,12 +2,18 @@ package com.alexitc.coinalerts.models
 
 import java.util.UUID
 
-import com.alexitc.coinalerts.commons.ModelCreated
+import com.alexitc.coinalerts.commons.{DataRetrieved, ModelCreated}
 import org.mindrot.jbcrypt.BCrypt
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, JsString, Reads, Writes}
 
-case class User(id: UserId, email: UserEmail)
+case class User(id: UserId, email: UserEmail) extends DataRetrieved
+object User {
+  implicit val writes: Writes[User] = (
+      (JsPath \ "id").write[UserId] and
+          (JsPath \ "email").write[UserEmail]
+      )(unlift(User.unapply))
+}
 
 case class UserId(string: String) extends AnyVal
 object UserId {

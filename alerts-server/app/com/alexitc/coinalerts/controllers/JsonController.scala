@@ -5,8 +5,8 @@ import javax.inject.Inject
 import com.alexitc.coinalerts.commons.FutureOr.Implicits.{FutureOps, OrOps}
 import com.alexitc.coinalerts.commons._
 import com.alexitc.coinalerts.controllers.actions.LoggingAction
-import com.alexitc.coinalerts.errors.{ConflictError, InputValidationError, JsonErrorRenderer, JsonFieldValidationError}
-import com.alexitc.coinalerts.models.MessageKey
+import com.alexitc.coinalerts.errors._
+import com.alexitc.coinalerts.models.{ErrorId, MessageKey}
 import org.scalactic.{Bad, Every, Good}
 import play.api.i18n.Lang
 import play.api.libs.json.{JsValue, Json, Reads, Writes}
@@ -21,8 +21,10 @@ import scala.concurrent.{ExecutionContext, Future}
  * The controller handles the json serialization and deserialization as well
  * as the error responses and http status codes.
  */
-class JsonController @Inject() (components: JsonControllerComponents)
+abstract class JsonController @Inject() (components: JsonControllerComponents)
     extends MessagesBaseController {
+
+  protected def logger: org.slf4j.Logger
 
   protected implicit val ec = components.executionContext
 
@@ -109,21 +111,46 @@ class JsonController @Inject() (components: JsonControllerComponents)
     status.apply(json)
   }
 
-  def renderErrors(errors: ApplicationErrors)(implicit lang: Lang): Result = {
+  private def renderErrors(errors: ApplicationErrors)(implicit lang: Lang): Result = {
     // detect response status based on the first error
     val status = errors.head match {
       case _: InputValidationError => Results.BadRequest
       case _: ConflictError => Results.Conflict
+      case _: NotFoundError => Results.NotFound
+      case _: PrivateError => Results.InternalServerError
     }
 
+    val json = errors.head match {
+      case error: PrivateError =>
+        val errorId = ErrorId.create
+        logPrivateError(error, errorId)
+        renderPrivateError(errorId)
+
+      case _ => renderPublicErrors(errors)
+    }
+    status(Json.toJson(json))
+  }
+
+  private def renderPublicErrors(errors: ApplicationErrors)(implicit lang: Lang) = {
     val jsonErrorList = errors
         .toList
         .flatMap(components.errorRenderer.toPublicErrorList)
         .map(components.errorRenderer.renderPublicError)
 
-    val json = Json.obj("errors" -> jsonErrorList)
+    Json.obj("errors" -> jsonErrorList)
+  }
 
-    status(Json.toJson(json))
+  private def logPrivateError(error: PrivateError, errorId: ErrorId) = {
+    logger.error(s"Unexpected internal error = ${errorId.string}", error.cause)
+  }
+
+  private def renderPrivateError(errorId: ErrorId) = {
+    val jsonError = Json.obj(
+      "type" -> "internal-error",
+      "errorId" -> errorId.string
+    )
+
+    Json.obj("errors" -> List(jsonError))
   }
 }
 
