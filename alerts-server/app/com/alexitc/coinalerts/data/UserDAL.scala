@@ -10,4 +10,8 @@ trait UserDAL {
   def createVerificationToken(userId: UserId): ApplicationResult[UserVerificationToken]
 
   def verifyEmail(token: UserVerificationToken): ApplicationResult[User]
+
+  def getVerifiedUserPassword(email: UserEmail): ApplicationResult[UserHiddenPassword]
+
+  def getVerifiedUserByEmail(email: UserEmail): ApplicationResult[User]
 }

@@ -21,4 +21,12 @@ class UserAsyncDAL @Inject() (userDAL: UserDAL)(implicit ec: DatabaseExecutionCo
   def verifyEmail(token: UserVerificationToken): FutureApplicationResult[User] = Future {
     userDAL.verifyEmail(token)
   }
+
+  def getVerifiedUserPassword(email: UserEmail): FutureApplicationResult[UserHiddenPassword] = Future {
+    userDAL.getVerifiedUserPassword(email)
+  }
+
+  def getVerifiedUserByEmail(email: UserEmail): FutureApplicationResult[User] = Future {
+    userDAL.getVerifiedUserByEmail(email)
+  }
 }

@@ -1,7 +1,5 @@
 package com.alexitc.coinalerts.models
 
-import java.util.UUID
-
 import com.alexitc.coinalerts.commons.{DataRetrieved, ModelCreated}
 import org.mindrot.jbcrypt.BCrypt
 import play.api.libs.functional.syntax._
@@ -18,7 +16,7 @@ object User {
 case class UserId(string: String) extends AnyVal
 object UserId {
 
-  def create: UserId = UserId(UUID.randomUUID().toString.replace("-", ""))
+  def create: UserId = UserId(RandomIdGenerator.stringId)
 
   implicit val writes: Writes[UserId] = Writes[UserId] { userId => JsString(userId.string) }
 }
@@ -39,6 +37,14 @@ class UserHiddenPassword private (val string: String) extends AnyVal
 object UserHiddenPassword {
   def fromPassword(userPassword: UserPassword): UserHiddenPassword = {
     val string = BCrypt.hashpw(userPassword.string, BCrypt.gensalt())
+    new UserHiddenPassword(string)
+  }
+
+  /**
+   * This method should be used only to wrap a password retrieved from
+   * the database, otherwise use [[fromPassword]] method.
+   */
+  def fromDatabase(string: String): UserHiddenPassword = {
     new UserHiddenPassword(string)
   }
 }

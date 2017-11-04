@@ -34,3 +34,8 @@ sealed trait PostgresError extends PrivateError {
   def cause: PSQLException
 }
 case class PostgresIntegrityViolationError(cause: PSQLException) extends PostgresError
+
+//
+sealed trait LoginByEmailError extends ApplicationError
+case object VerifiedUserNotFound extends LoginByEmailError with InputValidationError
+case object IncorrectPasswordError extends LoginByEmailError with InputValidationError

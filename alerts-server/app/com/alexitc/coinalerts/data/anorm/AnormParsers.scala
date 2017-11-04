@@ -2,7 +2,7 @@ package com.alexitc.coinalerts.data.anorm
 
 import anorm.SqlParser._
 import anorm._
-import com.alexitc.coinalerts.models.{User, UserEmail, UserId, UserVerificationToken}
+import com.alexitc.coinalerts.models._
 import org.postgresql.util.PGobject
 
 object AnormParsers {
@@ -14,6 +14,8 @@ object AnormParsers {
   val parseUser = (parseUserId ~ parseEmail).map {
     case userId ~ email => User.apply(userId, email)
   }
+
+  val parsePassword = str("password").map(UserHiddenPassword.fromDatabase)
 
   def citextToString: Column[String] = Column.nonNull { case (value, meta) =>
     val MetaDataItem(qualified, _, clazz) = meta

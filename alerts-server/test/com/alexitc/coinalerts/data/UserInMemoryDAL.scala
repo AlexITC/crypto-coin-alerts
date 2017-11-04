@@ -1,7 +1,7 @@
 package com.alexitc.coinalerts.data
 
 import com.alexitc.coinalerts.commons.ApplicationResult
-import com.alexitc.coinalerts.errors.{EmailAlreadyExists, UserVerificationTokenNotFound}
+import com.alexitc.coinalerts.errors.{EmailAlreadyExists, UserVerificationTokenNotFound, VerifiedUserNotFound}
 import com.alexitc.coinalerts.models._
 import org.scalactic.{Bad, Good, One, Or}
 
@@ -10,6 +10,7 @@ import scala.collection.mutable
 trait UserInMemoryDAL extends UserDAL {
 
   val userList = mutable.ListBuffer[User]()
+  val passwords = mutable.HashMap[UserEmail, UserHiddenPassword]()
   val verificationTokenList = mutable.ListBuffer[(UserId, UserVerificationToken)]()
   val verifiedUserList = mutable.ListBuffer[User]()
 
@@ -19,6 +20,7 @@ trait UserInMemoryDAL extends UserDAL {
     } else {
       val newUser = User(UserId.create, email)
       userList += newUser
+      passwords += email -> password
       Good(newUser)
     }
   }
@@ -39,5 +41,17 @@ trait UserInMemoryDAL extends UserDAL {
     }
 
     Or.from(userMaybe, One(UserVerificationTokenNotFound))
+  }
+
+  override def getVerifiedUserPassword(email: UserEmail): ApplicationResult[UserHiddenPassword] = {
+    val passwordMaybe = passwords.get(email).filter(_ => verifiedUserList.exists(_.email == email))
+
+    Or.from(passwordMaybe, One(VerifiedUserNotFound))
+  }
+
+  override def getVerifiedUserByEmail(email: UserEmail): ApplicationResult[User] = {
+    val userMaybe = verifiedUserList.find(_.email == email)
+
+    Or.from(userMaybe, One(VerifiedUserNotFound))
   }
 }

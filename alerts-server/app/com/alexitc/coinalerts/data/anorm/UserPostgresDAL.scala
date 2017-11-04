@@ -6,7 +6,7 @@ import anorm._
 import com.alexitc.coinalerts.commons.ApplicationResult
 import com.alexitc.coinalerts.data.UserDAL
 import com.alexitc.coinalerts.data.anorm.AnormParsers._
-import com.alexitc.coinalerts.errors.{EmailAlreadyExists, UserVerificationTokenAlreadyExists, UserVerificationTokenNotFound}
+import com.alexitc.coinalerts.errors._
 import com.alexitc.coinalerts.models._
 import org.scalactic.{One, Or}
 import play.api.db.Database
@@ -68,5 +68,35 @@ class UserPostgresDAL @Inject() (protected val database: Database) extends UserD
     ).as(parseUser.singleOpt)
 
     Or.from(userMaybe, One(UserVerificationTokenNotFound))
+  }
+
+  override def getVerifiedUserPassword(email: UserEmail): ApplicationResult[UserHiddenPassword] = withConnection { implicit conn =>
+    val passwordMaybe = SQL(
+      """
+        |SELECT password
+        |FROM users
+        |WHERE verified_on IS NOT NULL AND
+        |      email = {email}
+      """.stripMargin
+    ).on(
+      "email" -> email.string
+    ).as(parsePassword.singleOpt)
+
+    Or.from(passwordMaybe, One(VerifiedUserNotFound))
+  }
+
+  override def getVerifiedUserByEmail(email: UserEmail): ApplicationResult[User] = withConnection { implicit conn =>
+    val userMaybe = SQL(
+      """
+        |SELECT user_id, email
+        |FROM users
+        |WHERE verified_on IS NOT NULL AND
+        |      email = {email}
+      """.stripMargin
+    ).on(
+      "email" -> email.string
+    ).as(parseUser.singleOpt)
+
+    Or.from(userMaybe, One(VerifiedUserNotFound))
   }
 }
