@@ -11,10 +11,9 @@ import com.alexitc.coinalerts.models._
 import org.scalactic.{One, Or}
 import play.api.db.Database
 
-// TODO: exception handling
-class UserPostgresDAL @Inject() (database: Database) extends UserDAL {
+class UserPostgresDAL @Inject() (protected val database: Database) extends UserDAL with AnormPostgresDAL {
 
-  def create(email: UserEmail, password: UserHiddenPassword): ApplicationResult[User] = database.withConnection { implicit conn =>
+  def create(email: UserEmail, password: UserHiddenPassword): ApplicationResult[User] = withConnection { implicit conn =>
     val userId = UserId.create
 
     val userMaybe = SQL(
@@ -33,7 +32,7 @@ class UserPostgresDAL @Inject() (database: Database) extends UserDAL {
     Or.from(userMaybe, One(EmailAlreadyExists))
   }
 
-  def createVerificationToken(userId: UserId): ApplicationResult[UserVerificationToken] = database.withConnection { implicit conn =>
+  def createVerificationToken(userId: UserId): ApplicationResult[UserVerificationToken] = withConnection { implicit conn =>
     val token = UserVerificationToken.create(userId)
 
     val tokenMaybe = SQL(
@@ -53,7 +52,7 @@ class UserPostgresDAL @Inject() (database: Database) extends UserDAL {
     Or.from(tokenMaybe, One(UserVerificationTokenAlreadyExists))
   }
 
-  def verifyEmail(token: UserVerificationToken): ApplicationResult[User] = database.withConnection { implicit conn =>
+  def verifyEmail(token: UserVerificationToken): ApplicationResult[User] = withConnection { implicit conn =>
     val userMaybe = SQL(
       """
          |UPDATE users u
