@@ -1,5 +1,13 @@
+services:
+  - docker
+
+before_install:
+- docker pull postgres:9.6
+
 language: scala
+
 scala:
    - 2.12.2
+
 before_script: cd alerts-server
 
