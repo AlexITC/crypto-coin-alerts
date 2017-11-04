@@ -28,6 +28,11 @@ class JsonErrorRenderer @Inject() (messagesApi: MessagesApi) {
 
     case createUserError: CreateUserError =>
       List(renderCreateUserError(createUserError))
+
+    case tokenError: UserVerificationTokenError =>
+      List(renderUserVerificationTokenError(tokenError))
+
+    case _: PrivateError => List.empty
   }
 
   private def renderCreateUserError(createUserError: CreateUserError)(implicit lang: Lang) = createUserError match {
@@ -46,5 +51,12 @@ class JsonErrorRenderer @Inject() (messagesApi: MessagesApi) {
     case InvalidPasswordLength(range) =>
       val message = messagesApi("error.password.length", range.start, range.end)
       FieldValidationError("password", message)
+  }
+
+  private def renderUserVerificationTokenError(error: UserVerificationTokenError)(implicit lang: Lang) = error match {
+    // NOTE: UserVerificationTokenNotFound is the only expected error
+    case _: UserVerificationTokenError =>
+      val message = messagesApi("error.token.verification")
+      FieldValidationError("token", message)
   }
 }

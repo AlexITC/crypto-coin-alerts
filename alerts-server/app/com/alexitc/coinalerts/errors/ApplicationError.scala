@@ -9,7 +9,10 @@ trait ApplicationError
 sealed trait InputValidationError extends ApplicationError
 sealed trait ConflictError extends ApplicationError
 sealed trait NotFoundError extends ApplicationError
-sealed trait PrivateError extends ApplicationError // contains data private to the server
+sealed trait PrivateError extends ApplicationError {
+  // contains data private to the server
+  def cause: Exception
+}
 
 // play json validation errors
 case class JsonFieldValidationError(path: JsPath, errors: Seq[MessageKey]) extends InputValidationError
