@@ -1,18 +1,17 @@
 package com.alexitc.coinalerts.controllers
 
+import com.alexitc.coinalerts.common.{PlayAPISpec, RandomDataGenerator}
 import com.alexitc.coinalerts.data.{UserDAL, UserInMemoryDAL}
-import org.scalatest.concurrent.ScalaFutures
+import play.api.Application
 import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.test.{FakeRequest, PlaySpecification}
-import play.api.{Application, Mode}
+import play.api.test.FakeRequest
+import play.api.test.Helpers._
 
-class UsersControllerSpec extends PlaySpecification with ScalaFutures {
+class UsersControllerSpec extends PlayAPISpec {
 
   val userDAL = new UserInMemoryDAL {}
-  val application: Application = GuiceApplicationBuilder()
-      .in(Mode.Test)
-      .configure(inMemoryDatabase("test")) // TODO: remove usage of h2 and disable play db
+
+  val application: Application = guiceApplicationBuilder
       .overrides(bind[UserDAL].to(userDAL))
       .build()
 
