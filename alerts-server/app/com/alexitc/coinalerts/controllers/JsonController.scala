@@ -41,7 +41,7 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
    * @tparam M the output model type
    * @return
    */
-  def async[R: Reads, M <: ModelDescription](
+  def unsecureAsync[R: Reads, M <: ModelDescription](
       block: R => FutureApplicationResult[M])(
       implicit tjs: Writes[M]): Action[JsValue] = components.loggingAction.async(parse.json) { request =>
 
@@ -63,7 +63,7 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
    * @tparam M the output model type
    * @return
    */
-  def async[M <: ModelDescription](
+  def unsecureAsync[M <: ModelDescription](
       block: => FutureApplicationResult[M])(
       implicit tjs: Writes[M]): Action[JsValue] = components.loggingAction.async(parse.json) { request =>
 
