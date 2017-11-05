@@ -6,7 +6,12 @@ import org.scalatestplus.play.PlaySpec
 import play.api.db.{DBApi, Database, Databases}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.{Configuration, Environment, Mode}
+import play.api.mvc.Result
+import play.api.test.FakeRequest
+import play.api.test.Helpers._
+import play.api.{Application, Configuration, Environment, Mode}
+
+import scala.concurrent.Future
 
 /**
  * A PlayAPISpec allow us to write tests for the API calls
@@ -42,4 +47,24 @@ trait PlayAPISpec extends PlaySpec with ScalaFutures with MockitoSugar {
       .in(Mode.Test)
       .overrides(bind[Database].to(dummyDB))
       .overrides(bind[DBApi].to(dummyDBApi))
+
+  def application: Application
+
+  private val JsonHeader = CONTENT_TYPE -> "application/json"
+  private val EmptyJson = "{}"
+
+  /** Syntactic sugar for calling APIs **/
+  def POST(url: String, jsonBody: Option[String], extraHeaders: (String, String)*): Future[Result] = {
+    val headers = JsonHeader :: extraHeaders.toList
+    val json = jsonBody.getOrElse(EmptyJson)
+    val request = FakeRequest("POST", url)
+        .withHeaders(headers: _*)
+        .withBody(json)
+
+    route(application, request).get
+  }
+
+  def POST(url: String, extraHeaders: (String, String)*): Future[Result] = {
+    POST(url, None, extraHeaders: _*)
+  }
 }

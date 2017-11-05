@@ -2,9 +2,9 @@ package com.alexitc.coinalerts.controllers
 
 import com.alexitc.coinalerts.common.{PlayAPISpec, RandomDataGenerator}
 import com.alexitc.coinalerts.data.{UserDAL, UserInMemoryDAL}
+import com.alexitc.coinalerts.models.{UserHiddenPassword, UserVerificationToken}
 import play.api.Application
 import play.api.inject.bind
-import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
 class UsersControllerSpec extends PlayAPISpec {
@@ -22,11 +22,7 @@ class UsersControllerSpec extends PlayAPISpec {
     }
 
     def callCreateUser(json: String) = {
-      val request = FakeRequest(POST, "/users")
-          .withHeaders(CONTENT_TYPE -> "application/json")
-          .withBody(json)
-
-      route(application, request).get
+      POST("/users", Some(json))
     }
 
     "Allow to create a new user" in {
@@ -66,17 +62,59 @@ class UsersControllerSpec extends PlayAPISpec {
   }
 
   "POST /verification-tokens/:token" should {
+    def verifyEmailUrl(token: UserVerificationToken) = {
+      s"/verification-tokens/${token.string}"
+    }
     "Allow to verify a user based on the token" in {
       val email = RandomDataGenerator.email
       val user = userDAL.create(email, RandomDataGenerator.hiddenPassword).get
       val token = userDAL.createVerificationToken(user.id).get
+      val response = POST(verifyEmailUrl(token))
 
-      val request = FakeRequest(POST, s"/verification-tokens/${token.string}")
-          .withHeaders(CONTENT_TYPE -> "application/json")
-          .withBody("{}")
-
-      val response = route(application, request).get
       status(response) mustEqual OK
+    }
+  }
+
+  "POST /users/login" should {
+    val LoginUrl = "/users/login"
+
+    "Allow to login with correct credentials" in {
+      val email = RandomDataGenerator.email
+      val password = RandomDataGenerator.password
+      val user = userDAL.create(email, UserHiddenPassword.fromPassword(password)).get
+      val token = userDAL.createVerificationToken(user.id).get
+      userDAL.verifyEmail(token)
+
+      val json =
+        s"""
+          |{ "email": "${email.string}", "password": "${password.string}" }
+        """.stripMargin
+
+      val response = POST(LoginUrl, Some(json))
+      status(response) mustEqual OK
+    }
+
+    "Fail to login an unverified user" in {
+      val email = RandomDataGenerator.email
+      val password = RandomDataGenerator.password
+      val _ = userDAL.create(email, UserHiddenPassword.fromPassword(password)).get
+
+      val json =
+        s"""
+           |{ "email": "${email.string}", "password": "${password.string}" }
+        """.stripMargin
+      val response = POST(LoginUrl, Some(json))
+      status(response) mustEqual BAD_REQUEST
+    }
+
+    "Fail to login with incorrect password" in {
+      val json =
+        s"""
+           |{ "email": "who@none.com", "password": "hmmm" }
+        """.stripMargin
+
+      val response = POST(LoginUrl, Some(json))
+      status(response) mustEqual BAD_REQUEST
     }
   }
 }

@@ -19,6 +19,8 @@ class JsonErrorRenderer @Inject() (messagesApi: MessagesApi) {
   }
 
   def toPublicErrorList(error: ApplicationError)(implicit lang: Lang): Seq[PublicError] = error match {
+    case _: PrivateError => List.empty
+
     case JsonFieldValidationError(path, errors) =>
       val field = path.path.map(_.toJsonString.replace(".", "")).mkString(".")
       errors.map { messageKey =>
@@ -32,7 +34,8 @@ class JsonErrorRenderer @Inject() (messagesApi: MessagesApi) {
     case tokenError: UserVerificationTokenError =>
       List(renderUserVerificationTokenError(tokenError))
 
-    case _: PrivateError => List.empty
+    case error: LoginByEmailError =>
+      List(renderLoginByEmailError(error))
   }
 
   private def renderCreateUserError(createUserError: CreateUserError)(implicit lang: Lang) = createUserError match {
@@ -58,5 +61,15 @@ class JsonErrorRenderer @Inject() (messagesApi: MessagesApi) {
     case _: UserVerificationTokenError =>
       val message = messagesApi("error.token.verification")
       FieldValidationError("token", message)
+  }
+
+  private def renderLoginByEmailError(error: LoginByEmailError)(implicit lang: Lang) = error match {
+    case VerifiedUserNotFound =>
+      val message = messagesApi("error.verifiedUser.notFound")
+      FieldValidationError("email", message)
+
+    case IncorrectPasswordError =>
+      val message = messagesApi("error.password.incorrect")
+      FieldValidationError("password", message)
   }
 }

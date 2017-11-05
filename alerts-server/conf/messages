@@ -8,3 +8,6 @@ error.email.conflict=The email already exists, choose another one
 error.password.length=The password should have between {0} and {1} characters
 
 error.token.verification=The given token is not valid or it does not exist
+
+error.verifiedUser.notFound=The given email does not exist or is not verified
+error.password.incorrect=The given password is not correct

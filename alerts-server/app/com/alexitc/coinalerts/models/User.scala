@@ -66,3 +66,13 @@ object UserCreatedModel {
           (JsPath \ "email").write[UserEmail]
       )(unlift(UserCreatedModel.unapply))
 }
+
+case class LoginByEmailModel(email: UserEmail, password: UserPassword)
+object LoginByEmailModel {
+  implicit val reads: Reads[LoginByEmailModel] = {
+    val builder = (JsPath \ "email").read[UserEmail] and
+        (JsPath \ "password").read[UserPassword]
+
+    builder(LoginByEmailModel.apply _)
+  }
+}

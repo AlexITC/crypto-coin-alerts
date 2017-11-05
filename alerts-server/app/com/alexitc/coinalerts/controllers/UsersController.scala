@@ -26,4 +26,8 @@ class UsersController @Inject() (
   def verifyEmail(token: UserVerificationToken) = async {
     userService.verifyEmail(token)
   }
+
+  def loginByEmail() = async { loginModel: LoginByEmailModel =>
+    userService.loginByEmail(loginModel.email, loginModel.password)
+  }
 }

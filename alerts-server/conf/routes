@@ -3,6 +3,6 @@
 # https://www.playframework.com/documentation/latest/ScalaRouting
 # ~~~~
 
-
 POST   /users                           com.alexitc.coinalerts.controllers.UsersController.create()
 POST   /verification-tokens/:token      com.alexitc.coinalerts.controllers.UsersController.verifyEmail(token: com.alexitc.coinalerts.models.UserVerificationToken)
+POST   /users/login                     com.alexitc.coinalerts.controllers.UsersController.loginByEmail()
