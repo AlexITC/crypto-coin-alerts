@@ -1,6 +1,7 @@
 package com.alexitc.coinalerts.commons
 
-import org.scalactic.{Bad, Good}
+import com.alexitc.coinalerts.errors.ApplicationError
+import org.scalactic.{Bad, Good, One, Or}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -39,6 +40,14 @@ object FutureOr {
 
     implicit class OrOps[+A](val or: ApplicationResult[A]) extends AnyVal {
       def toFutureOr: FutureOr[A] = {
+        val future = Future.successful(or)
+        new FutureOr(future)
+      }
+    }
+
+    implicit class OptionOps[+A](val option: Option[A]) extends AnyVal {
+      def toFutureOr(error: ApplicationError): FutureOr[A] = {
+        val or = Or.from(option, One(error))
         val future = Future.successful(or)
         new FutureOr(future)
       }
