@@ -46,6 +46,8 @@ libraryDependencies += "ch.qos.logback" % "logback-classic" % "1.2.3"
 
 libraryDependencies += "com.github.bitsoex" % "bitso-java" % "v3.0.5"
 
+libraryDependencies += "com.pauldijou" %% "jwt-core" % "0.14.1"
+
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.0" % Test
 
 libraryDependencies ++= Seq(

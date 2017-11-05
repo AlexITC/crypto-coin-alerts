@@ -39,3 +39,6 @@ case class PostgresIntegrityViolationError(cause: PSQLException) extends Postgre
 sealed trait LoginByEmailError extends ApplicationError
 case object VerifiedUserNotFound extends LoginByEmailError with InputValidationError
 case object IncorrectPasswordError extends LoginByEmailError with InputValidationError
+
+sealed trait JWTError extends ApplicationError
+case object InvalidJWTError extends JWTError with InputValidationError
