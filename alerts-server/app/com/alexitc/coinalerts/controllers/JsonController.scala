@@ -13,6 +13,7 @@ import play.api.libs.json.{JsValue, Json, Reads, Writes}
 import play.api.mvc._
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.control.NonFatal
 
 /**
  * Base Controller designed to process actions that expect an input model
@@ -88,17 +89,22 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
     )
   }
 
-  // TODO: catch exceptions
   private def toResult[M <: ModelDescription](
       response: FutureApplicationResult[M])(
       implicit lang: Lang,
-      tjs: Writes[M]): Future[Result] = response.map {
+      tjs: Writes[M]): Future[Result] = {
 
-    case Good(value) =>
-      renderSuccessfulResult(value)(tjs)
+    response.map {
+      case Good(value) =>
+        renderSuccessfulResult(value)(tjs)
 
-    case Bad(errors) =>
-      renderErrors(errors)
+      case Bad(errors) =>
+        renderErrors(errors)
+    }.recover {
+      case NonFatal(ex) =>
+        val error = WrappedExceptionError(ex)
+        renderErrors(Every(error))
+    }
   }
 
   private def renderSuccessfulResult[M <: ModelDescription](model: M)(implicit tjs: Writes[M]) = {

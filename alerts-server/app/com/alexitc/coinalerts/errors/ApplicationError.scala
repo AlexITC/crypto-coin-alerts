@@ -11,8 +11,18 @@ sealed trait ConflictError extends ApplicationError
 sealed trait NotFoundError extends ApplicationError
 sealed trait PrivateError extends ApplicationError {
   // contains data private to the server
-  def cause: Exception
+  def cause: Throwable
 }
+
+// Exceptions
+
+// PostgreSQL specific errors
+sealed trait PostgresError extends PrivateError {
+  def cause: PSQLException
+}
+case class PostgresIntegrityViolationError(cause: PSQLException) extends PostgresError
+
+case class WrappedExceptionError(cause: Throwable) extends PrivateError
 
 // play json validation errors
 case class JsonFieldValidationError(path: JsPath, errors: Seq[MessageKey]) extends InputValidationError
@@ -29,16 +39,11 @@ sealed trait UserVerificationTokenError
 case object UserVerificationTokenNotFound extends UserVerificationTokenError with NotFoundError
 case object UserVerificationTokenAlreadyExists extends UserVerificationTokenError with ConflictError
 
-// PostgreSQL specific errors
-sealed trait PostgresError extends PrivateError {
-  def cause: PSQLException
-}
-case class PostgresIntegrityViolationError(cause: PSQLException) extends PostgresError
-
-//
+// login
 sealed trait LoginByEmailError extends ApplicationError
 case object VerifiedUserNotFound extends LoginByEmailError with InputValidationError
 case object IncorrectPasswordError extends LoginByEmailError with InputValidationError
 
+// JWT
 sealed trait JWTError extends ApplicationError
 case object InvalidJWTError extends JWTError with InputValidationError
