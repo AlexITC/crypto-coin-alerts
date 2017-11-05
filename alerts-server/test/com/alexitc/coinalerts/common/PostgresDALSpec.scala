@@ -5,7 +5,7 @@ import com.whisk.docker.DockerFactory
 import com.whisk.docker.impl.spotify.SpotifyDockerFactory
 import com.whisk.docker.scalatest.DockerTestKit
 import org.scalatest.time.{Second, Seconds, Span}
-import org.scalatest.{BeforeAndAfterAll, FlatSpec, Matchers}
+import org.scalatest.{BeforeAndAfterAll, Matchers, WordSpec}
 import play.api.db.evolutions.Evolutions
 import play.api.db.{Database, Databases}
 
@@ -24,7 +24,7 @@ import play.api.db.{Database, Databases}
  * }}}
  */
 trait PostgresDALSpec
-    extends FlatSpec
+    extends WordSpec
         with Matchers
         with DockerTestKit
         with DockerPostgresService
