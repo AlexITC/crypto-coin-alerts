@@ -29,6 +29,9 @@ lazy val root = (project in file("."))
 
 routesImport += "com.alexitc.coinalerts.commons.PlayBinders._"
 
+// don't include play generated classes into code coverage
+coverageExcludedPackages := "<empty>;Reverse.*;router\\.*"
+
 libraryDependencies ++= Seq(guice, evolutions, jdbc, specs2 % Test)
 libraryDependencies += "com.typesafe.play" %% "anorm" % "2.5.3"
 
