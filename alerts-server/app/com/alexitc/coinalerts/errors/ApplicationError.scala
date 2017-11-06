@@ -9,6 +9,7 @@ trait ApplicationError
 sealed trait InputValidationError extends ApplicationError
 sealed trait ConflictError extends ApplicationError
 sealed trait NotFoundError extends ApplicationError
+sealed trait AuthenticationError extends ApplicationError
 sealed trait PrivateError extends ApplicationError {
   // contains data private to the server
   def cause: Throwable
@@ -46,4 +47,5 @@ case object IncorrectPasswordError extends LoginByEmailError with InputValidatio
 
 // JWT
 sealed trait JWTError extends ApplicationError
-case object InvalidJWTError extends JWTError with InputValidationError
+case object AuthorizationHeaderRequiredError extends JWTError with AuthenticationError
+case object InvalidJWTError extends JWTError with AuthenticationError

@@ -14,12 +14,22 @@ class JsonErrorRenderer @Inject() (messagesApi: MessagesApi) {
         "field" -> e.field,
         "message" -> e.message
       )
+      Json.toJson(obj)
 
+    case e: HeaderValidationError =>
+      val obj = Json.obj(
+        "type" -> "header-validation-error",
+        "header" -> e.header,
+        "message" -> e.message
+      )
       Json.toJson(obj)
   }
 
   def toPublicErrorList(error: ApplicationError)(implicit lang: Lang): Seq[PublicError] = error match {
     case _: PrivateError => List.empty
+
+    case error: JWTError =>
+      List(renderJWTError(error))
 
     case JsonFieldValidationError(path, errors) =>
       val field = path.path.map(_.toJsonString.replace(".", "")).mkString(".")
@@ -36,6 +46,16 @@ class JsonErrorRenderer @Inject() (messagesApi: MessagesApi) {
 
     case error: LoginByEmailError =>
       List(renderLoginByEmailError(error))
+  }
+
+  private def renderJWTError(jwtError: JWTError)(implicit lang: Lang) = jwtError match {
+    case AuthorizationHeaderRequiredError =>
+      val message = messagesApi("error.header.missing", "Authorization")
+      HeaderValidationError("Authorization", message)
+
+    case InvalidJWTError =>
+      val message = messagesApi("error.jwt.invalid")
+      HeaderValidationError("Authorization", message)
   }
 
   private def renderCreateUserError(createUserError: CreateUserError)(implicit lang: Lang) = createUserError match {

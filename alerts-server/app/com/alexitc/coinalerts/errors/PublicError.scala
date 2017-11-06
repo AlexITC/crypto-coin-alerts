@@ -5,3 +5,4 @@ package com.alexitc.coinalerts.errors
  */
 sealed trait PublicError
 case class FieldValidationError(field: String, message: String) extends PublicError
+case class HeaderValidationError(header: String, message: String) extends PublicError
