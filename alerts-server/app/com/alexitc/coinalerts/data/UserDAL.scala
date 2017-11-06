@@ -14,4 +14,6 @@ trait UserDAL {
   def getVerifiedUserPassword(email: UserEmail): ApplicationResult[UserHiddenPassword]
 
   def getVerifiedUserByEmail(email: UserEmail): ApplicationResult[User]
+
+  def getVerifiedUserById(userId: UserId): ApplicationResult[User]
 }

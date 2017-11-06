@@ -118,6 +118,28 @@ class UserPostgresDALSpec extends PostgresDALSpec {
     }
   }
 
+  "Retrieving a user by id" should {
+    "Allow to retrieve the user" in {
+      val email = RandomDataGenerator.email
+      val user = createVerifiedUser(email)
+      val result = userPostgresDAL.getVerifiedUserById(user.id)
+      result shouldBe Good(user)
+    }
+
+    "Fail to retrieve an unknown user" in {
+      val result = userPostgresDAL.getVerifiedUserById(UserId.create)
+      result shouldBe Bad(One(VerifiedUserNotFound))
+    }
+
+    "Fail to retrieve an unverified user" in {
+      val email = RandomDataGenerator.email
+      val user = userPostgresDAL.create(email, RandomDataGenerator.hiddenPassword).get
+
+      val result = userPostgresDAL.getVerifiedUserById(user.id)
+      result shouldBe Bad(One(VerifiedUserNotFound))
+    }
+  }
+
   def createVerifiedUser(email: UserEmail, password: UserHiddenPassword = RandomDataGenerator.hiddenPassword) = {
     val user = userPostgresDAL.create(email, password).get
     val token = userPostgresDAL.createVerificationToken(user.id).get

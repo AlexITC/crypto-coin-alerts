@@ -99,4 +99,19 @@ class UserPostgresDAL @Inject() (protected val database: Database) extends UserD
 
     Or.from(userMaybe, One(VerifiedUserNotFound))
   }
+
+  override def getVerifiedUserById(userId: UserId): ApplicationResult[User] = withConnection { implicit conn =>
+    val userMaybe = SQL(
+      """
+        |SELECT user_id, email
+        |FROM users
+        |WHERE verified_on IS NOT NULL AND
+        |      user_id = {user_id}
+      """.stripMargin
+    ).on(
+      "user_id" -> userId.string
+    ).as(parseUser.singleOpt)
+
+    Or.from(userMaybe, One(VerifiedUserNotFound))
+  }
 }

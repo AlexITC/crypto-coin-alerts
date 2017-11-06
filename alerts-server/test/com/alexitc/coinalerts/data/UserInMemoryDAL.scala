@@ -54,4 +54,10 @@ trait UserInMemoryDAL extends UserDAL {
 
     Or.from(userMaybe, One(VerifiedUserNotFound))
   }
+
+  override def getVerifiedUserById(userId: UserId): ApplicationResult[User] = {
+    val userMaybe = verifiedUserList.find(_.id == userId)
+
+    Or.from(userMaybe, One(VerifiedUserNotFound))
+  }
 }
