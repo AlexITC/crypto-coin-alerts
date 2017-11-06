@@ -62,4 +62,8 @@ class UserService @Inject() (
 
     result.toFuture
   }
+
+  def userById(userId: UserId): FutureApplicationResult[User] = {
+    userAsyncDAL.getVerifiedUserById(userId)
+  }
 }

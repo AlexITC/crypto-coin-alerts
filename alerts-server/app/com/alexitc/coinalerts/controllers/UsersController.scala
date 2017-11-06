@@ -30,4 +30,8 @@ class UsersController @Inject() (
   def loginByEmail() = unsecureAsync { loginModel: LoginByEmailModel =>
     userService.loginByEmail(loginModel.email, loginModel.password)
   }
+
+  def whoAmI() = async { userId =>
+    userService.userById(userId)
+  }
 }

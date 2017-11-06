@@ -67,4 +67,14 @@ trait PlayAPISpec extends PlaySpec with ScalaFutures with MockitoSugar {
   def POST(url: String, extraHeaders: (String, String)*): Future[Result] = {
     POST(url, None, extraHeaders: _*)
   }
+
+  def GET(url: String, extraHeaders: (String, String)*): Future[Result] = {
+    val headers = JsonHeader :: extraHeaders.toList
+    val json = EmptyJson
+    val request = FakeRequest("GET", url)
+        .withHeaders(headers: _*)
+        .withBody(json) // TODO: remove body when JsonController suports to not require it
+
+    route(application, request).get
+  }
 }

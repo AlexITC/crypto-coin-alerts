@@ -2,18 +2,20 @@ package com.alexitc.coinalerts.controllers
 
 import com.alexitc.coinalerts.common.{PlayAPISpec, RandomDataGenerator}
 import com.alexitc.coinalerts.data.{UserDAL, UserInMemoryDAL}
-import com.alexitc.coinalerts.models.{UserHiddenPassword, UserVerificationToken}
+import com.alexitc.coinalerts.models._
+import com.alexitc.coinalerts.services.JWTService
 import play.api.Application
 import play.api.inject.bind
 import play.api.test.Helpers._
 
 class UsersControllerSpec extends PlayAPISpec {
 
-  val userDAL = new UserInMemoryDAL {}
-
   val application: Application = guiceApplicationBuilder
       .overrides(bind[UserDAL].to(userDAL))
       .build()
+
+  val userDAL = new UserInMemoryDAL {}
+  val jwtService = application.injector.instanceOf[JWTService]
 
   "POST /users" should {
 
@@ -81,9 +83,7 @@ class UsersControllerSpec extends PlayAPISpec {
     "Allow to login with correct credentials" in {
       val email = RandomDataGenerator.email
       val password = RandomDataGenerator.password
-      val user = userDAL.create(email, UserHiddenPassword.fromPassword(password)).get
-      val token = userDAL.createVerificationToken(user.id).get
-      userDAL.verifyEmail(token)
+      val user = createVerifiedUser(email, password)
 
       val json =
         s"""
@@ -116,5 +116,46 @@ class UsersControllerSpec extends PlayAPISpec {
       val response = POST(LoginUrl, Some(json))
       status(response) mustEqual BAD_REQUEST
     }
+  }
+
+  "GET /users/me" should {
+
+    val url = "/users/me"
+    "Retrieve info from the logged in user" in {
+      val email = RandomDataGenerator.email
+      val password = RandomDataGenerator.password
+      val user = createVerifiedUser(email, password)
+      val token = jwtService.createToken(user.id)
+      val response = GET(url, authHeader(token))
+      status(response) mustEqual OK
+      (contentAsJson(response) \ "id").as[String] mustEqual user.id.string
+    }
+
+    "Fail when Authorization token is not present" in {
+      val response = GET(url)
+      status(response) mustEqual UNAUTHORIZED
+    }
+
+    "Fail when the token is not of type = Bearer" in {
+      val header = "OAuth Xys"
+      val response = GET(url, AUTHORIZATION -> header)
+      status(response) mustEqual UNAUTHORIZED
+    }
+
+    "Fail when the token is incorrect" in {
+      val header = "Bearer Xys"
+      val response = GET(url, AUTHORIZATION -> header)
+      status(response) mustEqual UNAUTHORIZED
+    }
+  }
+
+  def createVerifiedUser(email: UserEmail, password: UserPassword): User = {
+    val user = userDAL.create(email, UserHiddenPassword.fromPassword(password)).get
+    val token = userDAL.createVerificationToken(user.id).get
+    userDAL.verifyEmail(token).get
+  }
+
+  def authHeader(token: AuthorizationToken): (String, String) = {
+    AUTHORIZATION -> s"Bearer ${token.string}"
   }
 }
