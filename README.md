@@ -1,2 +1,1 @@
-[![Build Status](https://travis-ci.org/AlexITC/crypto-coin-alerts.svg?branch=master)](https://travis-ci.org/AlexITC/crypto-coin-alerts)
-
+[![Build Status](https://travis-ci.org/AlexITC/crypto-coin-alerts.svg?branch=master)](https://travis-ci.org/AlexITC/crypto-coin-alerts) [![codecov](https://codecov.io/gh/AlexITC/crypto-coin-alerts/branch/master/graph/badge.svg)](https://codecov.io/gh/AlexITC/crypto-coin-alerts)
