@@ -2,11 +2,13 @@ package com.alexitc.coinalerts.controllers
 
 import javax.inject.Inject
 
-import com.alexitc.coinalerts.commons.FutureOr.Implicits.{FutureOps, OrOps}
+import com.alexitc.coinalerts.commons.FutureOr.Implicits.{FutureOps, OptionOps, OrOps}
 import com.alexitc.coinalerts.commons._
 import com.alexitc.coinalerts.controllers.actions.LoggingAction
 import com.alexitc.coinalerts.errors._
-import com.alexitc.coinalerts.models.{ErrorId, MessageKey}
+import com.alexitc.coinalerts.models.{AuthorizationToken, ErrorId, MessageKey, UserId}
+import com.alexitc.coinalerts.services.JWTService
+import org.scalactic.TypeCheckedTripleEquals._
 import org.scalactic.{Bad, Every, Good}
 import play.api.i18n.Lang
 import play.api.libs.json.{JsValue, Json, Reads, Writes}
@@ -35,11 +37,12 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
    * Execute an asynchronous action that receives the model [[R]]
    * and returns the model [[M]] on success.
    *
-   * @param block
-   * @param tjs
+   * Note: This method is intended to be used on public APIs.
+   *
+   * @param block the block to execute
+   * @param tjs the serializer for [[M]]
    * @tparam R the input model type
    * @tparam M the output model type
-   * @return
    */
   def unsecureAsync[R: Reads, M <: ModelDescription](
       block: R => FutureApplicationResult[M])(
@@ -58,10 +61,13 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
    * Execute an asynchronous action that doesn't need an input model
    * and returns the model [[M]] on success.
    *
-   * @param block
-   * @param tjs
+   * Note: This method is intended to be used on public APIs.
+   *
+   * TODO: Allow to process requests having empty body.
+   *
+   * @param block the block to execute
+   * @param tjs the serializer for [[M]]
    * @tparam M the output model type
-   * @return
    */
   def unsecureAsync[M <: ModelDescription](
       block: => FutureApplicationResult[M])(
@@ -69,6 +75,77 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
 
     val lang = messagesApi.preferred(request).lang
     toResult(block)(lang, tjs)
+  }
+
+  /**
+   * Execute an asynchronous action that receives the model [[R]]
+   * and returns the model [[M]] on success.
+   *
+   * Note: This method is intended to be on APIs requiring authentication.
+   *
+   * @param block the block to execute
+   * @param tjs the serializer for [[M]]
+   * @tparam R the input model type
+   * @tparam M the output model type
+   */
+  def async[R: Reads, M <: ModelDescription](
+      block: (UserId, R) => FutureApplicationResult[M])(
+      implicit tjs: Writes[M]): Action[JsValue] = components.loggingAction.async(parse.json) { request =>
+
+    val result = for {
+      authorizationHeader <- request.headers
+          .get(AUTHORIZATION)
+          .toFutureOr(InvalidJWTError)
+
+      userId <- validateJWT(authorizationHeader).toFutureOr
+      input <- validate[R](request.body).toFutureOr
+      output <- block(userId, input).toFutureOr
+    } yield output
+
+    val lang = messagesApi.preferred(request).lang
+    toResult(result.toFuture)(lang, tjs)
+  }
+
+  /**
+   * Execute an asynchronous action that doesn't need an input model
+   * and returns the model [[M]] on success.
+   *
+   * Note: This method is intended to be on APIs requiring authentication.
+   *
+   * TODO: Allow to process requests having empty body.
+   *
+   * @param block the block to execute
+   * @param tjs the serializer for [[M]]
+   * @tparam M the output model type
+   */
+  def async[M <: ModelDescription](
+      block: UserId => FutureApplicationResult[M])(
+      implicit tjs: Writes[M]): Action[JsValue] = components.loggingAction.async(parse.json) { request =>
+
+    val result = for {
+      authorizationHeader <- request.headers
+          .get(AUTHORIZATION)
+          .toFutureOr(InvalidJWTError)
+
+      userId <- validateJWT(authorizationHeader).toFutureOr
+      output <- block(userId).toFutureOr
+    } yield output
+
+    val lang = messagesApi.preferred(request).lang
+    toResult(result.toFuture)(lang, tjs)
+  }
+
+  private def validateJWT(authorizationHeader: String): ApplicationResult[UserId] = {
+    val tokenType = "Bearer"
+    val headerParts = authorizationHeader.split(" ")
+
+    Option(headerParts)
+        .filter(_.length === 2)
+        .filter(_.head === tokenType)
+        .map(_.drop(1).head)
+        .map(AuthorizationToken.apply)
+        .map(components.jwtService.decodeToken)
+        .getOrElse(Bad(InvalidJWTError).accumulating)
   }
 
   private def validate[R: Reads](json: JsValue): ApplicationResult[R] = {
@@ -123,6 +200,7 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
       case _: InputValidationError => Results.BadRequest
       case _: ConflictError => Results.Conflict
       case _: NotFoundError => Results.NotFound
+      case _: AuthenticationError => Results.Unauthorized
       case _: PrivateError => Results.InternalServerError
     }
 
@@ -163,5 +241,6 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
 class JsonControllerComponents @Inject() (
     val messagesControllerComponents: MessagesControllerComponents,
     val loggingAction: LoggingAction,
+    val jwtService: JWTService,
     val errorRenderer: JsonErrorRenderer,
     val executionContext: ExecutionContext)
