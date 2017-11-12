@@ -1,6 +1,6 @@
 package com.alexitc.coinalerts.common
 
-import com.alexitc.coinalerts.models.{UserEmail, UserHiddenPassword, UserPassword}
+import com.alexitc.coinalerts.models.{AlertId, UserEmail, UserHiddenPassword, UserPassword}
 
 import scala.util.Random
 
@@ -37,4 +37,6 @@ object RandomDataGenerator {
   def password = UserPassword(alphanumeric(12))
 
   def hiddenPassword = UserHiddenPassword.fromPassword(password)
+
+  def alertId = AlertId(Random.nextLong())
 }
