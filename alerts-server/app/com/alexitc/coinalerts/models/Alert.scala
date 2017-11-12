@@ -64,3 +64,25 @@ object AlertType {
 
   implicit val writes: Writes[AlertType] = Writes[AlertType] { alertType => JsString(alertType.string) }
 }
+
+case class CreateAlertModel(
+    alertType: AlertType,
+    market: Market,
+    book: Book,
+    isGreaterThan: Boolean,
+    price: BigDecimal,
+    basePrice: Option[BigDecimal] // should be defined when alert type = BasePrice
+)
+object CreateAlertModel {
+
+  implicit val reads: Reads[CreateAlertModel] = {
+    val builder = (JsPath \ "alertType").read[AlertType] and
+        (JsPath \ "market").read[Market] and
+        (JsPath \ "book").read[Book] and
+        (JsPath \ "isGreaterThan").read[Boolean] and
+        (JsPath \ "price").read[BigDecimal] and
+        (JsPath \ "basePrice").readNullable[BigDecimal]
+
+    builder(CreateAlertModel.apply _)
+  }
+}
