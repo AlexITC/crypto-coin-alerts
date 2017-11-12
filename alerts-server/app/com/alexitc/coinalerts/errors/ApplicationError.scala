@@ -49,3 +49,7 @@ case object IncorrectPasswordError extends LoginByEmailError with InputValidatio
 sealed trait JWTError extends ApplicationError
 case object AuthorizationHeaderRequiredError extends JWTError with AuthenticationError
 case object InvalidJWTError extends JWTError with AuthenticationError
+
+// Mailgun
+sealed trait MailgunError extends ApplicationError
+case object MailgunSendEmailError extends MailgunError with InputValidationError

@@ -1,5 +1,6 @@
 package com.alexitc.coinalerts.common
 
+import com.alexitc.coinalerts.services.EmailServiceTrait
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
@@ -47,6 +48,7 @@ trait PlayAPISpec extends PlaySpec with ScalaFutures with MockitoSugar {
       .in(Mode.Test)
       .overrides(bind[Database].to(dummyDB))
       .overrides(bind[DBApi].to(dummyDBApi))
+      .overrides(bind[EmailServiceTrait].to(new FakeEmailService))
 
   def application: Application
 

@@ -14,7 +14,7 @@ import org.scalactic._
 import scala.concurrent.{ExecutionContext, Future}
 
 class UserService @Inject() (
-    emailService: EmailService,
+    emailService: EmailServiceTrait,
     userAsyncDAL: UserAsyncDAL,
     userValidator: UserValidator,
     jwtService: JWTService)(
