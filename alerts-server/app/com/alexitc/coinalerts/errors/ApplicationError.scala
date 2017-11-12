@@ -53,3 +53,11 @@ case object InvalidJWTError extends JWTError with AuthenticationError
 // Mailgun
 sealed trait MailgunError extends ApplicationError
 case object MailgunSendEmailError extends MailgunError with InputValidationError
+
+// Create alert
+sealed trait CreateAlertError extends ApplicationError
+case object UnknownAlertTypeError extends CreateAlertError with InputValidationError
+case object InvalidPriceError extends CreateAlertError with InputValidationError
+case object InvalidBasePriceError extends CreateAlertError with InputValidationError
+case object BasePriceRequiredError extends CreateAlertError with InputValidationError
+case object BasePriceNotExpectedError extends CreateAlertError with InputValidationError
