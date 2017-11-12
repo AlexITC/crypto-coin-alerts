@@ -5,7 +5,7 @@ import com.whisk.docker.DockerFactory
 import com.whisk.docker.impl.spotify.SpotifyDockerFactory
 import com.whisk.docker.scalatest.DockerTestKit
 import org.scalatest.time.{Second, Seconds, Span}
-import org.scalatest.{BeforeAndAfterAll, Matchers, WordSpec}
+import org.scalatest.{BeforeAndAfterAll, MustMatchers, WordSpec}
 import play.api.db.evolutions.Evolutions
 import play.api.db.{Database, Databases}
 
@@ -25,7 +25,7 @@ import play.api.db.{Database, Databases}
  */
 trait PostgresDALSpec
     extends WordSpec
-        with Matchers
+        with MustMatchers
         with DockerTestKit
         with DockerPostgresService
         with BeforeAndAfterAll {
@@ -39,7 +39,7 @@ trait PostgresDALSpec
 
   override def beforeAll(): Unit = {
     super.beforeAll()
-    val _ = isContainerReady(postgresContainer).futureValue shouldBe true
+    val _ = isContainerReady(postgresContainer).futureValue mustEqual true
   }
 
   def database: Database = {
