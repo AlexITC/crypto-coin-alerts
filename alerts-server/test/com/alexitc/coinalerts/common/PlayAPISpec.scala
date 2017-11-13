@@ -1,5 +1,6 @@
 package com.alexitc.coinalerts.common
 
+import com.alexitc.coinalerts.models.AuthorizationToken
 import com.alexitc.coinalerts.services.EmailServiceTrait
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
@@ -78,5 +79,11 @@ trait PlayAPISpec extends PlaySpec with ScalaFutures with MockitoSugar {
         .withBody(json) // TODO: remove body when JsonController suports to not require it
 
     route(application, request).get
+  }
+}
+
+object PlayAPISpec {
+  implicit class AuthorizationTokenExt(token: AuthorizationToken) {
+    def toHeader: (String, String) = AUTHORIZATION -> s"Bearer ${token.string}"
   }
 }
