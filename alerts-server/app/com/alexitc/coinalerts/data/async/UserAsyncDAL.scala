@@ -3,6 +3,7 @@ package com.alexitc.coinalerts.data.async
 import javax.inject.Inject
 
 import com.alexitc.coinalerts.commons.FutureApplicationResult
+import com.alexitc.coinalerts.config.DatabaseExecutionContext
 import com.alexitc.coinalerts.data.UserDAL
 import com.alexitc.coinalerts.models._
 
