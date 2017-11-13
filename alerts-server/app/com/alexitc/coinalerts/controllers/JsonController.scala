@@ -39,12 +39,14 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
    *
    * Note: This method is intended to be used on public APIs.
    *
+   * @param successStatus the http status for a successful response
    * @param block the block to execute
    * @param tjs the serializer for [[M]]
    * @tparam R the input model type
    * @tparam M the output model type
    */
-  def unsecureAsync[R: Reads, M <: ModelDescription](
+  def unsecureAsync[R: Reads, M](
+      successStatus: Status)(
       block: R => FutureApplicationResult[M])(
       implicit tjs: Writes[M]): Action[JsValue] = components.loggingAction.async(parse.json) { request =>
 
@@ -54,7 +56,7 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
     } yield output
 
     val lang = messagesApi.preferred(request).lang
-    toResult(result.toFuture)(lang, tjs)
+    toResult(successStatus, result.toFuture)(lang, tjs)
   }
 
   /**
@@ -65,32 +67,37 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
    *
    * TODO: Allow to process requests having empty body.
    *
+   * @param successStatus the http status for a successful response
    * @param block the block to execute
    * @param tjs the serializer for [[M]]
    * @tparam M the output model type
    */
-  def unsecureAsync[M <: ModelDescription](
+  def unsecureAsync[M](
+      successStatus: Status)(
       block: => FutureApplicationResult[M])(
       implicit tjs: Writes[M]): Action[JsValue] = components.loggingAction.async(parse.json) { request =>
 
+    val result = block
     val lang = messagesApi.preferred(request).lang
-    toResult(block)(lang, tjs)
+    toResult(successStatus, result)(lang, tjs)
   }
 
   /**
    * Execute an asynchronous action that receives the model [[R]]
-   * and returns the model [[M]] on success.
+   * and produces the model [[M]] on success, the http status in
+   * case of a successful result will be taken from successStatus param.
    *
    * Note: This method is intended to be on APIs requiring authentication.
    *
+   * @param successStatus the http status for a successful response
    * @param block the block to execute
    * @param tjs the serializer for [[M]]
    * @tparam R the input model type
    * @tparam M the output model type
    */
-  def async[R: Reads, M <: ModelDescription](
-      block: (UserId, R) => FutureApplicationResult[M])(
-      implicit tjs: Writes[M]): Action[JsValue] = components.loggingAction.async(parse.json) { request =>
+  def async[R: Reads, M](
+      successStatus: Status)(
+      block: (UserId, R) => FutureApplicationResult[M])(implicit tjs: Writes[M]): Action[JsValue] = components.loggingAction.async(parse.json) { request =>
 
     val result = for {
       authorizationHeader <- request.headers
@@ -103,7 +110,7 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
     } yield output
 
     val lang = messagesApi.preferred(request).lang
-    toResult(result.toFuture)(lang, tjs)
+    toResult(successStatus, result.toFuture)(lang, tjs)
   }
 
   /**
@@ -114,11 +121,13 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
    *
    * TODO: Allow to process requests having empty body.
    *
+   * @param successStatus the http status for a successful response
    * @param block the block to execute
    * @param tjs the serializer for [[M]]
    * @tparam M the output model type
    */
-  def async[M <: ModelDescription](
+  def async[M](
+      successStatus: Status)(
       block: UserId => FutureApplicationResult[M])(
       implicit tjs: Writes[M]): Action[JsValue] = components.loggingAction.async(parse.json) { request =>
 
@@ -132,7 +141,7 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
     } yield output
 
     val lang = messagesApi.preferred(request).lang
-    toResult(result.toFuture)(lang, tjs)
+    toResult(successStatus, result.toFuture)(lang, tjs)
   }
 
   private def validateJWT(authorizationHeader: String): ApplicationResult[UserId] = {
@@ -166,14 +175,15 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
     )
   }
 
-  private def toResult[M <: ModelDescription](
+  private def toResult[M](
+      successStatus: Status,
       response: FutureApplicationResult[M])(
       implicit lang: Lang,
       tjs: Writes[M]): Future[Result] = {
 
     response.map {
       case Good(value) =>
-        renderSuccessfulResult(value)(tjs)
+        renderSuccessfulResult(successStatus, value)(tjs)
 
       case Bad(errors) =>
         renderErrors(errors)
@@ -184,14 +194,9 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
     }
   }
 
-  private def renderSuccessfulResult[M <: ModelDescription](model: M)(implicit tjs: Writes[M]) = {
-    val status = model match {
-      case _: DataRetrieved => Results.Ok
-      case _: ModelCreated => Results.Created
-    }
-
+  private def renderSuccessfulResult[M](successStatus: Status, model: M)(implicit tjs: Writes[M]) = {
     val json = Json.toJson(model)
-    status.apply(json)
+    successStatus.apply(json)
   }
 
   private def renderErrors(errors: ApplicationErrors)(implicit lang: Lang): Result = {
