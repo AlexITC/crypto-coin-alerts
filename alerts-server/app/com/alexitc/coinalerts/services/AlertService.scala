@@ -19,6 +19,8 @@ class AlertService @Inject() (
     val result = for {
       validatedModel <- alertValidator.validateCreateAlertModel(createAlertModel).toFutureOr
       // TODO: Restrict the maximum number of active alerts per user
+      // TODO: shall we restrict on repeated alerts by price and greater than?
+      // TODO: shall we restrict on creating an alert that will be triggered right away?
       createdAlert <- alertAsyncDataHandler.create(validatedModel, userId).toFutureOr
     } yield createdAlert
 
