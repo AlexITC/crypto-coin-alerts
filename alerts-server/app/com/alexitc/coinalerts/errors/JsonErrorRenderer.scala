@@ -46,6 +46,9 @@ class JsonErrorRenderer @Inject() (messagesApi: MessagesApi) {
 
     case error: LoginByEmailError =>
       List(renderLoginByEmailError(error))
+
+    case error: CreateAlertError =>
+      List(renderCreateAlertError(error))
   }
 
   private def renderJWTError(jwtError: JWTError)(implicit lang: Lang) = jwtError match {
@@ -91,5 +94,27 @@ class JsonErrorRenderer @Inject() (messagesApi: MessagesApi) {
     case IncorrectPasswordError =>
       val message = messagesApi("error.password.incorrect")
       FieldValidationError("password", message)
+  }
+
+  private def renderCreateAlertError(error: CreateAlertError)(implicit lang: Lang) = error match {
+    case UnknownAlertTypeError =>
+      val message = messagesApi("error.alertType.unknown")
+      FieldValidationError("alertType", message)
+
+    case InvalidPriceError =>
+      val message = messagesApi("error.price.invalid")
+      FieldValidationError("price", message)
+
+    case InvalidBasePriceError =>
+      val message = messagesApi("error.basePrice.invalid")
+      FieldValidationError("basePrice", message)
+
+    case BasePriceRequiredError =>
+      val message = messagesApi("error.basePrice.required")
+      FieldValidationError("basePrice", message)
+
+    case BasePriceNotExpectedError =>
+      val message = messagesApi("error.basePrice.notRequired")
+      FieldValidationError("basePrice", message)
   }
 }
