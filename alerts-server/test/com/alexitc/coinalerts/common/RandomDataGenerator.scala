@@ -1,6 +1,6 @@
 package com.alexitc.coinalerts.common
 
-import com.alexitc.coinalerts.models.{AlertId, UserEmail, UserHiddenPassword, UserPassword}
+import com.alexitc.coinalerts.models._
 
 import scala.util.Random
 
@@ -39,4 +39,10 @@ object RandomDataGenerator {
   def hiddenPassword = UserHiddenPassword.fromPassword(password)
 
   def alertId = AlertId(Random.nextLong())
+
+  def createDefaultAlertModel(
+      market: Market = Market.BITSO,
+      book: Book = Book("BTC", "MXN"),
+      isGreaterThan: Boolean = Random.nextBoolean(),
+      givenPrice: BigDecimal = BigDecimal(Math.abs(Random.nextDouble()))) = CreateAlertModel(AlertType.DEFAULT, market, book, isGreaterThan, givenPrice, None)
 }
