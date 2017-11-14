@@ -25,7 +25,7 @@ class MailgunEmailService @Inject() (
   // TODO: Support i18n, request scoped lang could be one option
   def sendVerificationToken(email: UserEmail, token: UserVerificationToken): FutureApplicationResult[Unit] = {
     val result = ws
-        .url("https://api.mailgun.net/v3/ccoinalerts.com/messages")
+        .url(s"https://api.mailgun.net/v3/${config.domain.string}/messages")
         .withAuth("api", config.apiSecretKey.string, WSAuthScheme.BASIC)
         .addQueryStringParameters(
           "from" -> config.from.string,
