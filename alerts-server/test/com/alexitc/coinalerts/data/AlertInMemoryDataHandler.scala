@@ -8,7 +8,7 @@ import org.scalactic.{Bad, Good}
 
 import scala.collection.mutable
 
-trait AlertInMemoryDataHandler extends AlertDataHandler {
+trait AlertInMemoryDataHandler extends AlertBlockingDataHandler {
 
   private val alertList = mutable.ListBuffer[Alert]()
   private val basePriceAlert = mutable.HashMap[AlertId, BigDecimal]()

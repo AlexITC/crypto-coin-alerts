@@ -2,7 +2,7 @@ package com.alexitc.coinalerts.controllers
 
 import com.alexitc.coinalerts.common.DataHelper._
 import com.alexitc.coinalerts.common.PlayAPISpec
-import com.alexitc.coinalerts.data.{AlertDataHandler, AlertInMemoryDataHandler, UserDAL, UserInMemoryDAL}
+import com.alexitc.coinalerts.data._
 import com.alexitc.coinalerts.services.JWTService
 import play.api.Application
 import play.api.inject.bind
@@ -17,7 +17,7 @@ class AlertsControllerSpec extends PlayAPISpec {
 
   val application: Application = guiceApplicationBuilder
       .overrides(bind[UserDAL].to(userDAL))
-      .overrides(bind[AlertDataHandler].to(alertDataHandler))
+      .overrides(bind[AlertBlockingDataHandler].to(alertDataHandler))
       .build()
 
   val jwtService = application.injector.instanceOf[JWTService]

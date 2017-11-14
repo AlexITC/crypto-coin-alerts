@@ -3,7 +3,7 @@ package com.alexitc.coinalerts.data.anorm
 import javax.inject.Inject
 
 import com.alexitc.coinalerts.commons.ApplicationResult
-import com.alexitc.coinalerts.data.AlertDataHandler
+import com.alexitc.coinalerts.data.AlertBlockingDataHandler
 import com.alexitc.coinalerts.data.anorm.dao.AlertPostgresDAO
 import com.alexitc.coinalerts.errors.{AlertNotFound, BasePriceRequiredError, InvalidPriceError, UnknownAlertTypeError}
 import com.alexitc.coinalerts.models.AlertType.{BASE_PRICE, DEFAULT}
@@ -14,7 +14,7 @@ import play.api.db.Database
 class AlertPostgresDataHandler @Inject() (
     protected val database: Database,
     alertPostgresDAO: AlertPostgresDAO)
-    extends AlertDataHandler
+    extends AlertBlockingDataHandler
     with AnormPostgresDAL{
 
   def create(createAlertModel: CreateAlertModel, userId: UserId): ApplicationResult[Alert] = withConnection { implicit conn =>
