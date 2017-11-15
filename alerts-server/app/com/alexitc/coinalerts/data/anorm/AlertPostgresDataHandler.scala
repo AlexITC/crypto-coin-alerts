@@ -8,7 +8,7 @@ import com.alexitc.coinalerts.data.anorm.dao.AlertPostgresDAO
 import com.alexitc.coinalerts.errors.{AlertNotFound, BasePriceRequiredError, InvalidPriceError, UnknownAlertTypeError}
 import com.alexitc.coinalerts.models.AlertType.{BASE_PRICE, DEFAULT}
 import com.alexitc.coinalerts.models._
-import org.scalactic.{Bad, Good}
+import org.scalactic.{Bad, Good, One, Or}
 import play.api.db.Database
 
 class AlertPostgresDataHandler @Inject() (
@@ -53,5 +53,10 @@ class AlertPostgresDataHandler @Inject() (
       val alertList = alertPostgresDAO.findPendingAlertsForPrice(market, book, currentPrice)
       Good(alertList)
     }
+  }
+
+  def findBasePriceAlert(alertId: AlertId): ApplicationResult[BasePriceAlert] = withConnection { implicit conn =>
+    val basePriceAlertMaybe = alertPostgresDAO.findBasePriceAlert(alertId)
+    Or.from(basePriceAlertMaybe, One(AlertNotFound))
   }
 }

@@ -18,7 +18,19 @@ class AlertFutureDataHandler @Inject() (
     blockingDataHandler.create(createAlertModel, userId)
   }
 
-  override def findPendingAlertsForPrice(market: Market, book: Book, currentPrice: BigDecimal): FutureApplicationResult[List[Alert]] = ???
-  override def markAsTriggered(alertId: AlertId): FutureApplicationResult[Unit] = ???
+  override def markAsTriggered(alertId: AlertId): FutureApplicationResult[Unit] = Future {
+    blockingDataHandler.markAsTriggered(alertId)
+  }
 
+  override def findPendingAlertsForPrice(
+      market: Market,
+      book: Book,
+      currentPrice: BigDecimal): FutureApplicationResult[List[Alert]] = Future {
+
+    blockingDataHandler.findPendingAlertsForPrice(market, book, currentPrice)
+  }
+
+  override def findBasePriceAlert(alertId: AlertId): FutureApplicationResult[BasePriceAlert] = Future {
+    blockingDataHandler.findBasePriceAlert(alertId)
+  }
 }

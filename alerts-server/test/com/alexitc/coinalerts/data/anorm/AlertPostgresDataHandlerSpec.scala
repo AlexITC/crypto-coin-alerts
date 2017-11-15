@@ -13,9 +13,10 @@ class AlertPostgresDataHandlerSpec extends PostgresDALSpec {
   lazy val alertPostgresDataHandler = new AlertPostgresDataHandler(database, new AlertPostgresDAO)
   lazy val verifiedUser = createVerifiedUser()
 
+  val createDefaultAlertModel = CreateAlertModel(AlertType.DEFAULT, Market.BITSO, Book.fromString("BTC_MXN").get, true, BigDecimal("5000.00"), None)
+  val createBasePriceAlertModel = createDefaultAlertModel.copy(alertType = AlertType.BASE_PRICE, basePrice = Some(BigDecimal("4000.00")))
+
   "Creating an alert" should {
-    val createDefaultAlertModel = CreateAlertModel(AlertType.DEFAULT, Market.BITSO, Book.fromString("BTC_MXN").get, true, BigDecimal("5000.00"), None)
-    val createBasePriceAlertModel = createDefaultAlertModel.copy(alertType = AlertType.BASE_PRICE, basePrice = Some(BigDecimal("4000.00")))
 
     "ba able to create a DEFAULT alert" in {
       val result = alertPostgresDataHandler.create(createDefaultAlertModel, verifiedUser.id)
@@ -130,6 +131,22 @@ class AlertPostgresDataHandlerSpec extends PostgresDALSpec {
       val currentPrice = BigDecimal("0")
       val result = alertPostgresDataHandler.findPendingAlertsForPrice(Market.BITSO, Book("BTC", "MXN"), currentPrice)
       result mustEqual Bad(InvalidPriceError).accumulating
+    }
+  }
+
+  "retrieving a base price alert" should {
+    "succeed when the alert exists" in {
+      val user = createUnverifiedUser()
+      val alert = alertPostgresDataHandler.create(createBasePriceAlertModel, user.id).get
+      val basePriceAlert = alertPostgresDataHandler.findBasePriceAlert(alert.id).get
+      basePriceAlert.basePrice mustEqual alert.basePrice.get
+    }
+
+    "fail when the alert doesn't exists" in {
+      val user = createUnverifiedUser()
+      val alert = alertPostgresDataHandler.create(createDefaultAlertModel, user.id).get
+      val result = alertPostgresDataHandler.findBasePriceAlert(alert.id)
+      result mustEqual Bad(AlertNotFound).accumulating
     }
   }
 }

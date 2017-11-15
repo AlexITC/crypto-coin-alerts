@@ -76,4 +76,16 @@ class AlertPostgresDAO {
       "current_price" -> currentPrice
     ).as(parseAlert.*)
   }
+
+  def findBasePriceAlert(alertId: AlertId)(implicit conn: Connection): Option[BasePriceAlert] = {
+    SQL(
+      s"""
+        |SELECT alert_id, base_price
+        |FROM base_price_alerts
+        |WHERE alert_id = {alert_id}
+      """.stripMargin
+    ).on(
+      "alert_id" -> alertId.long
+    ).as(parseBasePriceAlert.singleOpt)
+  }
 }

@@ -4,7 +4,7 @@ import com.alexitc.coinalerts.common.RandomDataGenerator
 import com.alexitc.coinalerts.commons.ApplicationResult
 import com.alexitc.coinalerts.errors.AlertNotFound
 import com.alexitc.coinalerts.models._
-import org.scalactic.{Bad, Good}
+import org.scalactic.{Bad, Good, One, Or}
 
 import scala.collection.mutable
 
@@ -52,6 +52,14 @@ trait AlertInMemoryDataHandler extends AlertBlockingDataHandler {
         }
 
     Good(list)
+  }
+
+  override def findBasePriceAlert(alertId: AlertId): ApplicationResult[BasePriceAlert] = {
+    val alertMaybe = basePriceAlert
+        .get(alertId)
+        .map { basePrice => BasePriceAlert(alertId, basePrice) }
+
+    Or.from(alertMaybe, One(AlertNotFound))
   }
 
   private def pendingAlertList = {
