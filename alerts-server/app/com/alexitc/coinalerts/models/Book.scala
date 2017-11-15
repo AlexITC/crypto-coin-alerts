@@ -3,12 +3,12 @@ package com.alexitc.coinalerts.models
 import play.api.libs.json._
 
 case class Book(major: String, minor: String) {
-  val string = s"${major}_$minor"
+  val string = s"${major}_$minor".toUpperCase
 }
 object Book {
 
   def fromString(string: String): Option[Book] = {
-    Option(string.split("_"))
+    Option(string.toUpperCase.split("_"))
         .filter(_.length == 2)
         .map { parts =>
           val major = parts(0)
