@@ -1,6 +1,7 @@
 package com.alexitc.coinalerts.common
 
 import com.alexitc.coinalerts.models.AuthorizationToken
+import com.alexitc.coinalerts.modules.AlertTaskModule
 import com.alexitc.coinalerts.services.EmailServiceTrait
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
@@ -47,6 +48,7 @@ trait PlayAPISpec extends PlaySpec with ScalaFutures with MockitoSugar {
 
   val guiceApplicationBuilder: GuiceApplicationBuilder = GuiceApplicationBuilder(loadConfiguration = loadConfigWithoutEvolutions)
       .in(Mode.Test)
+      .disable(classOf[AlertTaskModule])
       .overrides(bind[Database].to(dummyDB))
       .overrides(bind[DBApi].to(dummyDBApi))
       .overrides(bind[EmailServiceTrait].to(new FakeEmailService))
