@@ -5,7 +5,6 @@ import javax.inject.Inject
 import com.alexitc.coinalerts.config.TaskExecutionContext
 import com.alexitc.coinalerts.data.async.AlertFutureDataHandler
 import com.alexitc.coinalerts.models._
-import com.bitso.BitsoTicker
 import org.scalactic.{Bad, Good}
 
 import scala.concurrent.Future
@@ -32,20 +31,11 @@ class BitsoAlertCollector @Inject() (
     }
   }
 
-  private def getEventsForTicker(ticker: BitsoTicker): Future[List[AlertEvent]] = {
-    val currentPrice = ticker.getLast
-    val bookMaybe = Book.fromString(ticker.getBook)
-    logger.info(s"Looking for alerts on BITSO for [${ticker.getBook}] for price = [$currentPrice]")
+  private def getEventsForTicker(ticker: Ticker): Future[List[AlertEvent]] = {
+    val book = ticker.book
+    val currentPrice = ticker.currentPrice
 
-    bookMaybe.map { book =>
-      getEventsForBook(book, currentPrice)
-    }.getOrElse {
-      logger.warn(s"Unknown book retrieved from BITSO = [${ticker.getBook}]")
-      Future.successful(List.empty)
-    }
-  }
-
-  private def getEventsForBook(book: Book, currentPrice: BigDecimal): Future[List[AlertEvent]] = {
+    logger.info(s"Looking for alerts on BITSO for [${book.string}] for price = [$currentPrice]")
     alertDataHandler
         .findPendingAlertsForPrice(Market.BITSO, book, currentPrice)
         .flatMap {
@@ -54,7 +44,7 @@ class BitsoAlertCollector @Inject() (
             Future.sequence(futures)
 
           case Bad(errors) =>
-            logger.error(s"Cannot retrieve pending alerts for BITSO, book = [$book], currentPrice = [$currentPrice], errors = [$errors]")
+            logger.error(s"Cannot retrieve pending alerts for BITSO, book = [${book.string}], currentPrice = [$currentPrice], errors = [$errors]")
             Future.successful(List.empty)
         }
   }
