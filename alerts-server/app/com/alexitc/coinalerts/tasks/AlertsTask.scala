@@ -12,7 +12,8 @@ import org.slf4j.LoggerFactory
 import scala.concurrent.Future
 
 class AlertsTask @Inject() (
-    bitsoAlertCollector: BitsoAlertCollector,
+    alertCollector: AlertCollector,
+    bitsoTickerCollector: BitsoTickerCollector,
     userAsyncDAL: UserAsyncDAL,
     alertDataHandler: AlertFutureDataHandler,
     emailServiceTrait: EmailServiceTrait)(
@@ -21,8 +22,7 @@ class AlertsTask @Inject() (
   private val logger = LoggerFactory.getLogger(this.getClass)
 
   def execute(): Future[Unit] = {
-    bitsoAlertCollector
-        .collect()
+    alertCollector.collect(bitsoTickerCollector)
         .map(groupByUser)
         .flatMap { userAlerts =>
           userAlerts.foreach {
