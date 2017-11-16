@@ -14,6 +14,7 @@ import scala.concurrent.Future
 class AlertsTask @Inject() (
     alertCollector: AlertCollector,
     bitsoTickerCollector: BitsoTickerCollector,
+    bittrexAlertCollector: BittrexAlertCollector,
     userAsyncDAL: UserAsyncDAL,
     alertDataHandler: AlertFutureDataHandler,
     emailServiceTrait: EmailServiceTrait)(
@@ -21,8 +22,15 @@ class AlertsTask @Inject() (
 
   private val logger = LoggerFactory.getLogger(this.getClass)
 
+  private val tickerCollectorList = List(bitsoTickerCollector, bittrexAlertCollector)
+
   def execute(): Future[Unit] = {
-    alertCollector.collect(bitsoTickerCollector)
+    val futures = tickerCollectorList.map { tickerCollector =>
+      alertCollector.collect(tickerCollector)
+    }
+
+    Future.sequence(futures)
+        .map(_.flatten)
         .map(groupByUser)
         .flatMap { userAlerts =>
           userAlerts.foreach {
