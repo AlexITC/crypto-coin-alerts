@@ -17,7 +17,7 @@ CREATE TABLE alerts(
   CONSTRAINT alerts_alert_type_is_not_empty CHECK(alert_type <> ''),
   CONSTRAINT alerts_user_id_fk FOREIGN KEY (user_id) REFERENCES users(user_id),
   CONSTRAINT alerts_market_is_formatted_properly CHECK(market ~ '^[A-Z]{3,20}$'),
-  CONSTRAINT alerts_book_is_formatted_properly CHECK(book ~ '^[A-Z]{3,5}_[A-Z]{3,5}$'),
+  CONSTRAINT alerts_book_is_formatted_properly CHECK(book ~ '^[A-Z0-9]{3,8}_[A-Z0-9]{3,8}$'),
   CONSTRAINT alerts_price_greater_than_0 CHECK(price > 0)
 );
 
