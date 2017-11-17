@@ -4,7 +4,7 @@ import com.alexitc.coinalerts.data.anorm.{AlertPostgresDataHandler, UserPostgres
 import com.alexitc.coinalerts.data.{AlertBlockingDataHandler, UserBlockingDataHandler}
 import com.google.inject.AbstractModule
 
-class DataLayerModule extends AbstractModule {
+class DataHandlerModule extends AbstractModule {
 
   override def configure(): Unit = {
     bind(classOf[UserBlockingDataHandler]).to(classOf[UserPostgresDataHandler])
