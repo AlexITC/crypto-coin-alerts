@@ -10,17 +10,19 @@ import com.alexitc.coinalerts.models._
 import com.alexitc.coinalerts.services.validators.UserValidator
 import org.mindrot.jbcrypt.BCrypt
 import org.scalactic._
+import play.api.i18n.Lang
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class UserService @Inject() (
+    emailMessagesProvider: EmailMessagesProvider,
     emailService: EmailServiceTrait,
     userDataHandler: UserFutureDataHandler,
     userValidator: UserValidator,
     jwtService: JWTService)(
     implicit ec: ExecutionContext) {
 
-  def create(createUserModel: CreateUserModel): Future[User Or ApplicationErrors] = {
+  def create(createUserModel: CreateUserModel)(implicit lang: Lang): Future[User Or ApplicationErrors] = {
     val result = for {
       validatedModel <- userValidator
           .validateCreateUserModel(createUserModel)
@@ -32,7 +34,10 @@ class UserService @Inject() (
 
       token <- userDataHandler.createVerificationToken(user.id).toFutureOr
 
-      _ <- emailService.sendVerificationToken(user.email, token).toFutureOr
+      // send verification token by email
+      _ <- emailService.sendEmail(user.email,
+              emailMessagesProvider.verifyEmailSubject,
+              emailMessagesProvider.verifyEmailText(token)).toFutureOr
     } yield user
 
     result.toFuture

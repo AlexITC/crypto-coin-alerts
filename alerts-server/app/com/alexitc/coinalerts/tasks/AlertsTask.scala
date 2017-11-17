@@ -5,7 +5,7 @@ import javax.inject.Inject
 import com.alexitc.coinalerts.config.TaskExecutionContext
 import com.alexitc.coinalerts.data.async.{AlertFutureDataHandler, UserFutureDataHandler}
 import com.alexitc.coinalerts.models._
-import com.alexitc.coinalerts.services.EmailServiceTrait
+import com.alexitc.coinalerts.services.{EmailMessagesProvider, EmailServiceTrait, EmailSubject, EmailText}
 import org.scalactic.{Bad, Good}
 import org.slf4j.LoggerFactory
 
@@ -17,6 +17,7 @@ class AlertsTask @Inject() (
     bittrexAlertCollector: BittrexAlertCollector,
     userDataHandler: UserFutureDataHandler,
     alertDataHandler: AlertFutureDataHandler,
+    emailMessagesProvider: EmailMessagesProvider,
     emailServiceTrait: EmailServiceTrait)(
     implicit ec: TaskExecutionContext) {
 
@@ -46,7 +47,7 @@ class AlertsTask @Inject() (
   }
 
   private def triggerAlerts(userId: UserId, eventList: List[AlertEvent]): Future[Unit] = {
-    val text = groupByMarket(eventList)
+    val dummyText = groupByMarket(eventList)
         .map {
           case (market, marketEvents) =>
             val marketLines = marketEvents.map(createText).mkString("\n")
@@ -57,8 +58,9 @@ class AlertsTask @Inject() (
     userDataHandler.getVerifiedUserById(userId).flatMap {
       case Good(user) =>
         // TODO: i18n
-        val header = "Your Crypto Coin Alerts"
-        emailServiceTrait.sendEmail(user.email, header, text).flatMap {
+        val subject = new EmailSubject("Your Crypto Coin Alerts")
+        val text = new EmailText(dummyText)
+        emailServiceTrait.sendEmail(user.email, subject, text).flatMap {
           case Bad(errors) =>
             logger.error(s"Error while sending alerts by email to user = [${userId.string}], errors = [$errors]")
             Future.unit

@@ -13,7 +13,7 @@ class UsersController @Inject() (
     with PlayRequestTracing {
 
   def create() = unsecureAsync[CreateUserModel, User](Created) { context =>
-    userService.create(context.model)
+    userService.create(context.model)(context.lang)
   }
 
   def verifyEmail(token: UserVerificationToken) = unsecureAsync[User](Ok) {

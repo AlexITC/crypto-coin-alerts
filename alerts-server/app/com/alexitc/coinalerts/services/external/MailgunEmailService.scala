@@ -5,8 +5,8 @@ import javax.inject.Inject
 import com.alexitc.coinalerts.commons.FutureApplicationResult
 import com.alexitc.coinalerts.config.MailgunConfig
 import com.alexitc.coinalerts.errors.MailgunSendEmailError
-import com.alexitc.coinalerts.models.{UserEmail, UserVerificationToken}
-import com.alexitc.coinalerts.services.EmailServiceTrait
+import com.alexitc.coinalerts.models.UserEmail
+import com.alexitc.coinalerts.services.{EmailServiceTrait, EmailSubject, EmailText}
 import org.scalactic.{Bad, Good}
 import org.slf4j.LoggerFactory
 import play.api.libs.functional.syntax._
@@ -24,29 +24,24 @@ class MailgunEmailService @Inject() (
 
   private val logger = LoggerFactory.getLogger(this.getClass)
 
-  // TODO: Support i18n
-  override def sendVerificationToken(email: UserEmail, token: UserVerificationToken): FutureApplicationResult[Unit] = {
-    // TODO: Complete verification url
-    val text = s"Use the following link to verify your email, token = ${token.string}"
-    sendEmail(email, "Email verification pending", text)
-  }
+  override def sendEmail(
+      destination: UserEmail,
+      subject: EmailSubject,
+      text: EmailText): FutureApplicationResult[Unit] = {
 
-  override def sendEmail(destination: UserEmail, subject: String, content: String): FutureApplicationResult[Unit] = {
     val domainEncoded = UriEncoding.encodePathSegment(config.domain.string, "UTF-8")
     val url = s"https://api.mailgun.net/v3/$domainEncoded/messages"
-    logger.info(s"Sending email to $url")
     val result = ws
         .url(url)
         .withAuth("api", config.apiSecretKey.string, WSAuthScheme.BASIC)
         .addQueryStringParameters(
           "from" -> config.from.string,
           "to" -> destination.string,
-          "subject" -> subject,
-          "text" -> content
+          "subject" -> subject.string,
+          "text" -> text.string
         )
         .post("")
         .map { response =>
-          logger.info(s"Mailgun response, status = ${response.status}, body = ${response.body}")
           Option(response)
               .filter(_.status == 200)
               .map(_.json)
