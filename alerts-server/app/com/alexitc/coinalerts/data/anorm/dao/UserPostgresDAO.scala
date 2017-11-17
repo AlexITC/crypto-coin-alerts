@@ -1,21 +1,15 @@
-package com.alexitc.coinalerts.data.anorm
+package com.alexitc.coinalerts.data.anorm.dao
 
-import javax.inject.Inject
+import java.sql.Connection
 
-import anorm._
-import com.alexitc.coinalerts.commons.ApplicationResult
-import com.alexitc.coinalerts.data.UserDAL
-import com.alexitc.coinalerts.data.anorm.AnormParsers._
-import com.alexitc.coinalerts.errors._
+import anorm.SQL
+import com.alexitc.coinalerts.data.anorm.AnormParsers.{parsePassword, parseUser, parseUserVerificationToken}
 import com.alexitc.coinalerts.models._
-import org.scalactic.{One, Or}
-import play.api.db.Database
 
-class UserPostgresDAL @Inject() (protected val database: Database) extends UserDAL with AnormPostgresDAL {
+class UserPostgresDAO {
 
-  def create(email: UserEmail, password: UserHiddenPassword): ApplicationResult[User] = withConnection { implicit conn =>
+  def create(email: UserEmail, password: UserHiddenPassword)(implicit conn: Connection): Option[User] = {
     val userId = UserId.create
-
     val userMaybe = SQL(
       """
         |INSERT INTO users (user_id, email, password)
@@ -29,10 +23,10 @@ class UserPostgresDAL @Inject() (protected val database: Database) extends UserD
       "password" -> password.string
     ).as(parseUser.singleOpt)
 
-    Or.from(userMaybe, One(EmailAlreadyExists))
+    userMaybe
   }
 
-  def createVerificationToken(userId: UserId): ApplicationResult[UserVerificationToken] = withConnection { implicit conn =>
+  def createVerificationToken(userId: UserId)(implicit conn: Connection): Option[UserVerificationToken] = {
     val token = UserVerificationToken.create(userId)
 
     val tokenMaybe = SQL(
@@ -49,10 +43,10 @@ class UserPostgresDAL @Inject() (protected val database: Database) extends UserD
       "token" -> token.string
     ).as(parseUserVerificationToken.singleOpt)
 
-    Or.from(tokenMaybe, One(UserVerificationTokenAlreadyExists))
+    tokenMaybe
   }
 
-  def verifyEmail(token: UserVerificationToken): ApplicationResult[User] = withConnection { implicit conn =>
+  def verifyEmail(token: UserVerificationToken)(implicit conn: Connection): Option[User] = {
     val userMaybe = SQL(
       """
          |UPDATE users u
@@ -67,10 +61,10 @@ class UserPostgresDAL @Inject() (protected val database: Database) extends UserD
       "token" -> token.string
     ).as(parseUser.singleOpt)
 
-    Or.from(userMaybe, One(UserVerificationTokenNotFound))
+    userMaybe
   }
 
-  override def getVerifiedUserPassword(email: UserEmail): ApplicationResult[UserHiddenPassword] = withConnection { implicit conn =>
+  def getVerifiedUserPassword(email: UserEmail)(implicit conn: Connection): Option[UserHiddenPassword] = {
     val passwordMaybe = SQL(
       """
         |SELECT password
@@ -82,10 +76,10 @@ class UserPostgresDAL @Inject() (protected val database: Database) extends UserD
       "email" -> email.string
     ).as(parsePassword.singleOpt)
 
-    Or.from(passwordMaybe, One(VerifiedUserNotFound))
+    passwordMaybe
   }
 
-  override def getVerifiedUserByEmail(email: UserEmail): ApplicationResult[User] = withConnection { implicit conn =>
+  def getVerifiedUserByEmail(email: UserEmail)(implicit conn: Connection): Option[User] = {
     val userMaybe = SQL(
       """
         |SELECT user_id, email
@@ -97,10 +91,10 @@ class UserPostgresDAL @Inject() (protected val database: Database) extends UserD
       "email" -> email.string
     ).as(parseUser.singleOpt)
 
-    Or.from(userMaybe, One(VerifiedUserNotFound))
+    userMaybe
   }
 
-  override def getVerifiedUserById(userId: UserId): ApplicationResult[User] = withConnection { implicit conn =>
+  def getVerifiedUserById(userId: UserId)(implicit conn: Connection): Option[User] = {
     val userMaybe = SQL(
       """
         |SELECT user_id, email
@@ -112,6 +106,6 @@ class UserPostgresDAL @Inject() (protected val database: Database) extends UserD
       "user_id" -> userId.string
     ).as(parseUser.singleOpt)
 
-    Or.from(userMaybe, One(VerifiedUserNotFound))
+    userMaybe
   }
 }

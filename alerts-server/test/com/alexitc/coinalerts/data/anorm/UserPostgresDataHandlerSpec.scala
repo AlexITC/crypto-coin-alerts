@@ -1,19 +1,20 @@
 package com.alexitc.coinalerts.data.anorm
 
 import com.alexitc.coinalerts.common.{PostgresDALSpec, RandomDataGenerator}
+import com.alexitc.coinalerts.data.anorm.dao.UserPostgresDAO
 import com.alexitc.coinalerts.errors._
 import com.alexitc.coinalerts.models._
 import org.scalactic.{Bad, Good, One}
 
-class UserPostgresDALSpec extends PostgresDALSpec {
+class UserPostgresDataHandlerSpec extends PostgresDALSpec {
 
-  lazy val userPostgresDAL = new UserPostgresDAL(database)
+  lazy val userPostgresDataHandler = new UserPostgresDataHandler(database, new UserPostgresDAO)
 
   "Creating a user" should {
     "Allow to create a new user" in {
       val email = RandomDataGenerator.email
       val password = RandomDataGenerator.hiddenPassword
-      val result = userPostgresDAL.create(email, password)
+      val result = userPostgresDataHandler.create(email, password)
 
       result.isGood mustEqual true
       val user = result.get
@@ -23,9 +24,9 @@ class UserPostgresDALSpec extends PostgresDALSpec {
     "Fail to create a new user when the email already exists" in {
       val email = RandomDataGenerator.email
       val password = RandomDataGenerator.hiddenPassword
-      userPostgresDAL.create(email, password).isGood mustEqual true
+      userPostgresDataHandler.create(email, password).isGood mustEqual true
 
-      val result = userPostgresDAL.create(email.copy(string = email.string.toUpperCase), password)
+      val result = userPostgresDataHandler.create(email.copy(string = email.string.toUpperCase), password)
       result mustEqual Bad(EmailAlreadyExists).accumulating
     }
   }
@@ -33,24 +34,24 @@ class UserPostgresDALSpec extends PostgresDALSpec {
   "Creating a verification token" should {
     "Allow to create a verification token" in {
       val email = RandomDataGenerator.email
-      val userId = userPostgresDAL.create(email, RandomDataGenerator.hiddenPassword).get.id
+      val userId = userPostgresDataHandler.create(email, RandomDataGenerator.hiddenPassword).get.id
 
-      val tokenResult = userPostgresDAL.createVerificationToken(userId)
+      val tokenResult = userPostgresDataHandler.createVerificationToken(userId)
       tokenResult.isGood mustEqual true
     }
 
     "Fail to create a verification token for a user that already has one" in {
       val email = RandomDataGenerator.email
-      val userId = userPostgresDAL.create(email, RandomDataGenerator.hiddenPassword).get.id
+      val userId = userPostgresDataHandler.create(email, RandomDataGenerator.hiddenPassword).get.id
 
-      userPostgresDAL.createVerificationToken(userId).isGood mustEqual true
-      userPostgresDAL.createVerificationToken(userId) mustEqual Bad(UserVerificationTokenAlreadyExists).accumulating
+      userPostgresDataHandler.createVerificationToken(userId).isGood mustEqual true
+      userPostgresDataHandler.createVerificationToken(userId) mustEqual Bad(UserVerificationTokenAlreadyExists).accumulating
     }
 
     "Fail to create a verification token for an unknown user" in {
       val userId = new UserId("no-one")
 
-      val tokenResult = userPostgresDAL.createVerificationToken(userId)
+      val tokenResult = userPostgresDataHandler.createVerificationToken(userId)
       tokenResult.isBad mustEqual true
       tokenResult.swap.get.head.isInstanceOf[PostgresIntegrityViolationError] mustEqual true
     }
@@ -58,16 +59,16 @@ class UserPostgresDALSpec extends PostgresDALSpec {
 
   "Verifying a user token" should {
     "Allow to verify user email by token" in {
-      val userId = userPostgresDAL.create(RandomDataGenerator.email, RandomDataGenerator.hiddenPassword).get.id
-      val token = userPostgresDAL.createVerificationToken(userId).get
-      val result = userPostgresDAL.verifyEmail(token)
+      val userId = userPostgresDataHandler.create(RandomDataGenerator.email, RandomDataGenerator.hiddenPassword).get.id
+      val token = userPostgresDataHandler.createVerificationToken(userId).get
+      val result = userPostgresDataHandler.verifyEmail(token)
       result.isGood mustEqual true
       result.get.id mustEqual userId
     }
 
     "Fail to verify user email given an invalid token" in {
       val token = new UserVerificationToken("no-one")
-      val result = userPostgresDAL.verifyEmail(token)
+      val result = userPostgresDataHandler.verifyEmail(token)
       result mustEqual Bad(UserVerificationTokenNotFound).accumulating
     }
   }
@@ -78,20 +79,20 @@ class UserPostgresDALSpec extends PostgresDALSpec {
       val password = RandomDataGenerator.hiddenPassword
       val _ = createVerifiedUser(email, password)
 
-      val result = userPostgresDAL.getVerifiedUserPassword(email)
+      val result = userPostgresDataHandler.getVerifiedUserPassword(email)
       result mustEqual Good(password)
     }
 
     "Fail to retrieve the password for an unknown user" in {
-      val result = userPostgresDAL.getVerifiedUserPassword(RandomDataGenerator.email)
+      val result = userPostgresDataHandler.getVerifiedUserPassword(RandomDataGenerator.email)
       result mustEqual Bad(One(VerifiedUserNotFound))
     }
 
     "Fail to retrieve the password for an unverified user" in {
       val email = RandomDataGenerator.email
-      userPostgresDAL.create(email, RandomDataGenerator.hiddenPassword)
+      userPostgresDataHandler.create(email, RandomDataGenerator.hiddenPassword)
 
-      val result = userPostgresDAL.getVerifiedUserPassword(email)
+      val result = userPostgresDataHandler.getVerifiedUserPassword(email)
       result mustEqual Bad(One(VerifiedUserNotFound))
     }
   }
@@ -100,20 +101,20 @@ class UserPostgresDALSpec extends PostgresDALSpec {
     "Allow to retrieve the user" in {
       val email = RandomDataGenerator.email
       val user = createVerifiedUser(email)
-      val result = userPostgresDAL.getVerifiedUserByEmail(email)
+      val result = userPostgresDataHandler.getVerifiedUserByEmail(email)
       result mustEqual Good(User(user.id, email))
     }
 
     "Fail to retrieve an unknown user" in {
-      val result = userPostgresDAL.getVerifiedUserByEmail(RandomDataGenerator.email)
+      val result = userPostgresDataHandler.getVerifiedUserByEmail(RandomDataGenerator.email)
       result mustEqual Bad(One(VerifiedUserNotFound))
     }
 
     "Fail to retrieve an unverified user" in {
       val email = RandomDataGenerator.email
-      userPostgresDAL.create(email, RandomDataGenerator.hiddenPassword)
+      userPostgresDataHandler.create(email, RandomDataGenerator.hiddenPassword)
 
-      val result = userPostgresDAL.getVerifiedUserByEmail(email)
+      val result = userPostgresDataHandler.getVerifiedUserByEmail(email)
       result mustEqual Bad(One(VerifiedUserNotFound))
     }
   }
@@ -122,28 +123,28 @@ class UserPostgresDALSpec extends PostgresDALSpec {
     "Allow to retrieve the user" in {
       val email = RandomDataGenerator.email
       val user = createVerifiedUser(email)
-      val result = userPostgresDAL.getVerifiedUserById(user.id)
+      val result = userPostgresDataHandler.getVerifiedUserById(user.id)
       result mustEqual Good(user)
     }
 
     "Fail to retrieve an unknown user" in {
-      val result = userPostgresDAL.getVerifiedUserById(UserId.create)
+      val result = userPostgresDataHandler.getVerifiedUserById(UserId.create)
       result mustEqual Bad(One(VerifiedUserNotFound))
     }
 
     "Fail to retrieve an unverified user" in {
       val email = RandomDataGenerator.email
-      val user = userPostgresDAL.create(email, RandomDataGenerator.hiddenPassword).get
+      val user = userPostgresDataHandler.create(email, RandomDataGenerator.hiddenPassword).get
 
-      val result = userPostgresDAL.getVerifiedUserById(user.id)
+      val result = userPostgresDataHandler.getVerifiedUserById(user.id)
       result mustEqual Bad(One(VerifiedUserNotFound))
     }
   }
 
   def createVerifiedUser(email: UserEmail, password: UserHiddenPassword = RandomDataGenerator.hiddenPassword) = {
-    val user = userPostgresDAL.create(email, password).get
-    val token = userPostgresDAL.createVerificationToken(user.id).get
+    val user = userPostgresDataHandler.create(email, password).get
+    val token = userPostgresDataHandler.createVerificationToken(user.id).get
 
-    userPostgresDAL.verifyEmail(token).get
+    userPostgresDataHandler.verifyEmail(token).get
   }
 }

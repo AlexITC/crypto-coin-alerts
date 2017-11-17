@@ -1,7 +1,8 @@
 package com.alexitc.coinalerts.controllers
 
-import com.alexitc.coinalerts.common.{PlayAPISpec, RandomDataGenerator}
-import com.alexitc.coinalerts.data.{UserDAL, UserInMemoryDAL}
+import com.alexitc.coinalerts.common.PlayAPISpec.AuthorizationTokenExt
+import com.alexitc.coinalerts.common.{DataHelper, PlayAPISpec, RandomDataGenerator}
+import com.alexitc.coinalerts.data.{UserBlockingDataHandler, UserInMemoryDataHandler}
 import com.alexitc.coinalerts.models._
 import com.alexitc.coinalerts.services.JWTService
 import play.api.Application
@@ -10,11 +11,11 @@ import play.api.test.Helpers._
 
 class UsersControllerSpec extends PlayAPISpec {
 
+  implicit val userDataHandler = new UserInMemoryDataHandler {}
   val application: Application = guiceApplicationBuilder
-      .overrides(bind[UserDAL].to(userDAL))
+      .overrides(bind[UserBlockingDataHandler].to(userDataHandler))
       .build()
 
-  val userDAL = new UserInMemoryDAL {}
   val jwtService = application.injector.instanceOf[JWTService]
 
   "POST /users" should {
@@ -69,8 +70,8 @@ class UsersControllerSpec extends PlayAPISpec {
     }
     "Allow to verify a user based on the token" in {
       val email = RandomDataGenerator.email
-      val user = userDAL.create(email, RandomDataGenerator.hiddenPassword).get
-      val token = userDAL.createVerificationToken(user.id).get
+      val user = userDataHandler.create(email, RandomDataGenerator.hiddenPassword).get
+      val token = userDataHandler.createVerificationToken(user.id).get
       val response = POST(verifyEmailUrl(token))
 
       status(response) mustEqual OK
@@ -83,7 +84,7 @@ class UsersControllerSpec extends PlayAPISpec {
     "Allow to login with correct credentials" in {
       val email = RandomDataGenerator.email
       val password = RandomDataGenerator.password
-      val user = createVerifiedUser(email, password)
+      val user = DataHelper.createVerifiedUser(email, password)
 
       val json =
         s"""
@@ -97,7 +98,7 @@ class UsersControllerSpec extends PlayAPISpec {
     "Fail to login an unverified user" in {
       val email = RandomDataGenerator.email
       val password = RandomDataGenerator.password
-      val _ = userDAL.create(email, UserHiddenPassword.fromPassword(password)).get
+      val _ = userDataHandler.create(email, UserHiddenPassword.fromPassword(password)).get
 
       val json =
         s"""
@@ -124,9 +125,9 @@ class UsersControllerSpec extends PlayAPISpec {
     "Retrieve info from the logged in user" in {
       val email = RandomDataGenerator.email
       val password = RandomDataGenerator.password
-      val user = createVerifiedUser(email, password)
+      val user = DataHelper.createVerifiedUser(email, password)
       val token = jwtService.createToken(user.id)
-      val response = GET(url, authHeader(token))
+      val response = GET(url, token.toHeader)
       status(response) mustEqual OK
       (contentAsJson(response) \ "id").as[String] mustEqual user.id.string
     }
@@ -147,15 +148,5 @@ class UsersControllerSpec extends PlayAPISpec {
       val response = GET(url, AUTHORIZATION -> header)
       status(response) mustEqual UNAUTHORIZED
     }
-  }
-
-  def createVerifiedUser(email: UserEmail, password: UserPassword): User = {
-    val user = userDAL.create(email, UserHiddenPassword.fromPassword(password)).get
-    val token = userDAL.createVerificationToken(user.id).get
-    userDAL.verifyEmail(token).get
-  }
-
-  def authHeader(token: AuthorizationToken): (String, String) = {
-    AUTHORIZATION -> s"Bearer ${token.string}"
   }
 }

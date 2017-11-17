@@ -7,7 +7,7 @@ import org.scalactic.{Bad, Good, One, Or}
 
 import scala.collection.mutable
 
-trait UserInMemoryDAL extends UserDAL {
+trait UserInMemoryDataHandler extends UserBlockingDataHandler {
 
   val userList = mutable.ListBuffer[User]()
   val passwords = mutable.HashMap[UserEmail, UserHiddenPassword]()

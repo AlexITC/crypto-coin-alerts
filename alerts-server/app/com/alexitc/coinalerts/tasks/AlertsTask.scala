@@ -3,7 +3,7 @@ package com.alexitc.coinalerts.tasks
 import javax.inject.Inject
 
 import com.alexitc.coinalerts.config.TaskExecutionContext
-import com.alexitc.coinalerts.data.async.{AlertFutureDataHandler, UserAsyncDAL}
+import com.alexitc.coinalerts.data.async.{AlertFutureDataHandler, UserFutureDataHandler}
 import com.alexitc.coinalerts.models._
 import com.alexitc.coinalerts.services.EmailServiceTrait
 import org.scalactic.{Bad, Good}
@@ -15,7 +15,7 @@ class AlertsTask @Inject() (
     alertCollector: AlertCollector,
     bitsoTickerCollector: BitsoTickerCollector,
     bittrexAlertCollector: BittrexAlertCollector,
-    userAsyncDAL: UserAsyncDAL,
+    userDataHandler: UserFutureDataHandler,
     alertDataHandler: AlertFutureDataHandler,
     emailServiceTrait: EmailServiceTrait)(
     implicit ec: TaskExecutionContext) {
@@ -54,7 +54,7 @@ class AlertsTask @Inject() (
         }
         .mkString("\n\n\n")
 
-    userAsyncDAL.getVerifiedUserById(userId).flatMap {
+    userDataHandler.getVerifiedUserById(userId).flatMap {
       case Good(user) =>
         // TODO: i18n
         val header = "Your Crypto Coin Alerts"

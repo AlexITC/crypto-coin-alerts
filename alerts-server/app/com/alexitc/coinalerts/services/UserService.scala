@@ -4,7 +4,7 @@ import javax.inject.Inject
 
 import com.alexitc.coinalerts.commons.FutureOr.Implicits._
 import com.alexitc.coinalerts.commons.{ApplicationErrors, FutureApplicationResult}
-import com.alexitc.coinalerts.data.async.UserAsyncDAL
+import com.alexitc.coinalerts.data.async.UserFutureDataHandler
 import com.alexitc.coinalerts.errors.IncorrectPasswordError
 import com.alexitc.coinalerts.models._
 import com.alexitc.coinalerts.services.validators.UserValidator
@@ -15,7 +15,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class UserService @Inject() (
     emailService: EmailServiceTrait,
-    userAsyncDAL: UserAsyncDAL,
+    userDataHandler: UserFutureDataHandler,
     userValidator: UserValidator,
     jwtService: JWTService)(
     implicit ec: ExecutionContext) {
@@ -26,11 +26,11 @@ class UserService @Inject() (
           .validateCreateUserModel(createUserModel)
           .toFutureOr
 
-      user <- userAsyncDAL
+      user <- userDataHandler
           .create(validatedModel.email, UserHiddenPassword.fromPassword(validatedModel.password))
           .toFutureOr
 
-      token <- userAsyncDAL.createVerificationToken(user.id).toFutureOr
+      token <- userDataHandler.createVerificationToken(user.id).toFutureOr
 
       _ <- emailService.sendVerificationToken(user.email, token).toFutureOr
     } yield user
@@ -39,13 +39,13 @@ class UserService @Inject() (
   }
 
   def verifyEmail(token: UserVerificationToken): FutureApplicationResult[User] = {
-    userAsyncDAL.verifyEmail(token)
+    userDataHandler.verifyEmail(token)
   }
 
   def loginByEmail(email: UserEmail, password: UserPassword): FutureApplicationResult[AuthorizationToken] = {
     val result = for {
       _ <- enforcePasswordMatches(email, password).toFutureOr
-      user <- userAsyncDAL.getVerifiedUserByEmail(email).toFutureOr
+      user <- userDataHandler.getVerifiedUserByEmail(email).toFutureOr
     } yield jwtService.createToken(user.id)
 
     result.toFuture
@@ -53,7 +53,7 @@ class UserService @Inject() (
 
   def enforcePasswordMatches(email: UserEmail, password: UserPassword): FutureApplicationResult[Unit] = {
     val result = for {
-      existingPassword <- userAsyncDAL.getVerifiedUserPassword(email).toFutureOr
+      existingPassword <- userDataHandler.getVerifiedUserPassword(email).toFutureOr
       _ <- Good(BCrypt.checkpw(password.string, existingPassword.string)).filter { matches =>
         if (matches) Pass
         else Fail(One(IncorrectPasswordError))
@@ -64,6 +64,6 @@ class UserService @Inject() (
   }
 
   def userById(userId: UserId): FutureApplicationResult[User] = {
-    userAsyncDAL.getVerifiedUserById(userId)
+    userDataHandler.getVerifiedUserById(userId)
   }
 }

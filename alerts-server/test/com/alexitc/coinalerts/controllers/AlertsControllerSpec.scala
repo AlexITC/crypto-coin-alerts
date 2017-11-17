@@ -12,11 +12,11 @@ class AlertsControllerSpec extends PlayAPISpec {
 
   import PlayAPISpec.AuthorizationTokenExt
 
-  implicit val userDAL = new UserInMemoryDAL {}
+  implicit val userDataHandler = new UserInMemoryDataHandler {}
   val alertDataHandler = new AlertInMemoryDataHandler {}
 
   val application: Application = guiceApplicationBuilder
-      .overrides(bind[UserDAL].to(userDAL))
+      .overrides(bind[UserBlockingDataHandler].to(userDataHandler))
       .overrides(bind[AlertBlockingDataHandler].to(alertDataHandler))
       .build()
 
