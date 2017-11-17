@@ -37,6 +37,8 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
    * Execute an asynchronous action that receives the model [[R]]
    * and returns the model [[M]] on success.
    *
+   * The model [[R]] is wrapped in a [[RequestContext]].
+   *
    * Note: This method is intended to be used on public APIs.
    *
    * @param successStatus the http status for a successful response
@@ -47,12 +49,13 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
    */
   def unsecureAsync[R: Reads, M](
       successStatus: Status)(
-      block: R => FutureApplicationResult[M])(
+      block: RequestContext[R] => FutureApplicationResult[M])(
       implicit tjs: Writes[M]): Action[JsValue] = components.loggingAction.async(parse.json) { request =>
 
     val result = for {
       input <- validate[R](request.body).toFutureOr
-      output <- block(input).toFutureOr
+      context = RequestContext(input, messagesApi.preferred(request).lang)
+      output <- block(context).toFutureOr
     } yield output
 
     val lang = messagesApi.preferred(request).lang
@@ -249,3 +252,5 @@ class JsonControllerComponents @Inject() (
     val jwtService: JWTService,
     val errorRenderer: JsonErrorRenderer,
     val executionContext: ExecutionContext)
+
+case class RequestContext[T](model: T, lang: Lang)
