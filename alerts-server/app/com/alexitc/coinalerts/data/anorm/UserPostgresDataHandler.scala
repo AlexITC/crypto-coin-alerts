@@ -18,6 +18,11 @@ class UserPostgresDataHandler @Inject() (
 
   override def create(email: UserEmail, password: UserHiddenPassword): ApplicationResult[User] = withConnection { implicit conn =>
     val userMaybe = userDAO.create(email, password)
+    userMaybe.foreach { user =>
+      val preferences = UserPreferences.default(user.id)
+      val _ = userDAO.createUserPreferences(preferences)
+    }
+    
     Or.from(userMaybe, One(EmailAlreadyExists))
   }
 

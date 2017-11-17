@@ -108,4 +108,19 @@ class UserPostgresDAO {
 
     userMaybe
   }
+
+  def createUserPreferences(userPreferences: UserPreferences)(implicit conn: Connection): Int = {
+    SQL(
+      """
+        |INSERT INTO user_preferences
+        |  (user_id, lang)
+        |VALUES
+        |  ({user_id}, {lang})
+        |ON CONFLICT DO NOTHING
+      """.stripMargin
+    ).on(
+      "user_id" -> userPreferences.userId.string,
+      "lang" -> userPreferences.lang.code
+    ).executeUpdate()
+  }
 }

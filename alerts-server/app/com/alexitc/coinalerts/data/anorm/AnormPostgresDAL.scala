@@ -30,6 +30,15 @@ trait AnormPostgresDAL {
     }
   }
 
+  def withTransaction[A](block: Connection => ApplicationResult[A]): ApplicationResult[A] = {
+    try {
+      database.withTransaction(block)
+    } catch {
+      case e: PSQLException if isIntegrityConstraintViolationError(e) =>
+        Bad(PostgresIntegrityViolationError(e)).accumulating
+    }
+  }
+
   private def isIntegrityConstraintViolationError(e: PSQLException) = e.getSQLState startsWith "23"
 
 }
