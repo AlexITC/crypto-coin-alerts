@@ -4,7 +4,6 @@ import com.alexitc.coinalerts.models.AuthorizationToken
 import com.alexitc.coinalerts.modules.AlertTaskModule
 import com.alexitc.coinalerts.services.EmailServiceTrait
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import play.api.db.{DBApi, Database, Databases}
 import play.api.inject.bind
@@ -21,7 +20,7 @@ import scala.concurrent.Future
  * without depending on a database but custom implementations
  * for the data layer.
  */
-trait PlayAPISpec extends PlaySpec with ScalaFutures with MockitoSugar {
+trait PlayAPISpec extends PlaySpec with ScalaFutures {
 
   /**
    * A dummy [[Database]] and [[DBApi]] just to allow a play application
