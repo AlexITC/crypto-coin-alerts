@@ -33,7 +33,18 @@ CREATE TABLE user_verification_tokens(
 );
 CREATE INDEX user_verification_tokens_token_index ON user_verification_tokens USING BTREE (TOKEN);
 
+
+CREATE TABLE user_preferences(
+  user_id VARCHAR(40) NOT NULL,
+  lang VARCHAR(10) NOT NULL DEFAULT 'en',
+  -- constraint
+  CONSTRAINT user_preferences_user_id_pk PRIMARY KEY (user_id),
+  CONSTRAINT user_preferences_user_id_fk FOREIGN KEY (user_id) REFERENCES users (user_id),
+  CONSTRAINT user_preferences_lang_length CHECK (char_length(lang) >= 2)
+);
+
 # --- !Downs
 
+DROP TABLE user_preferences;
 DROP TABLE user_verification_tokens;
 DROP TABLE users;
