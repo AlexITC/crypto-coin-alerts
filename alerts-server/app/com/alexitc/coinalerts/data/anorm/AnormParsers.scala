@@ -4,12 +4,14 @@ import anorm.SqlParser._
 import anorm._
 import com.alexitc.coinalerts.models._
 import org.postgresql.util.PGobject
+import play.api.i18n.Lang
 
 object AnormParsers {
 
   val parseUserId = str("user_id").map(UserId.apply)
   val parseEmail = str("email")(citextToString).map(UserEmail.apply)
   val parseUserVerificationToken = str("token").map(UserVerificationToken.apply)
+  val parseLang = str("lang").map(Lang.apply)
 
   val parseAlertId = long("alert_id").map(AlertId.apply)
   val parseAlertType = str("alert_type").map(AlertType.fromDatabaseString)
@@ -21,6 +23,10 @@ object AnormParsers {
 
   val parseUser = (parseUserId ~ parseEmail).map {
     case userId ~ email => User.apply(userId, email)
+  }
+
+  val parseUserPreferences = (parseUserId ~ parseLang).map {
+    case userId ~ lang => UserPreferences(userId, lang)
   }
 
   val parseAlert = (parseAlertId ~ parseAlertType ~ parseUserId ~ parseMarket ~ parseBook ~ parseisGreaterThan ~ parsePrice).map {

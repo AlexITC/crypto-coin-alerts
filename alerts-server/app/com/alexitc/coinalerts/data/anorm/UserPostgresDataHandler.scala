@@ -7,7 +7,8 @@ import com.alexitc.coinalerts.data.UserBlockingDataHandler
 import com.alexitc.coinalerts.data.anorm.dao.UserPostgresDAO
 import com.alexitc.coinalerts.errors.{EmailAlreadyExists, UserVerificationTokenAlreadyExists, UserVerificationTokenNotFound, VerifiedUserNotFound}
 import com.alexitc.coinalerts.models._
-import org.scalactic.{One, Or}
+import org.scalactic.{Good, One, Or}
+import org.slf4j.LoggerFactory
 import play.api.db.Database
 
 class UserPostgresDataHandler @Inject() (
@@ -16,13 +17,15 @@ class UserPostgresDataHandler @Inject() (
     extends UserBlockingDataHandler
     with AnormPostgresDAL {
 
+  private val logger = LoggerFactory.getLogger(this.getClass)
+
   override def create(email: UserEmail, password: UserHiddenPassword): ApplicationResult[User] = withConnection { implicit conn =>
     val userMaybe = userDAO.create(email, password)
     userMaybe.foreach { user =>
       val preferences = UserPreferences.default(user.id)
       val _ = userDAO.createUserPreferences(preferences)
     }
-    
+
     Or.from(userMaybe, One(EmailAlreadyExists))
   }
 
@@ -49,5 +52,19 @@ class UserPostgresDataHandler @Inject() (
   override def getVerifiedUserById(userId: UserId): ApplicationResult[User] = withConnection { implicit conn =>
     val userMaybe = userDAO.getVerifiedUserById(userId)
     Or.from(userMaybe, One(VerifiedUserNotFound))
+  }
+
+  /**
+   * While every user should have preferences, we don't care if they are missing for some reason and return
+   * default preferences instead.
+   */
+  override def getUserPreferences(userId: UserId): ApplicationResult[UserPreferences] = withConnection { implicit conn =>
+    val userPreferences = userDAO.getUserPreferences(userId)
+        .getOrElse {
+          logger.warn(s"Preferences not found for user = [${userId.string}]")
+          UserPreferences.default(userId)
+        }
+
+    Good(userPreferences)
   }
 }

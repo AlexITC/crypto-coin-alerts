@@ -141,6 +141,19 @@ class UserPostgresDataHandlerSpec extends PostgresDALSpec {
     }
   }
 
+  "Retrieving user preferences" should {
+    "Succeed when the user exists" in {
+      val user = createVerifiedUser(RandomDataGenerator.email)
+      val preferences = userPostgresDataHandler.getUserPreferences(user.id)
+      preferences.isGood mustEqual true
+    }
+
+    "Succeed even if the user doesn't exists" in {
+      val preferences = userPostgresDataHandler.getUserPreferences(UserId.create)
+      preferences.isGood mustEqual true
+    }
+  }
+
   def createVerifiedUser(email: UserEmail, password: UserHiddenPassword = RandomDataGenerator.hiddenPassword) = {
     val user = userPostgresDataHandler.create(email, password).get
     val token = userPostgresDataHandler.createVerificationToken(user.id).get

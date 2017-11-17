@@ -3,7 +3,7 @@ package com.alexitc.coinalerts.data.anorm.dao
 import java.sql.Connection
 
 import anorm.SQL
-import com.alexitc.coinalerts.data.anorm.AnormParsers.{parsePassword, parseUser, parseUserVerificationToken}
+import com.alexitc.coinalerts.data.anorm.AnormParsers._
 import com.alexitc.coinalerts.models._
 
 class UserPostgresDAO {
@@ -122,5 +122,17 @@ class UserPostgresDAO {
       "user_id" -> userPreferences.userId.string,
       "lang" -> userPreferences.lang.code
     ).executeUpdate()
+  }
+
+  def getUserPreferences(userId: UserId)(implicit conn: Connection): Option[UserPreferences] = {
+    SQL(
+      """
+        |SELECT user_id, lang
+        |FROM user_preferences
+        |WHERE user_id = {user_id}
+      """.stripMargin
+    ).on(
+      "user_id" -> userId.string
+    ).as(parseUserPreferences.singleOpt)
   }
 }

@@ -37,4 +37,8 @@ class UserFutureDataHandler @Inject() (
   override def getVerifiedUserById(userId: UserId): FutureApplicationResult[User] = Future {
     userBlockingDataHandler.getVerifiedUserById(userId)
   }
+
+  override def getUserPreferences(userId: UserId): FutureApplicationResult[UserPreferences] = Future {
+    userBlockingDataHandler.getUserPreferences(userId)
+  }
 }

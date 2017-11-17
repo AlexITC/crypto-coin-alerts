@@ -60,4 +60,8 @@ trait UserInMemoryDataHandler extends UserBlockingDataHandler {
 
     Or.from(userMaybe, One(VerifiedUserNotFound))
   }
+
+  override def getUserPreferences(userId: UserId): ApplicationResult[UserPreferences] = {
+    Good(UserPreferences.default(userId))
+  }
 }
