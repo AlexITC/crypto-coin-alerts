@@ -25,3 +25,7 @@ error.basePrice.notRequired=The basePrice is required only for base price alerts
 
 email.verificationToken.subject=Verify your email
 email.verificationToken.text=Someone registered your email in our site, if that was you, please go to this page to verify your email: <a href="{0}">{0}</a>.
+
+email.yourAlerts.subject=Your Coin Alerts
+message.alert.priceIncreased={0} has increased to {1}
+message.alert.priceDecreased={0} has decreased to {1}

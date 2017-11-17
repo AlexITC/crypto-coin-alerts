@@ -16,6 +16,11 @@ class EmailMessagesProvider @Inject() (messagesApi: MessagesApi) {
     val string = messagesApi("email.verificationToken.text", token.string)
     new EmailText(string)
   }
+
+  def yourAlertsSubject(implicit lang: Lang): EmailSubject = {
+    val string = messagesApi("email.yourAlerts.subject")
+    new EmailSubject(string)
+  }
 }
 
 class EmailSubject(val string: String) extends AnyVal

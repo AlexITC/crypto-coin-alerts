@@ -2,14 +2,17 @@ package com.alexitc.coinalerts.tasks
 
 import javax.inject.Inject
 
+import com.alexitc.coinalerts.commons.FutureOr.Implicits.FutureOps
 import com.alexitc.coinalerts.config.TaskExecutionContext
 import com.alexitc.coinalerts.data.async.{AlertFutureDataHandler, UserFutureDataHandler}
 import com.alexitc.coinalerts.models._
-import com.alexitc.coinalerts.services.{EmailMessagesProvider, EmailServiceTrait, EmailSubject, EmailText}
+import com.alexitc.coinalerts.services.{EmailMessagesProvider, EmailServiceTrait, EmailText}
 import org.scalactic.{Bad, Good}
 import org.slf4j.LoggerFactory
+import play.api.i18n.{Lang, MessagesApi}
 
 import scala.concurrent.Future
+import scala.util.control.NonFatal
 
 class AlertsTask @Inject() (
     alertCollector: AlertCollector,
@@ -18,6 +21,7 @@ class AlertsTask @Inject() (
     userDataHandler: UserFutureDataHandler,
     alertDataHandler: AlertFutureDataHandler,
     emailMessagesProvider: EmailMessagesProvider,
+    messagesApi: MessagesApi,
     emailServiceTrait: EmailServiceTrait)(
     implicit ec: TaskExecutionContext) {
 
@@ -47,34 +51,26 @@ class AlertsTask @Inject() (
   }
 
   private def triggerAlerts(userId: UserId, eventList: List[AlertEvent]): Future[Unit] = {
-    val dummyText = groupByMarket(eventList)
-        .map {
-          case (market, marketEvents) =>
-            val marketLines = marketEvents.map(createText).mkString("\n")
-            s"${market.string}:\n$marketLines"
-        }
-        .mkString("\n\n\n")
+    val result = for {
+      user <- userDataHandler.getVerifiedUserById(userId).toFutureOr
+      preferences <- userDataHandler.getUserPreferences(userId).toFutureOr
+      _ <- {
+        val emailSubject = emailMessagesProvider.yourAlertsSubject(preferences.lang)
+        val emailText = createEmailText(eventList)(preferences.lang)
+        emailServiceTrait.sendEmail(user.email, emailSubject, emailText).toFutureOr
+      }
+    } yield eventList.foreach { event =>
+      alertDataHandler.markAsTriggered(event.alert.id)
+    }
 
-    userDataHandler.getVerifiedUserById(userId).flatMap {
-      case Good(user) =>
-        // TODO: i18n
-        val subject = new EmailSubject("Your Crypto Coin Alerts")
-        val text = new EmailText(dummyText)
-        emailServiceTrait.sendEmail(user.email, subject, text).flatMap {
-          case Bad(errors) =>
-            logger.error(s"Error while sending alerts by email to user = [${userId.string}], errors = [$errors]")
-            Future.unit
-
-          case _ =>
-            eventList.foreach { event =>
-              alertDataHandler.markAsTriggered(event.alert.id)
-            }
-
-            Future.unit
-        }
+    result.toFuture.map {
+      case Good(_) => ()
       case Bad(errors) =>
-        logger.error(s"Error while retrieving user = [${userId.string}] for sending alerts, errors = [$errors]")
-        Future.unit
+        logger.error(s"Error while trying to send alerts by email to user = [${userId.string}], errors = [$errors]")
+
+    }.recover {
+      case NonFatal(ex) =>
+        logger.error(s"Error while trying to send alerts by email to user = [${userId.string}]", ex)
     }
   }
 
@@ -82,11 +78,25 @@ class AlertsTask @Inject() (
     eventList.groupBy(_.alert.market)
   }
 
-  // TODO: i18n
-  private def createText(event: AlertEvent): String = {
+  private def createEmailText(eventList: List[AlertEvent])(implicit lang: Lang): EmailText = {
+    val text = groupByMarket(eventList)
+        .map {
+          case (market, marketEvents) =>
+            val marketLines = marketEvents.map(createText).mkString("\n")
+            s"${market.string}:\n$marketLines"
+        }
+        .mkString("\n\n\n")
+
+    new EmailText(text)
+  }
+
+  private def createText(event: AlertEvent)(implicit lang: Lang): String = {
     val alert = event.alert
-    val action = if (alert.isGreaterThan) "increased" else "decreased"
     // TODO: Compute % difference for base_price alerts
-    s"${alert.book.string} has $action to ${event.currentPrice}"
+    if (alert.isGreaterThan) {
+      messagesApi("message.alert.priceIncreased", alert.book.string, event.currentPrice)
+    } else {
+      messagesApi("message.alert.priceDecreased", alert.book.string, event.currentPrice)
+    }
   }
 }
