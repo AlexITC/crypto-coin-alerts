@@ -3,11 +3,13 @@ import { NgModule } from '@angular/core';
 import { AlertModule, BsDropdownModule, TooltipModule, ModalModule } from 'ngx-bootstrap';
 
 import { AppComponent } from './app.component';
+import { AppNavbarComponent } from './app-navbar/app-navbar.component';
 
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    AppNavbarComponent
   ],
   imports: [
     AlertModule.forRoot(),
