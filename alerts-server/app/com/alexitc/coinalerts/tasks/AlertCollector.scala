@@ -5,7 +5,7 @@ import javax.inject.Inject
 import com.alexitc.coinalerts.config.TaskExecutionContext
 import com.alexitc.coinalerts.data.async.AlertFutureDataHandler
 import com.alexitc.coinalerts.models.{Alert, AlertType, Market}
-import com.alexitc.coinalerts.tasks.models.Ticker
+import com.alexitc.coinalerts.tasks.models.{AlertEvent, Ticker}
 import org.scalactic.{Bad, Good}
 import org.slf4j.LoggerFactory
 
