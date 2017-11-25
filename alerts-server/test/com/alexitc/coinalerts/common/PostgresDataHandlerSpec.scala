@@ -23,7 +23,7 @@ import play.api.db.{Database, Databases}
  *   }
  * }}}
  */
-trait PostgresDALSpec
+trait PostgresDataHandlerSpec
     extends WordSpec
         with MustMatchers
         with DockerTestKit

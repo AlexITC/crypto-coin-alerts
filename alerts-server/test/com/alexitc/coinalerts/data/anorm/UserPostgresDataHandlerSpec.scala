@@ -1,12 +1,12 @@
 package com.alexitc.coinalerts.data.anorm
 
-import com.alexitc.coinalerts.common.{PostgresDALSpec, RandomDataGenerator}
+import com.alexitc.coinalerts.common.{PostgresDataHandlerSpec, RandomDataGenerator}
 import com.alexitc.coinalerts.data.anorm.dao.UserPostgresDAO
 import com.alexitc.coinalerts.errors._
 import com.alexitc.coinalerts.models._
 import org.scalactic.{Bad, Good, One}
 
-class UserPostgresDataHandlerSpec extends PostgresDALSpec {
+class UserPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
 
   lazy val userPostgresDataHandler = new UserPostgresDataHandler(database, new UserPostgresDAO)
 
