@@ -7,6 +7,7 @@ import com.alexitc.coinalerts.config.TaskExecutionContext
 import com.alexitc.coinalerts.data.async.{AlertFutureDataHandler, UserFutureDataHandler}
 import com.alexitc.coinalerts.models._
 import com.alexitc.coinalerts.services.{EmailMessagesProvider, EmailServiceTrait, EmailText}
+import com.alexitc.coinalerts.tasks.collectors.BittrexTickerCollector
 import org.scalactic.{Bad, Good}
 import org.slf4j.LoggerFactory
 import play.api.i18n.{Lang, MessagesApi}
