@@ -3,7 +3,8 @@ package com.alexitc.coinalerts.tasks.collectors
 import javax.inject.Inject
 
 import com.alexitc.coinalerts.models._
-import com.alexitc.coinalerts.tasks.{BitsoFutureClient, Ticker, TickerCollector}
+import com.alexitc.coinalerts.tasks.clients.BitsoFutureClient
+import com.alexitc.coinalerts.tasks.{Ticker, TickerCollector}
 
 import scala.concurrent.Future
 

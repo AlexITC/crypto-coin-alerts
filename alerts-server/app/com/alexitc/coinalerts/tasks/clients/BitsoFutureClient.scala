@@ -1,9 +1,10 @@
-package com.alexitc.coinalerts.tasks
+package com.alexitc.coinalerts.tasks.clients
 
 import javax.inject.Inject
 
 import com.alexitc.coinalerts.config.TaskExecutionContext
 import com.alexitc.coinalerts.models.Book
+import com.alexitc.coinalerts.tasks.Ticker
 import com.bitso.{Bitso, BitsoTicker}
 import org.slf4j.LoggerFactory
 
