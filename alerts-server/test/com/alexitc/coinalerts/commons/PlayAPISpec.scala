@@ -1,6 +1,6 @@
 package com.alexitc.coinalerts.commons
 
-import com.alexitc.coinalerts.models.AuthorizationToken
+import com.alexitc.coinalerts.core.AuthorizationToken
 import com.alexitc.coinalerts.modules.AlertTaskModule
 import com.alexitc.coinalerts.services.EmailServiceTrait
 import org.scalatest.concurrent.ScalaFutures

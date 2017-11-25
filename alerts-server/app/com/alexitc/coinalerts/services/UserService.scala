@@ -4,6 +4,7 @@ import javax.inject.Inject
 
 import com.alexitc.coinalerts.commons.FutureOr.Implicits._
 import com.alexitc.coinalerts.commons.{ApplicationErrors, FutureApplicationResult}
+import com.alexitc.coinalerts.core.AuthorizationToken
 import com.alexitc.coinalerts.data.async.UserFutureDataHandler
 import com.alexitc.coinalerts.errors.IncorrectPasswordError
 import com.alexitc.coinalerts.models._

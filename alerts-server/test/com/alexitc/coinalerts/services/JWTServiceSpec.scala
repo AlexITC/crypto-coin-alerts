@@ -1,8 +1,9 @@
 package com.alexitc.coinalerts.services
 
 import com.alexitc.coinalerts.config.{JWTConfig, JWTSecretKey}
+import com.alexitc.coinalerts.core.AuthorizationToken
 import com.alexitc.coinalerts.errors.InvalidJWTError
-import com.alexitc.coinalerts.models.{AuthorizationToken, UserId}
+import com.alexitc.coinalerts.models.UserId
 import org.scalactic.{Bad, One}
 import org.scalatest.{Matchers, WordSpec}
 

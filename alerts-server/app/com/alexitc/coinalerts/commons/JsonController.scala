@@ -5,7 +5,7 @@ import javax.inject.Inject
 import com.alexitc.coinalerts.commons.FutureOr.Implicits.{FutureOps, OptionOps, OrOps}
 import com.alexitc.coinalerts.errors._
 import com.alexitc.coinalerts.core.ErrorId
-import com.alexitc.coinalerts.models.{AuthorizationToken, MessageKey, UserId}
+import com.alexitc.coinalerts.models.{MessageKey, UserId}
 import org.scalactic.TypeCheckedTripleEquals._
 import org.scalactic.{Bad, Every, Good}
 import play.api.i18n.Lang
