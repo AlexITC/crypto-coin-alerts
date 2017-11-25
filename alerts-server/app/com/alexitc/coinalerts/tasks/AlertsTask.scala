@@ -17,7 +17,7 @@ import scala.util.control.NonFatal
 class AlertsTask @Inject() (
     alertCollector: AlertCollector,
     bitsoTickerCollector: BitsoTickerCollector,
-    bittrexAlertCollector: BittrexAlertCollector,
+    bittrexAlertCollector: BittrexTickerCollector,
     userDataHandler: UserFutureDataHandler,
     alertDataHandler: AlertFutureDataHandler,
     emailMessagesProvider: EmailMessagesProvider,

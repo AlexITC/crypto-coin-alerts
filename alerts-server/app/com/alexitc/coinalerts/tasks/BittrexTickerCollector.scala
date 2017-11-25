@@ -11,7 +11,7 @@ import play.api.libs.ws.WSClient
 
 import scala.concurrent.Future
 
-class BittrexAlertCollector @Inject() (bittrexClient: BittrexClient) extends TickerCollector {
+class BittrexTickerCollector @Inject() (bittrexClient: BittrexClient) extends TickerCollector {
 
   override val market: Market = Market.BITTREX
 
