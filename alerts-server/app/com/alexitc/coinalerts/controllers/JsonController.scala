@@ -11,7 +11,7 @@ import com.alexitc.coinalerts.services.JWTService
 import org.scalactic.TypeCheckedTripleEquals._
 import org.scalactic.{Bad, Every, Good}
 import play.api.i18n.Lang
-import play.api.libs.json.{JsValue, Json, Reads, Writes}
+import play.api.libs.json._
 import play.api.mvc._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -32,6 +32,13 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
   protected implicit val ec = components.executionContext
 
   protected def controllerComponents: MessagesControllerComponents = components.messagesControllerComponents
+
+  /**
+   * Ignores the body returning an empty json.
+   *
+   * Useful for using methods that doesn't require input.
+   */
+  private val EmptyJsonParser = parse.ignore(Json.toJson(JsObject.empty))
 
   /**
    * Execute an asynchronous action that receives the model [[R]]
@@ -68,8 +75,6 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
    *
    * Note: This method is intended to be used on public APIs.
    *
-   * TODO: Allow to process requests having empty body.
-   *
    * @param successStatus the http status for a successful response
    * @param block the block to execute
    * @param tjs the serializer for [[M]]
@@ -78,7 +83,7 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
   def unsecureAsync[M](
       successStatus: Status)(
       block: => FutureApplicationResult[M])(
-      implicit tjs: Writes[M]): Action[JsValue] = components.loggingAction.async(parse.json) { request =>
+      implicit tjs: Writes[M]): Action[JsValue] = components.loggingAction.async(EmptyJsonParser) { request =>
 
     val result = block
     val lang = messagesApi.preferred(request).lang
@@ -100,7 +105,8 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
    */
   def async[R: Reads, M](
       successStatus: Status)(
-      block: (UserId, R) => FutureApplicationResult[M])(implicit tjs: Writes[M]): Action[JsValue] = components.loggingAction.async(parse.json) { request =>
+      block: (UserId, R) => FutureApplicationResult[M])(
+      implicit tjs: Writes[M]): Action[JsValue] = components.loggingAction.async(parse.json) { request =>
 
     val result = for {
       authorizationHeader <- request.headers
@@ -122,8 +128,6 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
    *
    * Note: This method is intended to be on APIs requiring authentication.
    *
-   * TODO: Allow to process requests having empty body.
-   *
    * @param successStatus the http status for a successful response
    * @param block the block to execute
    * @param tjs the serializer for [[M]]
@@ -132,7 +136,7 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
   def async[M](
       successStatus: Status)(
       block: UserId => FutureApplicationResult[M])(
-      implicit tjs: Writes[M]): Action[JsValue] = components.loggingAction.async(parse.json) { request =>
+      implicit tjs: Writes[M]): Action[JsValue] = components.loggingAction.async(EmptyJsonParser) { request =>
 
     val result = for {
       authorizationHeader <- request.headers
