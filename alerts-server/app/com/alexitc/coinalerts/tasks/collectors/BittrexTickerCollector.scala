@@ -4,7 +4,6 @@ import javax.inject.Inject
 
 import com.alexitc.coinalerts.models._
 import com.alexitc.coinalerts.tasks.clients.BittrexClient
-import com.alexitc.coinalerts.tasks.TickerCollector
 import com.alexitc.coinalerts.tasks.models.Ticker
 
 import scala.concurrent.Future
