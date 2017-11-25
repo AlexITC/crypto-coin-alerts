@@ -70,6 +70,16 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
   }
 
   /**
+   * Sets a default successStatus.
+   */
+  def unsecureAsync[R: Reads, M](
+      block: RequestContext[R] => FutureApplicationResult[M])(
+      implicit tjs: Writes[M]): Action[JsValue] = {
+
+    unsecureAsync[R, M](Ok)(block)
+  }
+
+  /**
    * Execute an asynchronous action that doesn't need an input model
    * and returns the model [[M]] on success.
    *
@@ -88,6 +98,16 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
     val result = block
     val lang = messagesApi.preferred(request).lang
     toResult(successStatus, result)(lang, tjs)
+  }
+
+  /**
+   * Sets a default successStatus.
+   */
+  def unsecureAsync[M](
+      block: => FutureApplicationResult[M])(
+      implicit tjs: Writes[M]): Action[JsValue] = {
+
+    unsecureAsync[M](Ok)(block)
   }
 
   /**
@@ -123,6 +143,16 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
   }
 
   /**
+   * Sets a default successStatus.
+   */
+  def async[R: Reads, M](
+      block: (UserId, R) => FutureApplicationResult[M])(
+      implicit tjs: Writes[M]): Action[JsValue] = {
+
+    async[R, M](Ok)(block)
+  }
+
+  /**
    * Execute an asynchronous action that doesn't need an input model
    * and returns the model [[M]] on success.
    *
@@ -149,6 +179,16 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
 
     val lang = messagesApi.preferred(request).lang
     toResult(successStatus, result.toFuture)(lang, tjs)
+  }
+
+  /**
+   * Sets a default successStatus.
+   */
+  def async[M](
+      block: UserId => FutureApplicationResult[M])(
+      implicit tjs: Writes[M]): Action[JsValue] = {
+
+    async[M](Ok)(block)
   }
 
   private def validateJWT(authorizationHeader: String): ApplicationResult[UserId] = {
