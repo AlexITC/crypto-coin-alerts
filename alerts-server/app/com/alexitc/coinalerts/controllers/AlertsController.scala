@@ -13,7 +13,7 @@ class AlertsController @Inject() (
     extends JsonController(components)
     with PlayRequestTracing {
 
-  def create() = async[CreateAlertModel, Alert](Created) { (userId, model) =>
-    alertService.create(model, userId)
+  def create() = async[CreateAlertModel, Alert](Created) { context =>
+    alertService.create(context.model, context.userId)
   }
 }

@@ -53,12 +53,12 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
    */
   def unsecureAsync[R: Reads, M](
       successStatus: Status)(
-      block: RequestContext[R] => FutureApplicationResult[M])(
+      block: PublicRequestContextWithModel[R] => FutureApplicationResult[M])(
       implicit tjs: Writes[M]): Action[JsValue] = components.loggingAction.async(parse.json) { request =>
 
     val result = for {
       input <- validate[R](request.body).toFutureOr
-      context = RequestContext(input, messagesApi.preferred(request).lang)
+      context = PublicRequestContextWithModel(input, messagesApi.preferred(request).lang)
       output <- block(context).toFutureOr
     } yield output
 
@@ -70,7 +70,7 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
    * Sets a default successStatus.
    */
   def unsecureAsync[R: Reads, M](
-      block: RequestContext[R] => FutureApplicationResult[M])(
+      block: PublicRequestContextWithModel[R] => FutureApplicationResult[M])(
       implicit tjs: Writes[M]): Action[JsValue] = {
 
     unsecureAsync[R, M](Ok)(block)
@@ -89,10 +89,11 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
    */
   def unsecureAsync[M](
       successStatus: Status)(
-      block: => FutureApplicationResult[M])(
+      block: PublicRequestContext => FutureApplicationResult[M])(
       implicit tjs: Writes[M]): Action[JsValue] = components.loggingAction.async(EmptyJsonParser) { request =>
 
-    val result = block
+    val context = PublicRequestContext(messagesApi.preferred(request).lang)
+    val result = block(context)
     val lang = messagesApi.preferred(request).lang
     toResult(successStatus, result)(lang, tjs)
   }
@@ -101,7 +102,7 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
    * Sets a default successStatus.
    */
   def unsecureAsync[M](
-      block: => FutureApplicationResult[M])(
+      block: PublicRequestContext => FutureApplicationResult[M])(
       implicit tjs: Writes[M]): Action[JsValue] = {
 
     unsecureAsync[M](Ok)(block)
@@ -122,9 +123,10 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
    */
   def async[R: Reads, M](
       successStatus: Status)(
-      block: (UserId, R) => FutureApplicationResult[M])(
+      block: AuthenticatedRequestContextWithModel[R] => FutureApplicationResult[M])(
       implicit tjs: Writes[M]): Action[JsValue] = components.loggingAction.async(parse.json) { request =>
 
+    val lang = messagesApi.preferred(request).lang
     val result = for {
       authorizationHeader <- request.headers
           .get(AUTHORIZATION)
@@ -132,10 +134,10 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
 
       userId <- validateJWT(authorizationHeader).toFutureOr
       input <- validate[R](request.body).toFutureOr
-      output <- block(userId, input).toFutureOr
+      context = AuthenticatedRequestContextWithModel(userId, input, lang)
+      output <- block(context).toFutureOr
     } yield output
 
-    val lang = messagesApi.preferred(request).lang
     toResult(successStatus, result.toFuture)(lang, tjs)
   }
 
@@ -143,7 +145,7 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
    * Sets a default successStatus.
    */
   def async[R: Reads, M](
-      block: (UserId, R) => FutureApplicationResult[M])(
+      block: AuthenticatedRequestContextWithModel[R] => FutureApplicationResult[M])(
       implicit tjs: Writes[M]): Action[JsValue] = {
 
     async[R, M](Ok)(block)
@@ -162,19 +164,20 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
    */
   def async[M](
       successStatus: Status)(
-      block: UserId => FutureApplicationResult[M])(
+      block: AuthenticatedRequestContext => FutureApplicationResult[M])(
       implicit tjs: Writes[M]): Action[JsValue] = components.loggingAction.async(EmptyJsonParser) { request =>
 
+    val lang = messagesApi.preferred(request).lang
     val result = for {
       authorizationHeader <- request.headers
           .get(AUTHORIZATION)
           .toFutureOr(InvalidJWTError)
 
       userId <- validateJWT(authorizationHeader).toFutureOr
-      output <- block(userId).toFutureOr
+      context = AuthenticatedRequestContext(userId, lang)
+      output <- block(context).toFutureOr
     } yield output
 
-    val lang = messagesApi.preferred(request).lang
     toResult(successStatus, result.toFuture)(lang, tjs)
   }
 
@@ -182,7 +185,7 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
    * Sets a default successStatus.
    */
   def async[M](
-      block: UserId => FutureApplicationResult[M])(
+      block: AuthenticatedRequestContext => FutureApplicationResult[M])(
       implicit tjs: Writes[M]): Action[JsValue] = {
 
     async[M](Ok)(block)
