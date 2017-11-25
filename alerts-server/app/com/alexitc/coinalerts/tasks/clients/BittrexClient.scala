@@ -4,7 +4,7 @@ import javax.inject.Inject
 
 import com.alexitc.coinalerts.config.TaskExecutionContext
 import com.alexitc.coinalerts.models.Book
-import com.alexitc.coinalerts.tasks.Ticker
+import com.alexitc.coinalerts.tasks.models.Ticker
 import org.slf4j.LoggerFactory
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Reads}
