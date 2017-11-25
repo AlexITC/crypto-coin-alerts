@@ -8,7 +8,7 @@ import com.alexitc.coinalerts.data.async.{AlertFutureDataHandler, UserFutureData
 import com.alexitc.coinalerts.models._
 import com.alexitc.coinalerts.services.{EmailMessagesProvider, EmailServiceTrait, EmailText}
 import com.alexitc.coinalerts.tasks.collectors.{BitsoTickerCollector, BittrexTickerCollector}
-import com.alexitc.coinalerts.tasks.models.AlertEvent
+import com.alexitc.coinalerts.tasks.models.FixedPriceAlertEvent
 import org.scalactic.{Bad, Good}
 import org.slf4j.LoggerFactory
 import play.api.i18n.{Lang, MessagesApi}
@@ -48,11 +48,11 @@ class AlertsTask @Inject() (
         }
   }
 
-  private def groupByUser(eventList: List[AlertEvent]): Map[UserId, List[AlertEvent]] = {
+  private def groupByUser(eventList: List[FixedPriceAlertEvent]): Map[UserId, List[FixedPriceAlertEvent]] = {
     eventList.groupBy(_.alert.userId)
   }
 
-  private def triggerAlerts(userId: UserId, eventList: List[AlertEvent]): Future[Unit] = {
+  private def triggerAlerts(userId: UserId, eventList: List[FixedPriceAlertEvent]): Future[Unit] = {
     val result = for {
       user <- userDataHandler.getVerifiedUserById(userId).toFutureOr
       preferences <- userDataHandler.getUserPreferences(userId).toFutureOr
@@ -76,11 +76,11 @@ class AlertsTask @Inject() (
     }
   }
 
-  private def groupByMarket(eventList: List[AlertEvent]): Map[Market, List[AlertEvent]] = {
+  private def groupByMarket(eventList: List[FixedPriceAlertEvent]): Map[Market, List[FixedPriceAlertEvent]] = {
     eventList.groupBy(_.alert.market)
   }
 
-  private def createEmailText(eventList: List[AlertEvent])(implicit lang: Lang): EmailText = {
+  private def createEmailText(eventList: List[FixedPriceAlertEvent])(implicit lang: Lang): EmailText = {
     val text = groupByMarket(eventList)
         .map {
           case (market, marketEvents) =>
@@ -92,7 +92,7 @@ class AlertsTask @Inject() (
     new EmailText(text)
   }
 
-  private def createText(event: AlertEvent)(implicit lang: Lang): String = {
+  private def createText(event: FixedPriceAlertEvent)(implicit lang: Lang): String = {
     val alert = event.alert
     // TODO: Compute % difference for base_price alerts
     if (alert.isGreaterThan) {

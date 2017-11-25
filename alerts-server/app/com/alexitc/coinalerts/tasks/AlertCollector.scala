@@ -6,7 +6,7 @@ import com.alexitc.coinalerts.config.TaskExecutionContext
 import com.alexitc.coinalerts.data.async.AlertFutureDataHandler
 import com.alexitc.coinalerts.models.{Alert, AlertType, Market}
 import com.alexitc.coinalerts.tasks.collectors.TickerCollector
-import com.alexitc.coinalerts.tasks.models.{AlertEvent, Ticker}
+import com.alexitc.coinalerts.tasks.models.{FixedPriceAlertEvent, Ticker}
 import org.scalactic.{Bad, Good}
 import org.slf4j.LoggerFactory
 
@@ -18,7 +18,7 @@ class AlertCollector @Inject()(
 
   private val logger = LoggerFactory.getLogger(this.getClass)
 
-  def collect(tickerCollector: TickerCollector): Future[List[AlertEvent]] = {
+  def collect(tickerCollector: TickerCollector): Future[List[FixedPriceAlertEvent]] = {
     tickerCollector.getTickerList.flatMap { tickerList =>
       logger.info(s"Collecting ${tickerCollector.market} alerts")
 
@@ -38,7 +38,7 @@ class AlertCollector @Inject()(
     }
   }
 
-  private def getEventsForTicker(market: Market, ticker: Ticker): Future[List[AlertEvent]] = {
+  private def getEventsForTicker(market: Market, ticker: Ticker): Future[List[FixedPriceAlertEvent]] = {
     val book = ticker.book
     val currentPrice = ticker.currentPrice
 
@@ -59,26 +59,26 @@ class AlertCollector @Inject()(
   private def createEvent(
       alert: Alert,
       currentPrice: BigDecimal)(
-      implicit ec: ExecutionContext): Future[AlertEvent] = alert.alertType match {
+      implicit ec: ExecutionContext): Future[FixedPriceAlertEvent] = alert.alertType match {
 
     case AlertType.BASE_PRICE =>
       alertDataHandler.findBasePriceAlert(alert.id).map {
         case Good(basePriceAlert) =>
-          AlertEvent(alert, currentPrice, Option(basePriceAlert.basePrice))
+          FixedPriceAlertEvent(alert, currentPrice, Option(basePriceAlert.basePrice))
 
         case Bad(errors) =>
           logger.warn(s"Got errors retrieving BASE_PRICE alert = [${alert.id}], errors = [$errors]")
-          AlertEvent(alert, currentPrice, None)
+          FixedPriceAlertEvent(alert, currentPrice, None)
       }
 
     case AlertType.DEFAULT =>
-      val event = AlertEvent(alert, currentPrice, None)
+      val event = FixedPriceAlertEvent(alert, currentPrice, None)
       Future.successful(event)
 
     case AlertType.UNKNOWN(string) =>
       logger.warn(s"Got UNKNOWN alert type = [$string] for id [${alert.id}]")
 
-      val event = AlertEvent(alert, currentPrice, None)
+      val event = FixedPriceAlertEvent(alert, currentPrice, None)
       Future.successful(event)
   }
 }
