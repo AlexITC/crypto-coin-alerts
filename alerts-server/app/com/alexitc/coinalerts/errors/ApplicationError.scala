@@ -1,6 +1,6 @@
 package com.alexitc.coinalerts.errors
 
-import com.alexitc.coinalerts.models.MessageKey
+import com.alexitc.coinalerts.core.MessageKey
 import org.postgresql.util.PSQLException
 import play.api.libs.json.JsPath
 

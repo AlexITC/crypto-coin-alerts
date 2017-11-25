@@ -1,4 +1,4 @@
-package com.alexitc.coinalerts.models
+package com.alexitc.coinalerts.core
 
 /**
  * Represents a message key to use with play i18n.
