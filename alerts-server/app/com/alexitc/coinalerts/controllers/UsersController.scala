@@ -13,20 +13,20 @@ class UsersController @Inject() (
     extends JsonController(components)
     with PlayRequestTracing {
 
-  def create() = unsecureAsync[CreateUserModel, User](Created) { context =>
+  def create() = publicWithInput(Created) { context: PublicRequestContextWithModel[CreateUserModel] =>
     userService.create(context.model)(context.lang)
   }
 
-  def verifyEmail(token: UserVerificationToken) = unsecureAsync { _: PublicRequestContext =>
+  def verifyEmail(token: UserVerificationToken) = publicNoInput { _: PublicRequestContext =>
     userService.verifyEmail(token)
   }
 
-  def loginByEmail() = unsecureAsync { context: PublicRequestContextWithModel[LoginByEmailModel] =>
+  def loginByEmail() = publicWithInput { context: PublicRequestContextWithModel[LoginByEmailModel] =>
     val loginModel = context.model
     userService.loginByEmail(loginModel.email, loginModel.password)
   }
 
-  def whoAmI() = async { context: AuthenticatedRequestContext =>
+  def whoAmI() = authenticatedNoInput { context: AuthenticatedRequestContext =>
     userService.userById(context.userId)
   }
 }

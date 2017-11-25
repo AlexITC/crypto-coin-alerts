@@ -51,7 +51,7 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
    * @tparam R the input model type
    * @tparam M the output model type
    */
-  def unsecureAsync[R: Reads, M](
+  def publicWithInput[R: Reads, M](
       successStatus: Status)(
       block: PublicRequestContextWithModel[R] => FutureApplicationResult[M])(
       implicit tjs: Writes[M]): Action[JsValue] = components.loggingAction.async(parse.json) { request =>
@@ -69,11 +69,11 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
   /**
    * Sets a default successStatus.
    */
-  def unsecureAsync[R: Reads, M](
+  def publicWithInput[R: Reads, M](
       block: PublicRequestContextWithModel[R] => FutureApplicationResult[M])(
       implicit tjs: Writes[M]): Action[JsValue] = {
 
-    unsecureAsync[R, M](Ok)(block)
+    publicWithInput[R, M](Ok)(block)
   }
 
   /**
@@ -87,7 +87,7 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
    * @param tjs the serializer for [[M]]
    * @tparam M the output model type
    */
-  def unsecureAsync[M](
+  def publicNoInput[M](
       successStatus: Status)(
       block: PublicRequestContext => FutureApplicationResult[M])(
       implicit tjs: Writes[M]): Action[JsValue] = components.loggingAction.async(EmptyJsonParser) { request =>
@@ -101,11 +101,11 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
   /**
    * Sets a default successStatus.
    */
-  def unsecureAsync[M](
+  def publicNoInput[M](
       block: PublicRequestContext => FutureApplicationResult[M])(
       implicit tjs: Writes[M]): Action[JsValue] = {
 
-    unsecureAsync[M](Ok)(block)
+    publicNoInput[M](Ok)(block)
   }
 
   /**
@@ -121,7 +121,7 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
    * @tparam R the input model type
    * @tparam M the output model type
    */
-  def async[R: Reads, M](
+  def authenticatedWithInput[R: Reads, M](
       successStatus: Status)(
       block: AuthenticatedRequestContextWithModel[R] => FutureApplicationResult[M])(
       implicit tjs: Writes[M]): Action[JsValue] = components.loggingAction.async(parse.json) { request =>
@@ -144,11 +144,11 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
   /**
    * Sets a default successStatus.
    */
-  def async[R: Reads, M](
+  def authenticatedWithInput[R: Reads, M](
       block: AuthenticatedRequestContextWithModel[R] => FutureApplicationResult[M])(
       implicit tjs: Writes[M]): Action[JsValue] = {
 
-    async[R, M](Ok)(block)
+    authenticatedWithInput[R, M](Ok)(block)
   }
 
   /**
@@ -162,7 +162,7 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
    * @param tjs the serializer for [[M]]
    * @tparam M the output model type
    */
-  def async[M](
+  def authenticatedNoInput[M](
       successStatus: Status)(
       block: AuthenticatedRequestContext => FutureApplicationResult[M])(
       implicit tjs: Writes[M]): Action[JsValue] = components.loggingAction.async(EmptyJsonParser) { request =>
@@ -184,11 +184,11 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
   /**
    * Sets a default successStatus.
    */
-  def async[M](
+  def authenticatedNoInput[M](
       block: AuthenticatedRequestContext => FutureApplicationResult[M])(
       implicit tjs: Writes[M]): Action[JsValue] = {
 
-    async[M](Ok)(block)
+    authenticatedNoInput[M](Ok)(block)
   }
 
   private def validateJWT(authorizationHeader: String): ApplicationResult[UserId] = {
