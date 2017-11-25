@@ -1,20 +1,17 @@
-package com.alexitc.coinalerts.controllers
+package com.alexitc.coinalerts.commons
 
 import javax.inject.Inject
 
 import com.alexitc.coinalerts.commons.FutureOr.Implicits.{FutureOps, OptionOps, OrOps}
-import com.alexitc.coinalerts.commons._
-import com.alexitc.coinalerts.controllers.actions.LoggingAction
 import com.alexitc.coinalerts.errors._
 import com.alexitc.coinalerts.models.{AuthorizationToken, ErrorId, MessageKey, UserId}
-import com.alexitc.coinalerts.services.JWTService
 import org.scalactic.TypeCheckedTripleEquals._
 import org.scalactic.{Bad, Every, Good}
 import play.api.i18n.Lang
 import play.api.libs.json._
 import play.api.mvc._
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 import scala.util.control.NonFatal
 
 /**
@@ -289,12 +286,3 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
     Json.obj("errors" -> List(jsonError))
   }
 }
-
-class JsonControllerComponents @Inject() (
-    val messagesControllerComponents: MessagesControllerComponents,
-    val loggingAction: LoggingAction,
-    val jwtService: JWTService,
-    val errorRenderer: JsonErrorRenderer,
-    val executionContext: ExecutionContext)
-
-case class RequestContext[T](model: T, lang: Lang)
