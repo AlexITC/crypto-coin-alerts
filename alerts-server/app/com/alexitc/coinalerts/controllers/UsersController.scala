@@ -16,16 +16,16 @@ class UsersController @Inject() (
     userService.create(context.model)(context.lang)
   }
 
-  def verifyEmail(token: UserVerificationToken) = unsecureAsync[User](Ok) {
+  def verifyEmail(token: UserVerificationToken) = unsecureAsync {
     userService.verifyEmail(token)
   }
 
-  def loginByEmail() = unsecureAsync[LoginByEmailModel, AuthorizationToken](Ok) { context =>
+  def loginByEmail() = unsecureAsync { context: RequestContext[LoginByEmailModel] =>
     val loginModel = context.model
     userService.loginByEmail(loginModel.email, loginModel.password)
   }
 
-  def whoAmI() = async[User](Ok) { userId =>
+  def whoAmI() = async { userId =>
     userService.userById(userId)
   }
 }
