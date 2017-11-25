@@ -1,4 +1,4 @@
-package com.alexitc.coinalerts.models
+package com.alexitc.coinalerts.core
 
 import java.util.UUID
 

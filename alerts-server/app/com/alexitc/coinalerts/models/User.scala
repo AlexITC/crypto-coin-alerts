@@ -1,5 +1,6 @@
 package com.alexitc.coinalerts.models
 
+import com.alexitc.coinalerts.core.RandomIdGenerator
 import org.mindrot.jbcrypt.BCrypt
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, JsString, Reads, Writes}
