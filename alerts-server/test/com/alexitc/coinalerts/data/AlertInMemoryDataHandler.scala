@@ -1,6 +1,6 @@
 package com.alexitc.coinalerts.data
 
-import com.alexitc.coinalerts.common.RandomDataGenerator
+import com.alexitc.coinalerts.commons.RandomDataGenerator
 import com.alexitc.coinalerts.commons.ApplicationResult
 import com.alexitc.coinalerts.errors.AlertNotFound
 import com.alexitc.coinalerts.models._

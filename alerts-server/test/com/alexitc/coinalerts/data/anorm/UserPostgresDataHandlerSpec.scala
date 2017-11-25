@@ -1,6 +1,6 @@
 package com.alexitc.coinalerts.data.anorm
 
-import com.alexitc.coinalerts.common.{PostgresDataHandlerSpec, RandomDataGenerator}
+import com.alexitc.coinalerts.commons.{PostgresDataHandlerSpec, RandomDataGenerator}
 import com.alexitc.coinalerts.data.anorm.dao.UserPostgresDAO
 import com.alexitc.coinalerts.errors._
 import com.alexitc.coinalerts.models._

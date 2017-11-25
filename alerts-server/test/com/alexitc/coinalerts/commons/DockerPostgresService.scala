@@ -1,4 +1,4 @@
-package com.alexitc.coinalerts.common
+package com.alexitc.coinalerts.commons
 
 import java.sql.DriverManager
 

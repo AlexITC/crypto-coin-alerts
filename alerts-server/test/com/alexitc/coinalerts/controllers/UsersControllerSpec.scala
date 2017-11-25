@@ -1,7 +1,7 @@
 package com.alexitc.coinalerts.controllers
 
-import com.alexitc.coinalerts.common.PlayAPISpec.AuthorizationTokenExt
-import com.alexitc.coinalerts.common.{DataHelper, PlayAPISpec, RandomDataGenerator}
+import com.alexitc.coinalerts.commons.PlayAPISpec.AuthorizationTokenExt
+import com.alexitc.coinalerts.commons.{DataHelper, PlayAPISpec, RandomDataGenerator}
 import com.alexitc.coinalerts.data.{UserBlockingDataHandler, UserInMemoryDataHandler}
 import com.alexitc.coinalerts.models._
 import com.alexitc.coinalerts.services.JWTService

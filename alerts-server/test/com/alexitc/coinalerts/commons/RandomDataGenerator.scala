@@ -1,4 +1,4 @@
-package com.alexitc.coinalerts.common
+package com.alexitc.coinalerts.commons
 
 import com.alexitc.coinalerts.models._
 

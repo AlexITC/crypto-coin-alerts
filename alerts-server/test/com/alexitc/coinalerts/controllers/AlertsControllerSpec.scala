@@ -1,7 +1,7 @@
 package com.alexitc.coinalerts.controllers
 
-import com.alexitc.coinalerts.common.DataHelper._
-import com.alexitc.coinalerts.common.PlayAPISpec
+import com.alexitc.coinalerts.commons.DataHelper._
+import com.alexitc.coinalerts.commons.PlayAPISpec
 import com.alexitc.coinalerts.data._
 import com.alexitc.coinalerts.services.JWTService
 import play.api.Application
