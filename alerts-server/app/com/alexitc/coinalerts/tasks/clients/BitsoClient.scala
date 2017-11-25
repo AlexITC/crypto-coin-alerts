@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory
 
 import scala.concurrent.Future
 
-class BitsoFutureClient @Inject() (bitso: Bitso)(implicit ec: TaskExecutionContext) {
+class BitsoClient @Inject() (bitso: Bitso)(implicit ec: TaskExecutionContext) {
 
   private val logger = LoggerFactory.getLogger(this.getClass)
 
