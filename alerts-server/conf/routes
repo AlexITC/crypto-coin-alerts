@@ -9,3 +9,4 @@ POST   /users/login                     com.alexitc.coinalerts.controllers.Users
 GET    /users/me                        com.alexitc.coinalerts.controllers.UsersController.whoAmI()
 
 POST   /alerts                          com.alexitc.coinalerts.controllers.AlertsController.create()
+GET    /alerts                          com.alexitc.coinalerts.controllers.AlertsController.getAlerts(query: com.alexitc.coinalerts.core.PaginatedQuery)
