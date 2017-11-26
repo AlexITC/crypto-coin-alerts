@@ -7,6 +7,7 @@ import com.alexitc.coinalerts.modules.AlertTaskModule
 import com.alexitc.coinalerts.services.EmailServiceTrait
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.PlaySpec
+import org.slf4j.LoggerFactory
 import play.api.db.{DBApi, Database, Databases}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -23,6 +24,8 @@ import scala.concurrent.Future
  * for the data layer.
  */
 trait PlayAPISpec extends PlaySpec with ScalaFutures {
+
+  private val logger = LoggerFactory.getLogger(this.getClass)
 
   /**
    * A dummy [[Database]] and [[DBApi]] just to allow a play application
@@ -59,6 +62,10 @@ trait PlayAPISpec extends PlaySpec with ScalaFutures {
   private val JsonHeader = CONTENT_TYPE -> "application/json"
   private val EmptyJson = "{}"
 
+  private def logRequestResponse[T](request: FakeRequest[T], response: Future[Result]) = {
+    logger.info(s"REQUEST: $request, RESPONSE: ${contentAsString(response)}")
+  }
+
   /** Syntactic sugar for calling APIs **/
   def POST(url: String, jsonBody: Option[String], extraHeaders: (String, String)*): Future[Result] = {
     val headers = JsonHeader :: extraHeaders.toList
@@ -67,7 +74,9 @@ trait PlayAPISpec extends PlaySpec with ScalaFutures {
         .withHeaders(headers: _*)
         .withBody(json)
 
-    route(application, request).get
+    val response = route(application, request).get
+    logRequestResponse(request, response)
+    response
   }
 
   def POST(url: String, extraHeaders: (String, String)*): Future[Result] = {
@@ -79,7 +88,9 @@ trait PlayAPISpec extends PlaySpec with ScalaFutures {
     val request = FakeRequest("GET", url)
         .withHeaders(headers: _*)
 
-    route(application, request).get
+    val response = route(application, request).get
+    logRequestResponse(request, response)
+    response
   }
 }
 
