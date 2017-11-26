@@ -28,7 +28,7 @@ class AlertsControllerSpec extends PlayAPISpec {
     val url = "/alerts"
 
     "Create an alert" in {
-      val json =
+      val body =
         """
           | {
           |   "market": "BITTREX",
@@ -40,12 +40,20 @@ class AlertsControllerSpec extends PlayAPISpec {
 
       val user = createVerifiedUser()
       val token = jwtService.createToken(user.id)
-      val response = POST(url, Some(json), token.toHeader)
+      val response = POST(url, Some(body), token.toHeader)
       status(response) mustEqual CREATED
+
+      val json = contentAsJson(response)
+      (json \ "id").asOpt[Long].isDefined mustEqual true
+      (json \ "market").as[String] mustEqual "BITTREX"
+      (json \ "book").as[String] mustEqual "BTC_ETH"
+      (json \ "isGreaterThan").as[Boolean] mustEqual false
+      (json \ "price").asOpt[BigDecimal].isDefined mustEqual true
+      (json \ "basePrice").asOpt[BigDecimal].isDefined mustEqual false
     }
 
     "Create an alert with basePrice" in {
-      val json =
+      val body =
         """
           | {
           |   "market": "BITSO",
@@ -58,12 +66,20 @@ class AlertsControllerSpec extends PlayAPISpec {
 
       val user = createVerifiedUser()
       val token = jwtService.createToken(user.id)
-      val response = POST(url, Some(json), token.toHeader)
+      val response = POST(url, Some(body), token.toHeader)
       status(response) mustEqual CREATED
+
+      val json = contentAsJson(response)
+      (json \ "id").asOpt[Long].isDefined mustEqual true
+      (json \ "market").as[String] mustEqual "BITSO"
+      (json \ "book").as[String] mustEqual "BTC_ETH"
+      (json \ "isGreaterThan").as[Boolean] mustEqual true
+      (json \ "price").asOpt[BigDecimal].isDefined mustEqual true
+      (json \ "basePrice").asOpt[BigDecimal].isDefined mustEqual true
     }
 
     "Fail to create an alert with an invalid market" in {
-      val json =
+      val body =
         """
           | {
           |   "market": "UNKNOWN",
@@ -75,12 +91,21 @@ class AlertsControllerSpec extends PlayAPISpec {
 
       val user = createVerifiedUser()
       val token = jwtService.createToken(user.id)
-      val response = POST(url, Some(json), token.toHeader)
+      val response = POST(url, Some(body), token.toHeader)
       status(response) mustEqual BAD_REQUEST
+
+      val json = contentAsJson(response)
+      val errorList = (json \ "errors").as[List[JsValue]]
+      errorList.nonEmpty mustEqual true
+
+      val error = errorList.head
+      (error \ "type").as[String] mustEqual "field-validation-error"
+      (error \ "field").as[String] mustEqual "market"
+      (error \ "message").as[String].nonEmpty mustEqual true
     }
 
     "Fail to create an alert with an incorrect book format" in {
-      val json =
+      val body =
         """
           | {
           |   "market": "BITTREX",
@@ -92,12 +117,21 @@ class AlertsControllerSpec extends PlayAPISpec {
 
       val user = createVerifiedUser()
       val token = jwtService.createToken(user.id)
-      val response = POST(url, Some(json), token.toHeader)
+      val response = POST(url, Some(body), token.toHeader)
       status(response) mustEqual BAD_REQUEST
+
+      val json = contentAsJson(response)
+      val errorList = (json \ "errors").as[List[JsValue]]
+      errorList.nonEmpty mustEqual true
+
+      val error = errorList.head
+      (error \ "type").as[String] mustEqual "field-validation-error"
+      (error \ "field").as[String] mustEqual "book"
+      (error \ "message").as[String].nonEmpty mustEqual true
     }
 
     "Fail to create an alert having price less than 0" in {
-      val json =
+      val body =
         """
           | {
           |   "market": "BITTREX",
@@ -109,8 +143,17 @@ class AlertsControllerSpec extends PlayAPISpec {
 
       val user = createVerifiedUser()
       val token = jwtService.createToken(user.id)
-      val response = POST(url, Some(json), token.toHeader)
+      val response = POST(url, Some(body), token.toHeader)
       status(response) mustEqual BAD_REQUEST
+
+      val json = contentAsJson(response)
+      val errorList = (json \ "errors").as[List[JsValue]]
+      errorList.nonEmpty mustEqual true
+
+      val error = errorList.head
+      (error \ "type").as[String] mustEqual "field-validation-error"
+      (error \ "field").as[String] mustEqual "price"
+      (error \ "message").as[String].nonEmpty mustEqual true
     }
   }
 
