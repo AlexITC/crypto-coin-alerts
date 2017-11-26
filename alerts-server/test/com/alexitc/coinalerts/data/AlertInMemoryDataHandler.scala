@@ -4,7 +4,7 @@ import com.alexitc.coinalerts.commons.{ApplicationResult, RandomDataGenerator}
 import com.alexitc.coinalerts.core.{Count, PaginatedQuery, PaginatedResult}
 import com.alexitc.coinalerts.errors.AlertNotFound
 import com.alexitc.coinalerts.models._
-import org.scalactic.{Bad, Good, One, Or}
+import org.scalactic.{Bad, Good}
 
 import scala.collection.mutable
 
@@ -52,14 +52,6 @@ trait AlertInMemoryDataHandler extends AlertBlockingDataHandler {
         }
 
     Good(list)
-  }
-
-  override def findBasePriceAlert(alertId: AlertId): ApplicationResult[BasePriceAlert] = {
-    val alertMaybe = basePriceAlert
-        .get(alertId)
-        .map { basePrice => BasePriceAlert(alertId, basePrice) }
-
-    Or.from(alertMaybe, One(AlertNotFound))
   }
 
   override def getAlerts(userId: UserId, query: PaginatedQuery): ApplicationResult[PaginatedResult[Alert]] = {

@@ -61,23 +61,13 @@ class AlertCollector @Inject()(
       currentPrice: BigDecimal)(
       implicit ec: ExecutionContext): Future[FixedPriceAlertEvent] = alert.alertType match {
 
-    case AlertType.BASE_PRICE =>
-      alertDataHandler.findBasePriceAlert(alert.id).map {
-        case Good(basePriceAlert) =>
-          FixedPriceAlertEvent(alert, currentPrice, Option(basePriceAlert.basePrice))
-
-        case Bad(errors) =>
-          logger.warn(s"Got errors retrieving BASE_PRICE alert = [${alert.id}], errors = [$errors]")
-          FixedPriceAlertEvent(alert, currentPrice, None)
-      }
-
-    case AlertType.DEFAULT =>
-      val event = FixedPriceAlertEvent(alert, currentPrice, None)
-      Future.successful(event)
-
     case AlertType.UNKNOWN(string) =>
       logger.warn(s"Got UNKNOWN alert type = [$string] for id [${alert.id}]")
 
+      val event = FixedPriceAlertEvent(alert, currentPrice, None)
+      Future.successful(event)
+
+    case _ =>
       val event = FixedPriceAlertEvent(alert, currentPrice, None)
       Future.successful(event)
   }

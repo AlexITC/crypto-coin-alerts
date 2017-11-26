@@ -135,22 +135,6 @@ class AlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
     }
   }
 
-  "retrieving a base price alert" should {
-    "succeed when the alert exists" in {
-      val user = createUnverifiedUser()
-      val alert = alertPostgresDataHandler.create(createBasePriceAlertModel, user.id).get
-      val basePriceAlert = alertPostgresDataHandler.findBasePriceAlert(alert.id).get
-      basePriceAlert.basePrice mustEqual alert.basePrice.get
-    }
-
-    "fail when the alert doesn't exists" in {
-      val user = createUnverifiedUser()
-      val alert = alertPostgresDataHandler.create(createDefaultAlertModel, user.id).get
-      val result = alertPostgresDataHandler.findBasePriceAlert(alert.id)
-      result mustEqual Bad(AlertNotFound).accumulating
-    }
-  }
-
   "retrieving user alerts" should {
     "return empty result for non-existent user" in {
       val userId = UserId.create

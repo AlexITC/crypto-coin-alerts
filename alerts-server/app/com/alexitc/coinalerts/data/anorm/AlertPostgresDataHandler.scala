@@ -6,10 +6,9 @@ import com.alexitc.coinalerts.commons.ApplicationResult
 import com.alexitc.coinalerts.core.{PaginatedQuery, PaginatedResult}
 import com.alexitc.coinalerts.data.AlertBlockingDataHandler
 import com.alexitc.coinalerts.data.anorm.dao.AlertPostgresDAO
-import com.alexitc.coinalerts.errors.{AlertNotFound, BasePriceRequiredError, InvalidPriceError, UnknownAlertTypeError}
-import com.alexitc.coinalerts.models.AlertType.{BASE_PRICE, DEFAULT}
+import com.alexitc.coinalerts.errors.{AlertNotFound, InvalidPriceError, UnknownAlertTypeError}
 import com.alexitc.coinalerts.models._
-import org.scalactic.{Bad, Good, One, Or}
+import org.scalactic.{Bad, Good}
 import play.api.db.Database
 
 class AlertPostgresDataHandler @Inject() (
@@ -20,21 +19,12 @@ class AlertPostgresDataHandler @Inject() (
 
   override def create(createAlertModel: CreateAlertModel, userId: UserId): ApplicationResult[Alert] = withConnection { implicit conn =>
     createAlertModel.alertType match {
-      case DEFAULT =>
-        val result = alertPostgresDAO.create(createAlertModel, userId)
-        Good(result)
-
-      case BASE_PRICE =>
-        createAlertModel.basePrice.map { basePrice =>
-          val createdAlert = alertPostgresDAO.create(createAlertModel, userId)
-          val createdBasePriceAlert = alertPostgresDAO.createBasePrice(createdAlert.id, basePrice)
-
-          val result = createdAlert.copy(basePrice = Some(createdBasePriceAlert.basePrice))
-          Good(result)
-        }.getOrElse(Bad(BasePriceRequiredError).accumulating)
+      case AlertType.UNKNOWN(_) =>
+        Bad(UnknownAlertTypeError).accumulating
 
       case _ =>
-        Bad(UnknownAlertTypeError).accumulating
+        val result = alertPostgresDAO.create(createAlertModel, userId)
+        Good(result)
     }
   }
 
@@ -54,11 +44,6 @@ class AlertPostgresDataHandler @Inject() (
       val alertList = alertPostgresDAO.findPendingAlertsForPrice(market, book, currentPrice)
       Good(alertList)
     }
-  }
-
-  override def findBasePriceAlert(alertId: AlertId): ApplicationResult[BasePriceAlert] = withConnection { implicit conn =>
-    val basePriceAlertMaybe = alertPostgresDAO.findBasePriceAlert(alertId)
-    Or.from(basePriceAlertMaybe, One(AlertNotFound))
   }
 
   override def getAlerts(userId: UserId, query: PaginatedQuery): ApplicationResult[PaginatedResult[Alert]] = withConnection { implicit conn =>

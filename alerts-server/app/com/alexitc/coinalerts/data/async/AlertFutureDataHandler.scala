@@ -31,10 +31,6 @@ class AlertFutureDataHandler @Inject() (
     blockingDataHandler.findPendingAlertsForPrice(market, book, currentPrice)
   }
 
-  override def findBasePriceAlert(alertId: AlertId): FutureApplicationResult[BasePriceAlert] = Future {
-    blockingDataHandler.findBasePriceAlert(alertId)
-  }
-
   override def getAlerts(userId: UserId, query: PaginatedQuery): FutureApplicationResult[PaginatedResult[Alert]] = Future {
     blockingDataHandler.getAlerts(userId, query)
   }

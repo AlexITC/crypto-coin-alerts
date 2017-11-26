@@ -29,13 +29,9 @@ object AnormParsers {
     case userId ~ lang => UserPreferences(userId, lang)
   }
 
-  val parseAlert = (parseAlertId ~ parseAlertType ~ parseUserId ~ parseMarket ~ parseBook ~ parseisGreaterThan ~ parsePrice).map {
-    case alertId ~ alertType ~ userId ~ market ~ book ~ isGreaterThan ~ price =>
-      Alert(alertId, alertType, userId, market, book, isGreaterThan, price)
-  }
-
-  val parseBasePriceAlert = (parseAlertId ~ parseBasePrice).map {
-    case alertId ~ basePrice => BasePriceAlert(alertId, basePrice)
+  val parseAlert = (parseAlertId ~ parseAlertType ~ parseUserId ~ parseMarket ~ parseBook ~ parseisGreaterThan ~ parsePrice ~ parseBasePrice.?).map {
+    case alertId ~ alertType ~ userId ~ market ~ book ~ isGreaterThan ~ price ~ basePrice =>
+      Alert(alertId, alertType, userId, market, book, isGreaterThan, price, basePrice)
   }
 
   val parsePassword = str("password").map(UserHiddenPassword.fromDatabase)

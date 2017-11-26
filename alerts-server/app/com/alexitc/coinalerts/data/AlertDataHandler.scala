@@ -14,8 +14,6 @@ trait AlertDataHandler[F[_]] {
   
   def findPendingAlertsForPrice(market: Market, book: Book, currentPrice: BigDecimal): F[List[Alert]]
 
-  def findBasePriceAlert(alertId: AlertId): F[BasePriceAlert]
-
   def getAlerts(userId: UserId, query: PaginatedQuery): F[PaginatedResult[Alert]]
 }
 

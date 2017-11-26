@@ -12,12 +12,12 @@ class AlertPostgresDAO {
   def create(createAlertModel: CreateAlertModel, userId: UserId)(implicit conn: Connection): Alert = {
     SQL(
       """
-        |INSERT INTO alerts
-        |  (alert_type, user_id, book, market, is_greater_than, price)
+        |INSERT INTO fixed_price_alerts
+        |  (alert_type, user_id, book, market, is_greater_than, price, base_price)
         |VALUES
-        |  ({alert_type}, {user_id}, {book}, {market}, {is_greater_than}, {price})
+        |  ({alert_type}, {user_id}, {book}, {market}, {is_greater_than}, {price}, {base_price})
         |RETURNING
-        |  alert_id, alert_type, user_id, book, market, is_greater_than, price
+        |  alert_id, alert_type, user_id, book, market, is_greater_than, price, base_price
       """.stripMargin
     ).on(
       "alert_type" -> createAlertModel.alertType.string,
@@ -25,30 +25,15 @@ class AlertPostgresDAO {
       "book" -> createAlertModel.book.string,
       "market" -> createAlertModel.market.string,
       "is_greater_than" -> createAlertModel.isGreaterThan,
-      "price" -> createAlertModel.price
+      "price" -> createAlertModel.price,
+      "base_price" -> createAlertModel.basePrice
     ).as(parseAlert.single)
-  }
-
-  def createBasePrice(alertId: AlertId, basePrice: BigDecimal)(implicit conn: Connection): BasePriceAlert = {
-    SQL(
-      """
-        |INSERT INTO base_price_alerts
-        |  (alert_id, base_price)
-        |VALUES
-        |  ({alert_id}, {base_price})
-        |RETURNING
-        |  alert_id, base_price
-      """.stripMargin
-    ).on(
-      "alert_id" -> alertId.long,
-      "base_price" -> basePrice
-    ).as(parseBasePriceAlert.single)
   }
 
   def markAsTriggered(alertId: AlertId)(implicit conn: Connection): Int = {
     SQL(
       """
-        |UPDATE alerts
+        |UPDATE fixed_price_alerts
         |SET triggered_on = NOW()
         |WHERE triggered_on IS NULL AND
         |      alert_id = {alert_id}
@@ -61,8 +46,8 @@ class AlertPostgresDAO {
   def findPendingAlertsForPrice(market: Market, book: Book, currentPrice: BigDecimal)(implicit conn: Connection): List[Alert] = {
     SQL(
       """
-        |SELECT alert_id, alert_type, user_id, book, market, is_greater_than, price
-        |FROM alerts
+        |SELECT alert_id, alert_type, user_id, book, market, is_greater_than, price, base_price
+        |FROM fixed_price_alerts
         |WHERE triggered_on IS NULL AND
         |      market = {market} AND
         |      book = {book} AND
@@ -78,23 +63,11 @@ class AlertPostgresDAO {
     ).as(parseAlert.*)
   }
 
-  def findBasePriceAlert(alertId: AlertId)(implicit conn: Connection): Option[BasePriceAlert] = {
-    SQL(
-      s"""
-        |SELECT alert_id, base_price
-        |FROM base_price_alerts
-        |WHERE alert_id = {alert_id}
-      """.stripMargin
-    ).on(
-      "alert_id" -> alertId.long
-    ).as(parseBasePriceAlert.singleOpt)
-  }
-
   def getAlerts(userId: UserId, query: PaginatedQuery)(implicit conn: Connection): List[Alert] = {
     SQL(
       s"""
-         |SELECT alert_id, alert_type, user_id, book, market, is_greater_than, price
-         |FROM alerts
+         |SELECT alert_id, alert_type, user_id, book, market, is_greater_than, price, base_price
+         |FROM fixed_price_alerts
          |WHERE user_id = {user_id}
          |ORDER BY alert_id
          |OFFSET {offset}
@@ -111,7 +84,7 @@ class AlertPostgresDAO {
     val result = SQL(
       """
         |SELECT COUNT(*)
-        |FROM alerts
+        |FROM fixed_price_alerts
         |WHERE user_id = {user_id}
       """.stripMargin
     ).on(
