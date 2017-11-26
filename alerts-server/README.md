@@ -1,5 +1,5 @@
 # Crypto Coin Alerts Server API
-[![Build Status](https://travis-ci.org/AlexITC/crypto-coin-alerts.svg?branch=master)](https://travis-ci.org/AlexITC/crypto-coin-alerts) [![codecov](https://codecov.io/gh/AlexITC/crypto-coin-alerts/branch/master/graph/badge.svg)](https://codecov.io/gh/AlexITC/crypto-coin-alerts)
+[![Build Status](https://travis-ci.org/AlexITC/crypto-coin-alerts.svg?branch=master)](https://travis-ci.org/AlexITC/crypto-coin-alerts) [![codecov](https://codecov.io/gh/AlexITC/crypto-coin-alerts/branch/master/graph/badge.svg)](https://codecov.io/gh/AlexITC/crypto-coin-alerts) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/30e29dfe2d97459e8ceb12a4dd72f292)](https://www.codacy.com/app/AlexITC/crypto-coin-alerts?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=AlexITC/crypto-coin-alerts&amp;utm_campaign=Badge_Grade)
 
 ## Description
 The alerts server API is built relaying on the following principal technologies:
