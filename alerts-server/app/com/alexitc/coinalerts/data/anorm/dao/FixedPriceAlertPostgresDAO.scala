@@ -7,9 +7,9 @@ import com.alexitc.coinalerts.core.{Count, PaginatedQuery}
 import com.alexitc.coinalerts.data.anorm.AnormParsers._
 import com.alexitc.coinalerts.models._
 
-class AlertPostgresDAO {
+class FixedPriceAlertPostgresDAO {
   
-  def create(createAlertModel: CreateAlertModel, userId: UserId)(implicit conn: Connection): Alert = {
+  def create(createAlertModel: CreateFixedPriceAlertModel, userId: UserId)(implicit conn: Connection): FixedPriceAlert = {
     SQL(
       """
         |INSERT INTO fixed_price_alerts
@@ -29,7 +29,7 @@ class AlertPostgresDAO {
     ).as(parseAlert.single)
   }
 
-  def markAsTriggered(alertId: AlertId)(implicit conn: Connection): Int = {
+  def markAsTriggered(alertId: FixedPriceAlertId)(implicit conn: Connection): Int = {
     SQL(
       """
         |UPDATE fixed_price_alerts
@@ -42,7 +42,7 @@ class AlertPostgresDAO {
     ).executeUpdate()
   }
 
-  def findPendingAlertsForPrice(market: Market, book: Book, currentPrice: BigDecimal)(implicit conn: Connection): List[Alert] = {
+  def findPendingAlertsForPrice(market: Market, book: Book, currentPrice: BigDecimal)(implicit conn: Connection): List[FixedPriceAlert] = {
     SQL(
       """
         |SELECT alert_id, user_id, book, market, is_greater_than, price, base_price
@@ -62,7 +62,7 @@ class AlertPostgresDAO {
     ).as(parseAlert.*)
   }
 
-  def getAlerts(userId: UserId, query: PaginatedQuery)(implicit conn: Connection): List[Alert] = {
+  def getAlerts(userId: UserId, query: PaginatedQuery)(implicit conn: Connection): List[FixedPriceAlert] = {
     SQL(
       s"""
          |SELECT alert_id, user_id, book, market, is_greater_than, price, base_price

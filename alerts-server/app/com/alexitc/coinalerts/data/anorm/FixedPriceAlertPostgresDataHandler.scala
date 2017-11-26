@@ -4,25 +4,25 @@ import javax.inject.Inject
 
 import com.alexitc.coinalerts.commons.ApplicationResult
 import com.alexitc.coinalerts.core.{PaginatedQuery, PaginatedResult}
-import com.alexitc.coinalerts.data.AlertBlockingDataHandler
-import com.alexitc.coinalerts.data.anorm.dao.AlertPostgresDAO
+import com.alexitc.coinalerts.data.FixedPriceAlertBlockingDataHandler
+import com.alexitc.coinalerts.data.anorm.dao.FixedPriceAlertPostgresDAO
 import com.alexitc.coinalerts.errors.{AlertNotFound, InvalidPriceError}
 import com.alexitc.coinalerts.models._
 import org.scalactic.{Bad, Good}
 import play.api.db.Database
 
-class AlertPostgresDataHandler @Inject() (
+class FixedPriceAlertPostgresDataHandler @Inject() (
     protected val database: Database,
-    alertPostgresDAO: AlertPostgresDAO)
-    extends AlertBlockingDataHandler
+    alertPostgresDAO: FixedPriceAlertPostgresDAO)
+    extends FixedPriceAlertBlockingDataHandler
     with AnormPostgresDAL{
 
-  override def create(createAlertModel: CreateAlertModel, userId: UserId): ApplicationResult[Alert] = withConnection { implicit conn =>
+  override def create(createAlertModel: CreateFixedPriceAlertModel, userId: UserId): ApplicationResult[FixedPriceAlert] = withConnection { implicit conn =>
     val result = alertPostgresDAO.create(createAlertModel, userId)
     Good(result)
   }
 
-  override def markAsTriggered(alertId: AlertId): ApplicationResult[Unit] = withConnection { implicit conn =>
+  override def markAsTriggered(alertId: FixedPriceAlertId): ApplicationResult[Unit] = withConnection { implicit conn =>
     val updatedRows = alertPostgresDAO.markAsTriggered(alertId)
     if (updatedRows == 1) {
       Good(())
@@ -31,7 +31,7 @@ class AlertPostgresDataHandler @Inject() (
     }
   }
 
-  override def findPendingAlertsForPrice(market: Market, book: Book, currentPrice: BigDecimal): ApplicationResult[List[Alert]] = withConnection { implicit conn =>
+  override def findPendingAlertsForPrice(market: Market, book: Book, currentPrice: BigDecimal): ApplicationResult[List[FixedPriceAlert]] = withConnection { implicit conn =>
     if (currentPrice <= 0) {
       Bad(InvalidPriceError).accumulating
     } else {
@@ -40,7 +40,7 @@ class AlertPostgresDataHandler @Inject() (
     }
   }
 
-  override def getAlerts(userId: UserId, query: PaginatedQuery): ApplicationResult[PaginatedResult[Alert]] = withConnection { implicit conn =>
+  override def getAlerts(userId: UserId, query: PaginatedQuery): ApplicationResult[PaginatedResult[FixedPriceAlert]] = withConnection { implicit conn =>
     val alerts = alertPostgresDAO.getAlerts(userId, query)
     val total = alertPostgresDAO.countAlerts(userId)
     val result = PaginatedResult(query.offset, query.limit, total, alerts)

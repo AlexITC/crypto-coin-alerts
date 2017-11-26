@@ -38,11 +38,11 @@ object RandomDataGenerator {
 
   def hiddenPassword = UserHiddenPassword.fromPassword(password)
 
-  def alertId = AlertId(Random.nextLong())
+  def alertId = FixedPriceAlertId(Random.nextLong())
 
   def createDefaultAlertModel(
       market: Market = Market.BITSO,
       book: Book = Book("BTC", "MXN"),
       isGreaterThan: Boolean = Random.nextBoolean(),
-      givenPrice: BigDecimal = BigDecimal(Math.abs(Random.nextDouble()))) = CreateAlertModel(market, book, isGreaterThan, givenPrice, None)
+      givenPrice: BigDecimal = BigDecimal(Math.abs(Random.nextDouble()))) = CreateFixedPriceAlertModel(market, book, isGreaterThan, givenPrice, None)
 }

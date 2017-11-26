@@ -3,8 +3,8 @@ package com.alexitc.coinalerts.tasks
 import javax.inject.Inject
 
 import com.alexitc.coinalerts.config.TaskExecutionContext
-import com.alexitc.coinalerts.data.async.AlertFutureDataHandler
-import com.alexitc.coinalerts.models.{Alert, Market}
+import com.alexitc.coinalerts.data.async.FixedPriceAlertFutureDataHandler
+import com.alexitc.coinalerts.models.{FixedPriceAlert, Market}
 import com.alexitc.coinalerts.tasks.collectors.TickerCollector
 import com.alexitc.coinalerts.tasks.models.{FixedPriceAlertEvent, Ticker}
 import org.scalactic.{Bad, Good}
@@ -12,8 +12,8 @@ import org.slf4j.LoggerFactory
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AlertCollector @Inject()(
-    alertDataHandler: AlertFutureDataHandler)(
+class FixedPriceAlertCollector @Inject()(
+    fixedPriceAlertDataHandler: FixedPriceAlertFutureDataHandler)(
     implicit ec: TaskExecutionContext) {
 
   private val logger = LoggerFactory.getLogger(this.getClass)
@@ -43,7 +43,7 @@ class AlertCollector @Inject()(
     val currentPrice = ticker.currentPrice
 
     logger.info(s"Collecting alerts on $market for [${book.string}] and price = [$currentPrice]")
-    alertDataHandler
+    fixedPriceAlertDataHandler
         .findPendingAlertsForPrice(market, book, currentPrice)
         .flatMap {
           case Good(alertList) =>
@@ -57,7 +57,7 @@ class AlertCollector @Inject()(
   }
 
   private def createEvent(
-      alert: Alert,
+      alert: FixedPriceAlert,
       currentPrice: BigDecimal)(
       implicit ec: ExecutionContext): Future[FixedPriceAlertEvent] = {
 

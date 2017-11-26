@@ -15,11 +15,11 @@ class AlertsControllerSpec extends PlayAPISpec {
   import PlayAPISpec._
 
   implicit val userDataHandler: UserBlockingDataHandler = new UserInMemoryDataHandler {}
-  implicit val alertDataHandler: AlertBlockingDataHandler = new AlertInMemoryDataHandler {}
+  implicit val alertDataHandler: FixedPriceAlertBlockingDataHandler = new FixedPriceAlertInMemoryDataHandler {}
 
   val application: Application = guiceApplicationBuilder
       .overrides(bind[UserBlockingDataHandler].to(userDataHandler))
-      .overrides(bind[AlertBlockingDataHandler].to(alertDataHandler))
+      .overrides(bind[FixedPriceAlertBlockingDataHandler].to(alertDataHandler))
       .build()
 
   val jwtService = application.injector.instanceOf[JWTService]

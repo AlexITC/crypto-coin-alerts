@@ -8,13 +8,13 @@ import org.scalactic.{Bad, Good}
 
 import scala.collection.mutable
 
-trait AlertInMemoryDataHandler extends AlertBlockingDataHandler {
+trait FixedPriceAlertInMemoryDataHandler extends FixedPriceAlertBlockingDataHandler {
 
-  private val alertList = mutable.ListBuffer[Alert]()
-  private val triggeredAlertList = mutable.ListBuffer[AlertId]()
+  private val alertList = mutable.ListBuffer[FixedPriceAlert]()
+  private val triggeredAlertList = mutable.ListBuffer[FixedPriceAlertId]()
 
-  override def create(createAlertModel: CreateAlertModel, userId: UserId): ApplicationResult[Alert] = {
-    val alert = Alert(
+  override def create(createAlertModel: CreateFixedPriceAlertModel, userId: UserId): ApplicationResult[FixedPriceAlert] = {
+    val alert = FixedPriceAlert(
       RandomDataGenerator.alertId,
       userId,
       createAlertModel.market,
@@ -28,7 +28,7 @@ trait AlertInMemoryDataHandler extends AlertBlockingDataHandler {
     Good(alert)
   }
 
-  override def markAsTriggered(alertId: AlertId): ApplicationResult[Unit] = {
+  override def markAsTriggered(alertId: FixedPriceAlertId): ApplicationResult[Unit] = {
     if (triggeredAlertList.contains(alertId)) {
       Bad(AlertNotFound).accumulating
     } else {
@@ -37,7 +37,7 @@ trait AlertInMemoryDataHandler extends AlertBlockingDataHandler {
     }
   }
 
-  override def findPendingAlertsForPrice(market: Market, book: Book, currentPrice: BigDecimal): ApplicationResult[List[Alert]] = {
+  override def findPendingAlertsForPrice(market: Market, book: Book, currentPrice: BigDecimal): ApplicationResult[List[FixedPriceAlert]] = {
     val list = pendingAlertList
         .filter(_.market == market)
         .filter(_.book == book)
@@ -49,7 +49,7 @@ trait AlertInMemoryDataHandler extends AlertBlockingDataHandler {
     Good(list)
   }
 
-  override def getAlerts(userId: UserId, query: PaginatedQuery): ApplicationResult[PaginatedResult[Alert]] = {
+  override def getAlerts(userId: UserId, query: PaginatedQuery): ApplicationResult[PaginatedResult[FixedPriceAlert]] = {
     val userAlerts = alertList.toList.filter(_.userId == userId)
     val data = userAlerts.slice(query.offset.int, query.offset.int + query.limit.int)
     val result = PaginatedResult(query.offset, query.limit, Count(userAlerts.length), data)

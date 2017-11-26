@@ -3,18 +3,18 @@ package com.alexitc.coinalerts.data.anorm
 import com.alexitc.coinalerts.commons.DataHelper._
 import com.alexitc.coinalerts.commons.{PostgresDataHandlerSpec, RandomDataGenerator}
 import com.alexitc.coinalerts.core.{Count, Limit, Offset, PaginatedQuery}
-import com.alexitc.coinalerts.data.anorm.dao.{AlertPostgresDAO, UserPostgresDAO}
+import com.alexitc.coinalerts.data.anorm.dao.{FixedPriceAlertPostgresDAO, UserPostgresDAO}
 import com.alexitc.coinalerts.errors.{AlertNotFound, InvalidPriceError}
 import com.alexitc.coinalerts.models._
 import org.scalactic.Bad
 
-class AlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
+class FixedPriceAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
 
   implicit lazy val userPostgresDataHandler = new UserPostgresDataHandler(database, new UserPostgresDAO)
-  lazy val alertPostgresDataHandler = new AlertPostgresDataHandler(database, new AlertPostgresDAO)
+  lazy val alertPostgresDataHandler = new FixedPriceAlertPostgresDataHandler(database, new FixedPriceAlertPostgresDAO)
   lazy val verifiedUser = createVerifiedUser()
 
-  val createDefaultAlertModel = CreateAlertModel(Market.BITSO, Book.fromString("BTC_MXN").get, true, BigDecimal("5000.00"), None)
+  val createDefaultAlertModel = CreateFixedPriceAlertModel(Market.BITSO, Book.fromString("BTC_MXN").get, true, BigDecimal("5000.00"), None)
   val createBasePriceAlertModel = createDefaultAlertModel.copy(basePrice = Some(BigDecimal("4000.00")))
 
   "Creating an alert" should {
@@ -85,7 +85,7 @@ class AlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
     }
 
     "retrieve several pending alerts" in {
-      val createAlertModel = CreateAlertModel(Market.BITSO, Book.fromString("BTC_MXN").get, true, BigDecimal("5000.00"), None)
+      val createAlertModel = CreateFixedPriceAlertModel(Market.BITSO, Book.fromString("BTC_MXN").get, true, BigDecimal("5000.00"), None)
       val createAlert1 = createAlertModel
       val createAlert2 = createAlertModel.copy(isGreaterThan = false)
       val createAlert3 = createAlertModel.copy(market = Market.BITTREX)

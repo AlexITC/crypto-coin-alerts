@@ -1,6 +1,6 @@
 package com.alexitc.coinalerts.commons
 
-import com.alexitc.coinalerts.data.{AlertBlockingDataHandler, UserBlockingDataHandler}
+import com.alexitc.coinalerts.data.{FixedPriceAlertBlockingDataHandler, UserBlockingDataHandler}
 import com.alexitc.coinalerts.models._
 
 object DataHelper {
@@ -25,8 +25,8 @@ object DataHelper {
 
   def createAlert(
       userId: UserId,
-      createAlertModel: CreateAlertModel = RandomDataGenerator.createDefaultAlertModel())(
-      implicit alertDataHandler: AlertBlockingDataHandler) = {
+      createAlertModel: CreateFixedPriceAlertModel = RandomDataGenerator.createDefaultAlertModel())(
+      implicit alertDataHandler: FixedPriceAlertBlockingDataHandler) = {
 
     alertDataHandler.create(createAlertModel, userId)
   }

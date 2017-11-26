@@ -5,21 +5,21 @@ import javax.inject.Inject
 import com.alexitc.coinalerts.commons.FutureApplicationResult
 import com.alexitc.coinalerts.commons.FutureOr.Implicits.{FutureOps, OrOps}
 import com.alexitc.coinalerts.core.{PaginatedQuery, PaginatedResult}
-import com.alexitc.coinalerts.data.async.AlertFutureDataHandler
+import com.alexitc.coinalerts.data.async.FixedPriceAlertFutureDataHandler
 import com.alexitc.coinalerts.models._
-import com.alexitc.coinalerts.services.validators.{AlertValidator, PaginatedQueryValidator}
+import com.alexitc.coinalerts.services.validators.{FixedPriceAlertValidator, PaginatedQueryValidator}
 
 import scala.concurrent.ExecutionContext
 
-class AlertService @Inject() (
-    alertValidator: AlertValidator,
+class FixedPriceAlertService @Inject() (
+    alertValidator: FixedPriceAlertValidator,
     paginatedQueryValidator: PaginatedQueryValidator,
-    alertFutureDataHandler: AlertFutureDataHandler)(
+    alertFutureDataHandler: FixedPriceAlertFutureDataHandler)(
     implicit ec: ExecutionContext) {
 
-  def create(createAlertModel: CreateAlertModel, userId: UserId): FutureApplicationResult[Alert] = {
+  def create(createAlertModel: CreateFixedPriceAlertModel, userId: UserId): FutureApplicationResult[FixedPriceAlert] = {
     val result = for {
-      validatedModel <- alertValidator.validateCreateAlertModel(createAlertModel).toFutureOr
+      validatedModel <- alertValidator.validateCreateModel(createAlertModel).toFutureOr
       // TODO: Restrict the maximum number of active alerts per user
       // TODO: shall we restrict on repeated alerts by price and greater than?
       // TODO: shall we restrict on creating an alert that will be triggered right away?
@@ -29,7 +29,7 @@ class AlertService @Inject() (
     result.toFuture
   }
 
-  def getAlerts(userId: UserId, query: PaginatedQuery): FutureApplicationResult[PaginatedResult[Alert]] = {
+  def getAlerts(userId: UserId, query: PaginatedQuery): FutureApplicationResult[PaginatedResult[FixedPriceAlert]] = {
     val result = for {
       validatedQuery <- paginatedQueryValidator.validate(query).toFutureOr
       paginatedResult <- alertFutureDataHandler.getAlerts(userId, validatedQuery).toFutureOr

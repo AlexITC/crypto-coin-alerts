@@ -4,7 +4,7 @@ import javax.inject.Inject
 
 import com.alexitc.coinalerts.commons.FutureOr.Implicits.FutureOps
 import com.alexitc.coinalerts.config.TaskExecutionContext
-import com.alexitc.coinalerts.data.async.{AlertFutureDataHandler, UserFutureDataHandler}
+import com.alexitc.coinalerts.data.async.{FixedPriceAlertFutureDataHandler, UserFutureDataHandler}
 import com.alexitc.coinalerts.models._
 import com.alexitc.coinalerts.services.{EmailMessagesProvider, EmailServiceTrait, EmailText}
 import com.alexitc.coinalerts.tasks.collectors.{BitsoTickerCollector, BittrexTickerCollector}
@@ -17,11 +17,11 @@ import scala.concurrent.Future
 import scala.util.control.NonFatal
 
 class AlertsTask @Inject() (
-    alertCollector: AlertCollector,
+    alertCollector: FixedPriceAlertCollector,
     bitsoTickerCollector: BitsoTickerCollector,
     bittrexAlertCollector: BittrexTickerCollector,
     userDataHandler: UserFutureDataHandler,
-    alertDataHandler: AlertFutureDataHandler,
+    alertDataHandler: FixedPriceAlertFutureDataHandler,
     emailMessagesProvider: EmailMessagesProvider,
     messagesApi: MessagesApi,
     emailServiceTrait: EmailServiceTrait)(

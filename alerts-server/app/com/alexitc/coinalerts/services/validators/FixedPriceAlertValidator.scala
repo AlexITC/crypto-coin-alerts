@@ -2,17 +2,17 @@ package com.alexitc.coinalerts.services.validators
 
 import com.alexitc.coinalerts.commons.ApplicationResult
 import com.alexitc.coinalerts.errors.{InvalidBasePriceError, InvalidPriceError}
-import com.alexitc.coinalerts.models.CreateAlertModel
+import com.alexitc.coinalerts.models.CreateFixedPriceAlertModel
 import org.scalactic.{Accumulation, Bad, Good}
 
-class AlertValidator {
+class FixedPriceAlertValidator {
 
-  def validateCreateAlertModel(createAlertModel: CreateAlertModel): ApplicationResult[CreateAlertModel] = {
+  def validateCreateModel(createModel: CreateFixedPriceAlertModel): ApplicationResult[CreateFixedPriceAlertModel] = {
     Accumulation.withGood(
-      validatePrice(createAlertModel.price),
-      validateBasePrice(createAlertModel.basePrice)) { (_, _) =>
+      validatePrice(createModel.price),
+      validateBasePrice(createModel.basePrice)) { (_, _) =>
 
-      createAlertModel
+      createModel
     }
   }
 

@@ -13,7 +13,7 @@ object AnormParsers {
   val parseUserVerificationToken = str("token").map(UserVerificationToken.apply)
   val parseLang = str("lang").map(Lang.apply)
 
-  val parseAlertId = long("alert_id").map(AlertId.apply)
+  val parseAlertId = long("alert_id").map(FixedPriceAlertId.apply)
   val parseMarket = str("market").map(Market.fromDatabaseString)
   val parseBook = str("book").map(Book.fromString(_).get) // Assumes db value is always properly formatted.
   val parseisGreaterThan = bool("is_greater_than")
@@ -30,7 +30,7 @@ object AnormParsers {
 
   val parseAlert = (parseAlertId ~ parseUserId ~ parseMarket ~ parseBook ~ parseisGreaterThan ~ parsePrice ~ parseBasePrice.?).map {
     case alertId ~ userId ~ market ~ book ~ isGreaterThan ~ price ~ basePrice =>
-      Alert(alertId, userId, market, book, isGreaterThan, price, basePrice)
+      FixedPriceAlert(alertId, userId, market, book, isGreaterThan, price, basePrice)
   }
 
   val parsePassword = str("password").map(UserHiddenPassword.fromDatabase)
