@@ -8,5 +8,5 @@ POST   /verification-tokens/:token      com.alexitc.coinalerts.controllers.Users
 POST   /users/login                     com.alexitc.coinalerts.controllers.UsersController.loginByEmail()
 GET    /users/me                        com.alexitc.coinalerts.controllers.UsersController.whoAmI()
 
-POST   /alerts                          com.alexitc.coinalerts.controllers.AlertsController.create()
-GET    /alerts                          com.alexitc.coinalerts.controllers.AlertsController.getAlerts(query: com.alexitc.coinalerts.core.PaginatedQuery)
+POST   /fixed-price-alerts              com.alexitc.coinalerts.controllers.FixedPriceAlertsController.create()
+GET    /fixed-price-alerts              com.alexitc.coinalerts.controllers.FixedPriceAlertsController.getAlerts(query: com.alexitc.coinalerts.core.PaginatedQuery)

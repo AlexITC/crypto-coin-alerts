@@ -10,7 +10,7 @@ import play.api.inject.bind
 import play.api.libs.json.JsValue
 import play.api.test.Helpers._
 
-class AlertsControllerSpec extends PlayAPISpec {
+class FixedPriceAlertsControllerSpec extends PlayAPISpec {
 
   import PlayAPISpec._
 
@@ -24,8 +24,8 @@ class AlertsControllerSpec extends PlayAPISpec {
 
   val jwtService = application.injector.instanceOf[JWTService]
 
-  "POST /alerts" should {
-    val url = "/alerts"
+  "POST /fixed-price-alerts" should {
+    val url = "/fixed-price-alerts"
 
     "Create an alert" in {
       val body =
@@ -157,8 +157,8 @@ class AlertsControllerSpec extends PlayAPISpec {
     }
   }
 
-  "GET /alerts" should {
-    val url = "/alerts"
+  "GET /fixed-price-alerts" should {
+    val url = "/fixed-price-alerts"
 
     "Return a paginated result based on the query" in {
       val user = createVerifiedUser()

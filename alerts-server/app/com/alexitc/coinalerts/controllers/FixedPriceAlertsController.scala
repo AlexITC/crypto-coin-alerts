@@ -8,7 +8,7 @@ import com.alexitc.coinalerts.models.CreateFixedPriceAlertModel
 import com.alexitc.coinalerts.services.FixedPriceAlertService
 import com.alexitc.play.tracer.PlayRequestTracing
 
-class AlertsController @Inject() (
+class FixedPriceAlertsController @Inject() (
     components: JsonControllerComponents,
     alertService: FixedPriceAlertService)
     extends JsonController(components)
