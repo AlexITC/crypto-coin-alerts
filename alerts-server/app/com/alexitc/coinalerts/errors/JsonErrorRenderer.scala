@@ -68,6 +68,9 @@ class JsonErrorRenderer @Inject() (messagesApi: MessagesApi) {
 
     case error: CreateAlertError =>
       List(renderCreateAlertError(error))
+
+    case error: PaginatedQueryError =>
+      List(renderPaginatedQueryError(error))
   }
 
   private def renderJWTError(jwtError: JWTError)(implicit lang: Lang) = jwtError match {
@@ -135,5 +138,15 @@ class JsonErrorRenderer @Inject() (messagesApi: MessagesApi) {
     case BasePriceNotExpectedError =>
       val message = messagesApi("error.basePrice.notRequired")
       FieldValidationError("basePrice", message)
+  }
+
+  private def renderPaginatedQueryError(error: PaginatedQueryError)(implicit lang: Lang) = error match {
+    case InvalidQueryOffsetError =>
+      val message = messagesApi("error.paginatedQuery.offset.invalid")
+      FieldValidationError("offset", message)
+
+    case InvalidQueryLimitError(maxValue) =>
+      val message = messagesApi("error.paginatedQuery.limit.invalid", maxValue)
+      FieldValidationError("limit", message)
   }
 }
