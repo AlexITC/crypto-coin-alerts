@@ -94,11 +94,23 @@ class AlertsTask @Inject() (
 
   private def createText(event: FixedPriceAlertEvent)(implicit lang: Lang): String = {
     val alert = event.alert
-    // TODO: Compute % difference for base_price alerts
-    if (alert.isGreaterThan) {
+
+    val percentageDifferenceMaybe = alert.basePrice.map { basePrice =>
+      val percentage = 100 * (1 - (basePrice max event.currentPrice) / (basePrice min event.currentPrice))
+      percentage
+    }
+
+    val message = if (alert.isGreaterThan) {
       messagesApi("message.alert.priceIncreased", alert.book.string, event.currentPrice)
     } else {
       messagesApi("message.alert.priceDecreased", alert.book.string, event.currentPrice)
+    }
+
+    percentageDifferenceMaybe.map { percent =>
+      val readablePercent = percent.toString()
+      s"$message ($readablePercent %)"
+    }.getOrElse {
+      message
     }
   }
 }
