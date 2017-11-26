@@ -5,7 +5,7 @@ import org.postgresql.util.PSQLException
 import play.api.libs.json.JsPath
 
 // Top-level errors
-trait ApplicationError
+sealed trait ApplicationError
 sealed trait InputValidationError extends ApplicationError
 sealed trait ConflictError extends ApplicationError
 sealed trait NotFoundError extends ApplicationError
@@ -64,3 +64,8 @@ case object BasePriceNotExpectedError extends CreateAlertError with InputValidat
 
 //
 case object AlertNotFound extends NotFoundError
+
+// Paginated query
+sealed trait PaginatedQueryError extends ApplicationError
+case object InvalidQueryOffsetError extends PaginatedQueryError with InputValidationError
+case class InvalidQueryLimitError(maxValue: Int) extends PaginatedQueryError with InputValidationError
