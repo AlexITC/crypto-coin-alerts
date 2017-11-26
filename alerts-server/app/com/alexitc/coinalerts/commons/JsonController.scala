@@ -282,10 +282,7 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
   }
 
   private def renderPrivateError(errorId: ErrorId) = {
-    val jsonError = Json.obj(
-      "type" -> "internal-error",
-      "errorId" -> errorId.string
-    )
+    val jsonError = components.errorRenderer.renderPrivateError(errorId)
 
     Json.obj("errors" -> List(jsonError))
   }

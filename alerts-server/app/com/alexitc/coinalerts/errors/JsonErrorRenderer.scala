@@ -2,6 +2,7 @@ package com.alexitc.coinalerts.errors
 
 import javax.inject.Inject
 
+import com.alexitc.coinalerts.core.ErrorId
 import play.api.i18n.{Lang, MessagesApi}
 import play.api.libs.json.{JsValue, Json}
 
@@ -30,6 +31,13 @@ class JsonErrorRenderer @Inject() (messagesApi: MessagesApi) {
         "message" -> e.message
       )
       Json.toJson(obj)
+  }
+
+  def renderPrivateError(errorId: ErrorId) = {
+    Json.obj(
+      "type" -> "server-error",
+      "errorId" -> errorId.string
+    )
   }
 
   def toPublicError(message: String): PublicError = {
