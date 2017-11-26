@@ -1,6 +1,8 @@
 package com.alexitc.coinalerts.commons
 
-import com.alexitc.coinalerts.core.AuthorizationToken
+import java.net.URLEncoder
+
+import com.alexitc.coinalerts.core.{AuthorizationToken, PaginatedQuery}
 import com.alexitc.coinalerts.modules.AlertTaskModule
 import com.alexitc.coinalerts.services.EmailServiceTrait
 import org.scalatest.concurrent.ScalaFutures
@@ -82,7 +84,40 @@ trait PlayAPISpec extends PlaySpec with ScalaFutures {
 }
 
 object PlayAPISpec {
-  implicit class AuthorizationTokenExt(token: AuthorizationToken) {
+  implicit class AuthorizationTokenExt(val token: AuthorizationToken) extends AnyVal {
     def toHeader: (String, String) = AUTHORIZATION -> s"Bearer ${token.string}"
+  }
+
+  implicit class HttpExt(val params: List[(String, String)]) extends AnyVal {
+    def toQueryString: String = {
+      params
+          .map { case (key, value) =>
+            val encodedKey = URLEncoder.encode(key, "UTF-8")
+            val encodedValue = URLEncoder.encode(value, "UTF-8")
+            List(encodedKey, encodedValue).mkString("=")
+          }
+          .mkString("&")
+    }
+  }
+
+  implicit class PaginatedQueryExt(val query: PaginatedQuery) extends AnyVal {
+    def toHttpQueryString: String = {
+      val params = List(
+        "offset" -> query.offset.int.toString,
+        "limit" -> query.limit.int.toString
+      )
+
+      params.toQueryString
+    }
+  }
+
+  implicit class StringUrlExt(val url: String) extends AnyVal {
+    def withQueryParams(params: (String, String)*): String = {
+      List(url, params.toList.toQueryString).mkString("?")
+    }
+
+    def withQueryParams(query: PaginatedQuery): String = {
+      List(url, query.toHttpQueryString).mkString("?")
+    }
   }
 }
