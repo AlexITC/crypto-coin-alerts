@@ -8,6 +8,13 @@ import play.api.libs.json.{JsValue, Json}
 class JsonErrorRenderer @Inject() (messagesApi: MessagesApi) {
 
   def renderPublicError(publicError: PublicError): JsValue = publicError match {
+    case e: GenericPublicError =>
+      val obj = Json.obj(
+        "type" -> "generic-error",
+        "message" -> e.message
+      )
+      Json.toJson(obj)
+
     case e: FieldValidationError =>
       val obj = Json.obj(
         "type" -> "field-validation-error",
@@ -23,6 +30,10 @@ class JsonErrorRenderer @Inject() (messagesApi: MessagesApi) {
         "message" -> e.message
       )
       Json.toJson(obj)
+  }
+
+  def toPublicError(message: String): PublicError = {
+    GenericPublicError(message)
   }
 
   def toPublicErrorList(error: ApplicationError)(implicit lang: Lang): Seq[PublicError] = error match {
