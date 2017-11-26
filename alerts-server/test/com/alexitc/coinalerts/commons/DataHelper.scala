@@ -1,7 +1,7 @@
 package com.alexitc.coinalerts.commons
 
-import com.alexitc.coinalerts.data.UserBlockingDataHandler
-import com.alexitc.coinalerts.models.{User, UserEmail, UserHiddenPassword, UserPassword}
+import com.alexitc.coinalerts.data.{AlertBlockingDataHandler, UserBlockingDataHandler}
+import com.alexitc.coinalerts.models._
 
 object DataHelper {
 
@@ -21,5 +21,13 @@ object DataHelper {
       implicit userDataHandler: UserBlockingDataHandler): User = {
 
     userDataHandler.create(email, UserHiddenPassword.fromPassword(password)).get
+  }
+
+  def createAlert(
+      userId: UserId,
+      createAlertModel: CreateAlertModel = RandomDataGenerator.createDefaultAlertModel())(
+      implicit alertDataHandler: AlertBlockingDataHandler) = {
+
+    alertDataHandler.create(createAlertModel, userId)
   }
 }
