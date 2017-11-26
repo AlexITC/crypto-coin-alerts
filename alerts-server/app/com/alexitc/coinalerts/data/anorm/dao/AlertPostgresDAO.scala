@@ -3,6 +3,7 @@ package com.alexitc.coinalerts.data.anorm.dao
 import java.sql.Connection
 
 import anorm._
+import com.alexitc.coinalerts.core.{Count, PaginatedQuery}
 import com.alexitc.coinalerts.data.anorm.AnormParsers._
 import com.alexitc.coinalerts.models._
 
@@ -87,5 +88,36 @@ class AlertPostgresDAO {
     ).on(
       "alert_id" -> alertId.long
     ).as(parseBasePriceAlert.singleOpt)
+  }
+
+  def getAlerts(userId: UserId, query: PaginatedQuery)(implicit conn: Connection): List[Alert] = {
+    SQL(
+      s"""
+         |SELECT alert_id, alert_type, user_id, book, market, is_greater_than, price
+         |FROM alerts
+         |WHERE user_id = {user_id}
+         |ORDER BY alert_id
+         |OFFSET {offset}
+         |LIMIT {limit}
+       """.stripMargin
+    ).on(
+      "user_id" -> userId.string,
+      "offset" -> query.offset.int,
+      "limit" -> query.limit.int
+    ).as(parseAlert.*)
+  }
+
+  def countAlerts(userId: UserId)(implicit conn: Connection): Count = {
+    val result = SQL(
+      """
+        |SELECT COUNT(*)
+        |FROM alerts
+        |WHERE user_id = {user_id}
+      """.stripMargin
+    ).on(
+      "user_id" -> userId.string
+    ).as(SqlParser.scalar[Int].single)
+
+    Count(result)
   }
 }

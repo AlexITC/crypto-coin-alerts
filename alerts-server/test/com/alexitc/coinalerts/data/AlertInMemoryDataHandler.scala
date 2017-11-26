@@ -1,7 +1,7 @@
 package com.alexitc.coinalerts.data
 
-import com.alexitc.coinalerts.commons.RandomDataGenerator
-import com.alexitc.coinalerts.commons.ApplicationResult
+import com.alexitc.coinalerts.commons.{ApplicationResult, RandomDataGenerator}
+import com.alexitc.coinalerts.core.{Count, PaginatedQuery, PaginatedResult}
 import com.alexitc.coinalerts.errors.AlertNotFound
 import com.alexitc.coinalerts.models._
 import org.scalactic.{Bad, Good, One, Or}
@@ -60,6 +60,13 @@ trait AlertInMemoryDataHandler extends AlertBlockingDataHandler {
         .map { basePrice => BasePriceAlert(alertId, basePrice) }
 
     Or.from(alertMaybe, One(AlertNotFound))
+  }
+
+  override def getAlerts(userId: UserId, query: PaginatedQuery): ApplicationResult[PaginatedResult[Alert]] = {
+    val userAlerts = alertList.toList.filter(_.userId == userId)
+    val data = userAlerts.slice(query.offset.int, query.offset.int + query.limit.int)
+    val result = PaginatedResult(query.offset, query.limit, Count(userAlerts.length), data)
+    Good(result)
   }
 
   private def pendingAlertList = {

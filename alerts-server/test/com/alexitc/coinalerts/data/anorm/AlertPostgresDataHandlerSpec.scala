@@ -2,6 +2,7 @@ package com.alexitc.coinalerts.data.anorm
 
 import com.alexitc.coinalerts.commons.DataHelper._
 import com.alexitc.coinalerts.commons.{PostgresDataHandlerSpec, RandomDataGenerator}
+import com.alexitc.coinalerts.core.{Count, Limit, Offset, PaginatedQuery}
 import com.alexitc.coinalerts.data.anorm.dao.{AlertPostgresDAO, UserPostgresDAO}
 import com.alexitc.coinalerts.errors.{AlertNotFound, InvalidPriceError}
 import com.alexitc.coinalerts.models._
@@ -147,6 +148,53 @@ class AlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
       val alert = alertPostgresDataHandler.create(createDefaultAlertModel, user.id).get
       val result = alertPostgresDataHandler.findBasePriceAlert(alert.id)
       result mustEqual Bad(AlertNotFound).accumulating
+    }
+  }
+
+  "retrieving user alerts" should {
+    "return empty result for non-existent user" in {
+      val userId = UserId.create
+      val query = PaginatedQuery(Offset(0), Limit(10))
+      val result = alertPostgresDataHandler.getAlerts(userId, query).get
+      result.data.isEmpty mustEqual true
+      result.total mustEqual Count(0)
+    }
+
+    "return empty result when the offset is greater than the total elements" in {
+      val user = createUnverifiedUser()
+      alertPostgresDataHandler.create(createDefaultAlertModel, user.id)
+
+      val query = PaginatedQuery(Offset(1), Limit(1))
+      val result = alertPostgresDataHandler.getAlerts(user.id, query).get
+      result.data.isEmpty mustEqual true
+      result.total mustEqual Count(1)
+    }
+
+    "return a result that is paginated properly" in {
+      val user = createUnverifiedUser()
+      alertPostgresDataHandler.create(createDefaultAlertModel, user.id)
+      alertPostgresDataHandler.create(createDefaultAlertModel, user.id)
+
+      val query = PaginatedQuery(Offset(0), Limit(1))
+      val result = alertPostgresDataHandler.getAlerts(user.id, query).get
+      result.offset mustEqual query.offset
+      result.limit mustEqual query.limit
+      result.total mustEqual Count(2)
+      result.data.length mustEqual query.limit.int
+    }
+
+    "return a result for the second page different to the one on the first page" in {
+      val user = createUnverifiedUser()
+      alertPostgresDataHandler.create(createDefaultAlertModel, user.id)
+      alertPostgresDataHandler.create(createDefaultAlertModel, user.id)
+
+      val page1Query = PaginatedQuery(Offset(0), Limit(1))
+      val page1Result = alertPostgresDataHandler.getAlerts(user.id, page1Query).get
+
+      val page2Query = PaginatedQuery(Offset(1), Limit(1))
+      val page2Result = alertPostgresDataHandler.getAlerts(user.id, page2Query).get
+
+      page1Result.data.head.id mustNot be(page2Result.data.head.id)
     }
   }
 }
