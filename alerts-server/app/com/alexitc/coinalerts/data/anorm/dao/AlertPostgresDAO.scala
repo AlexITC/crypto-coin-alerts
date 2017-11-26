@@ -13,14 +13,13 @@ class AlertPostgresDAO {
     SQL(
       """
         |INSERT INTO fixed_price_alerts
-        |  (alert_type, user_id, book, market, is_greater_than, price, base_price)
+        |  (user_id, book, market, is_greater_than, price, base_price)
         |VALUES
-        |  ({alert_type}, {user_id}, {book}, {market}, {is_greater_than}, {price}, {base_price})
+        |  ({user_id}, {book}, {market}, {is_greater_than}, {price}, {base_price})
         |RETURNING
-        |  alert_id, alert_type, user_id, book, market, is_greater_than, price, base_price
+        |  alert_id, user_id, book, market, is_greater_than, price, base_price
       """.stripMargin
     ).on(
-      "alert_type" -> createAlertModel.alertType.string,
       "user_id" -> userId.string,
       "book" -> createAlertModel.book.string,
       "market" -> createAlertModel.market.string,
@@ -46,7 +45,7 @@ class AlertPostgresDAO {
   def findPendingAlertsForPrice(market: Market, book: Book, currentPrice: BigDecimal)(implicit conn: Connection): List[Alert] = {
     SQL(
       """
-        |SELECT alert_id, alert_type, user_id, book, market, is_greater_than, price, base_price
+        |SELECT alert_id, user_id, book, market, is_greater_than, price, base_price
         |FROM fixed_price_alerts
         |WHERE triggered_on IS NULL AND
         |      market = {market} AND
@@ -66,7 +65,7 @@ class AlertPostgresDAO {
   def getAlerts(userId: UserId, query: PaginatedQuery)(implicit conn: Connection): List[Alert] = {
     SQL(
       s"""
-         |SELECT alert_id, alert_type, user_id, book, market, is_greater_than, price, base_price
+         |SELECT alert_id, user_id, book, market, is_greater_than, price, base_price
          |FROM fixed_price_alerts
          |WHERE user_id = {user_id}
          |ORDER BY alert_id

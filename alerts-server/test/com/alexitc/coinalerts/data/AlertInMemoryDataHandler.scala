@@ -11,24 +11,19 @@ import scala.collection.mutable
 trait AlertInMemoryDataHandler extends AlertBlockingDataHandler {
 
   private val alertList = mutable.ListBuffer[Alert]()
-  private val basePriceAlert = mutable.HashMap[AlertId, BigDecimal]()
   private val triggeredAlertList = mutable.ListBuffer[AlertId]()
 
   override def create(createAlertModel: CreateAlertModel, userId: UserId): ApplicationResult[Alert] = {
     val alert = Alert(
       RandomDataGenerator.alertId,
-      createAlertModel.alertType,
       userId,
       createAlertModel.market,
       createAlertModel.book,
       createAlertModel.isGreaterThan,
-      createAlertModel.price)
+      createAlertModel.price,
+      createAlertModel.basePrice)
 
     alertList += alert
-
-    if (alert.alertType == AlertType.BASE_PRICE) {
-      basePriceAlert += alert.id -> createAlertModel.basePrice.get
-    }
 
     Good(alert)
   }

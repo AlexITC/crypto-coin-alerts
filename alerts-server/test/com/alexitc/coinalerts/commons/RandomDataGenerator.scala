@@ -44,5 +44,5 @@ object RandomDataGenerator {
       market: Market = Market.BITSO,
       book: Book = Book("BTC", "MXN"),
       isGreaterThan: Boolean = Random.nextBoolean(),
-      givenPrice: BigDecimal = BigDecimal(Math.abs(Random.nextDouble()))) = CreateAlertModel(AlertType.DEFAULT, market, book, isGreaterThan, givenPrice, None)
+      givenPrice: BigDecimal = BigDecimal(Math.abs(Random.nextDouble()))) = CreateAlertModel(market, book, isGreaterThan, givenPrice, None)
 }

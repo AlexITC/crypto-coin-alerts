@@ -4,5 +4,4 @@ import com.alexitc.coinalerts.models.Alert
 
 case class FixedPriceAlertEvent(
     alert: Alert,
-    currentPrice: BigDecimal,
-    basePrice: Option[BigDecimal])
+    currentPrice: BigDecimal)

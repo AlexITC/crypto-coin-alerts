@@ -14,28 +14,23 @@ class AlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
   lazy val alertPostgresDataHandler = new AlertPostgresDataHandler(database, new AlertPostgresDAO)
   lazy val verifiedUser = createVerifiedUser()
 
-  val createDefaultAlertModel = CreateAlertModel(AlertType.DEFAULT, Market.BITSO, Book.fromString("BTC_MXN").get, true, BigDecimal("5000.00"), None)
-  val createBasePriceAlertModel = createDefaultAlertModel.copy(alertType = AlertType.BASE_PRICE, basePrice = Some(BigDecimal("4000.00")))
+  val createDefaultAlertModel = CreateAlertModel(Market.BITSO, Book.fromString("BTC_MXN").get, true, BigDecimal("5000.00"), None)
+  val createBasePriceAlertModel = createDefaultAlertModel.copy(basePrice = Some(BigDecimal("4000.00")))
 
   "Creating an alert" should {
 
-    "ba able to create a DEFAULT alert" in {
+    "ba able to create an alert without basePrice" in {
       val result = alertPostgresDataHandler.create(createDefaultAlertModel, verifiedUser.id)
       result.isGood mustEqual true
     }
 
-    "be able to create a BASE_PRICE alert" in {
+    "be able to create an alert with basePrice" in {
       val result = alertPostgresDataHandler.create(createBasePriceAlertModel, verifiedUser.id)
       result.isGood mustEqual true
     }
 
     "fail to create an alert for a non existent user" in {
       val result = alertPostgresDataHandler.create(createDefaultAlertModel, UserId.create)
-      result.isBad mustEqual true
-    }
-
-    "fail to create a BASE_PRICE alert without basePrice" in {
-      val result = alertPostgresDataHandler.create(createDefaultAlertModel.copy(alertType = AlertType.BASE_PRICE), UserId.create)
       result.isBad mustEqual true
     }
   }
@@ -90,7 +85,7 @@ class AlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
     }
 
     "retrieve several pending alerts" in {
-      val createAlertModel = CreateAlertModel(AlertType.DEFAULT, Market.BITSO, Book.fromString("BTC_MXN").get, true, BigDecimal("5000.00"), None)
+      val createAlertModel = CreateAlertModel(Market.BITSO, Book.fromString("BTC_MXN").get, true, BigDecimal("5000.00"), None)
       val createAlert1 = createAlertModel
       val createAlert2 = createAlertModel.copy(isGreaterThan = false)
       val createAlert3 = createAlertModel.copy(market = Market.BITTREX)

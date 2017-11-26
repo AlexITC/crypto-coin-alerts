@@ -4,7 +4,7 @@ import javax.inject.Inject
 
 import com.alexitc.coinalerts.config.TaskExecutionContext
 import com.alexitc.coinalerts.data.async.AlertFutureDataHandler
-import com.alexitc.coinalerts.models.{Alert, AlertType, Market}
+import com.alexitc.coinalerts.models.{Alert, Market}
 import com.alexitc.coinalerts.tasks.collectors.TickerCollector
 import com.alexitc.coinalerts.tasks.models.{FixedPriceAlertEvent, Ticker}
 import org.scalactic.{Bad, Good}
@@ -59,16 +59,9 @@ class AlertCollector @Inject()(
   private def createEvent(
       alert: Alert,
       currentPrice: BigDecimal)(
-      implicit ec: ExecutionContext): Future[FixedPriceAlertEvent] = alert.alertType match {
+      implicit ec: ExecutionContext): Future[FixedPriceAlertEvent] = {
 
-    case AlertType.UNKNOWN(string) =>
-      logger.warn(s"Got UNKNOWN alert type = [$string] for id [${alert.id}]")
-
-      val event = FixedPriceAlertEvent(alert, currentPrice, None)
-      Future.successful(event)
-
-    case _ =>
-      val event = FixedPriceAlertEvent(alert, currentPrice, None)
-      Future.successful(event)
+    val event = FixedPriceAlertEvent(alert, currentPrice)
+    Future.successful(event)
   }
 }

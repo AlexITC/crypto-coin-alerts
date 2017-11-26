@@ -6,7 +6,7 @@ import com.alexitc.coinalerts.commons.ApplicationResult
 import com.alexitc.coinalerts.core.{PaginatedQuery, PaginatedResult}
 import com.alexitc.coinalerts.data.AlertBlockingDataHandler
 import com.alexitc.coinalerts.data.anorm.dao.AlertPostgresDAO
-import com.alexitc.coinalerts.errors.{AlertNotFound, InvalidPriceError, UnknownAlertTypeError}
+import com.alexitc.coinalerts.errors.{AlertNotFound, InvalidPriceError}
 import com.alexitc.coinalerts.models._
 import org.scalactic.{Bad, Good}
 import play.api.db.Database
@@ -18,14 +18,8 @@ class AlertPostgresDataHandler @Inject() (
     with AnormPostgresDAL{
 
   override def create(createAlertModel: CreateAlertModel, userId: UserId): ApplicationResult[Alert] = withConnection { implicit conn =>
-    createAlertModel.alertType match {
-      case AlertType.UNKNOWN(_) =>
-        Bad(UnknownAlertTypeError).accumulating
-
-      case _ =>
-        val result = alertPostgresDAO.create(createAlertModel, userId)
-        Good(result)
-    }
+    val result = alertPostgresDAO.create(createAlertModel, userId)
+    Good(result)
   }
 
   override def markAsTriggered(alertId: AlertId): ApplicationResult[Unit] = withConnection { implicit conn =>
