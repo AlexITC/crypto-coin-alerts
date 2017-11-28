@@ -60,12 +60,12 @@ A database test is basically an integration test that ensures that a data handle
 
 The postgres image is created before running the test, we apply all the play evolutions to have the schema updated, and the image is destroyed after running the test.
 
-All of these tests are extending [PostgresDALSpec](test/com/alexitc/coinalerts/common/PostgresDALSpec.scala), for example, see [UserPostgresDataHandlerSpec](test/com/alexitc/coinalerts/data/anorm/UserPostgresDataHandlerSpec.scala).
+All of these tests are extending [PostgresDataHandlerSpec](test/com/alexitc/coinalerts/commons/PostgresDataHandlerSpec.scala), for example, see [UserPostgresDataHandlerSpec](test/com/alexitc/coinalerts/data/anorm/UserPostgresDataHandlerSpec.scala).
 
 ### API tests
 An API test is similar to an integration test because it is testing the whole system integration swapping external dependencies for internal ones:
 - PostgreSQL is replaced by in-memory data implementations (see [UserInMemoryDataHandler](test/com/alexitc/coinalerts/data/UserInMemoryDataHandler.scala)).
-- External services are replaced by a faked version (see [FakeEmailService](test/com/alexitc/coinalerts/common/FakeEmailService.scala)).
+- External services are replaced by a faked version (see [FakeEmailService](test/com/alexitc/coinalerts/commons/FakeEmailService.scala)).
 
 These tests are useful for verifying that the API works as expected on the client side, they intention is to cover the use cases that are going to be used on the clients consuming the API.
 
@@ -92,7 +92,7 @@ We are creating a base trait that could be easily extended for testing, and impl
 See [JWTConfig](app/com/alexitc/coinalerts/config/JWTConfig.scala).
 
 ### Controllers
-For building the HTTP API, we use the [controllers package](app/com/alexitc/coinalerts/controllers), the controller classes make extensive use of the [JsonController](app/com/alexitc/coinalerts/controllers/JsonController.scala) that help us to build a controllers that receives JSON and produces JSON (it handles application errors as well), it is still experimental and improving frequently.
+For building the HTTP API, we use the [controllers package](app/com/alexitc/coinalerts/controllers), the controller classes make extensive use of the [JsonController](app/com/alexitc/coinalerts/commons/JsonController.scala) that help us to build a controllers that receives JSON and produces JSON (it handles application errors as well), it is still experimental and improving frequently.
 
 The controllers could receive a model (that should be deserializable using play-json) and produce model (that is serializable using play-json).
 
