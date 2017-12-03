@@ -1,4 +1,3 @@
-package com.alexitc.coinalerts
 
 import com.alexitc.coinalerts.commons.{AuthenticatedRequestContext, AuthenticatedRequestContextWithModel, PublicRequestContext, PublicRequestContextWithModel}
 

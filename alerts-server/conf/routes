@@ -3,10 +3,10 @@
 # https://www.playframework.com/documentation/latest/ScalaRouting
 # ~~~~
 
-POST   /users                           com.alexitc.coinalerts.controllers.UsersController.create()
-POST   /verification-tokens/:token      com.alexitc.coinalerts.controllers.UsersController.verifyEmail(token: com.alexitc.coinalerts.models.UserVerificationToken)
-POST   /users/login                     com.alexitc.coinalerts.controllers.UsersController.loginByEmail()
-GET    /users/me                        com.alexitc.coinalerts.controllers.UsersController.whoAmI()
+POST   /users                           controllers.UsersController.create()
+POST   /verification-tokens/:token      controllers.UsersController.verifyEmail(token: com.alexitc.coinalerts.models.UserVerificationToken)
+POST   /users/login                     controllers.UsersController.loginByEmail()
+GET    /users/me                        controllers.UsersController.whoAmI()
 
-POST   /fixed-price-alerts              com.alexitc.coinalerts.controllers.FixedPriceAlertsController.create()
-GET    /fixed-price-alerts              com.alexitc.coinalerts.controllers.FixedPriceAlertsController.getAlerts(query: com.alexitc.coinalerts.core.PaginatedQuery)
+POST   /fixed-price-alerts              controllers.FixedPriceAlertsController.create()
+GET    /fixed-price-alerts              controllers.FixedPriceAlertsController.getAlerts(query: com.alexitc.coinalerts.core.PaginatedQuery)

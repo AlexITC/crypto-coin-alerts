@@ -1,4 +1,4 @@
-package com.alexitc.coinalerts.controllers
+package controllers
 
 import javax.inject.Inject
 
