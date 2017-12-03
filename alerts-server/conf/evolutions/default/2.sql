@@ -3,7 +3,7 @@
 
 -- A fixed-price alert for a book in the given market
 CREATE TABLE fixed_price_alerts(
-  alert_id BIGSERIAL NOT NULL,
+  fixed_price_alert_id BIGSERIAL NOT NULL,
   user_id VARCHAR(40) NOT NULL,
   market VARCHAR(20) NOT NULL, -- BITSO, BITTREX, etc
   book VARCHAR(10) NOT NULL, -- BTC_MXN, BTC_ETH, etc
@@ -13,7 +13,7 @@ CREATE TABLE fixed_price_alerts(
   created_on TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
   triggered_on TIMESTAMP WITH TIME ZONE NULL DEFAULT NULL,
   -- constraints
-  CONSTRAINT fixed_price_alerts_alert_id_pk PRIMARY KEY (alert_id),
+  CONSTRAINT fixed_price_alerts_alert_id_pk PRIMARY KEY (fixed_price_alert_id),
   CONSTRAINT fixed_price_alerts_user_id_fk FOREIGN KEY (user_id) REFERENCES users(user_id),
   CONSTRAINT fixed_price_alerts_market_is_formatted_properly CHECK(market ~ '^[A-Z]{3,20}$'),
   CONSTRAINT fixed_price_alerts_book_is_formatted_properly CHECK(book ~ '^[A-Z0-9]{3,8}_[A-Z0-9]{3,8}$'),

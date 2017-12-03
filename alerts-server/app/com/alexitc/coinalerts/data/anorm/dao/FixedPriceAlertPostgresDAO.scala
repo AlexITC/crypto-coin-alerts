@@ -17,7 +17,7 @@ class FixedPriceAlertPostgresDAO {
         |VALUES
         |  ({user_id}, {book}, {market}, {is_greater_than}, {price}, {base_price})
         |RETURNING
-        |  alert_id, user_id, book, market, is_greater_than, price, base_price
+        |  fixed_price_alert_id, user_id, book, market, is_greater_than, price, base_price
       """.stripMargin
     ).on(
       "user_id" -> userId.string,
@@ -35,17 +35,17 @@ class FixedPriceAlertPostgresDAO {
         |UPDATE fixed_price_alerts
         |SET triggered_on = NOW()
         |WHERE triggered_on IS NULL AND
-        |      alert_id = {alert_id}
+        |      fixed_price_alert_id = {fixed_price_alert_id}
       """.stripMargin
     ).on(
-      "alert_id" -> alertId.long
+      "fixed_price_alert_id" -> alertId.long
     ).executeUpdate()
   }
 
   def findPendingAlertsForPrice(market: Market, book: Book, currentPrice: BigDecimal)(implicit conn: Connection): List[FixedPriceAlert] = {
     SQL(
       """
-        |SELECT alert_id, user_id, book, market, is_greater_than, price, base_price
+        |SELECT fixed_price_alert_id, user_id, book, market, is_greater_than, price, base_price
         |FROM fixed_price_alerts
         |WHERE triggered_on IS NULL AND
         |      market = {market} AND
@@ -65,10 +65,10 @@ class FixedPriceAlertPostgresDAO {
   def getAlerts(userId: UserId, query: PaginatedQuery)(implicit conn: Connection): List[FixedPriceAlert] = {
     SQL(
       s"""
-         |SELECT alert_id, user_id, book, market, is_greater_than, price, base_price
+         |SELECT fixed_price_alert_id, user_id, book, market, is_greater_than, price, base_price
          |FROM fixed_price_alerts
          |WHERE user_id = {user_id}
-         |ORDER BY alert_id
+         |ORDER BY fixed_price_alert_id
          |OFFSET {offset}
          |LIMIT {limit}
        """.stripMargin
