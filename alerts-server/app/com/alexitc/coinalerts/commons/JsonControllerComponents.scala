@@ -2,7 +2,7 @@ package com.alexitc.coinalerts.commons
 
 import javax.inject.Inject
 
-import controllers.actions.LoggingAction
+import com.alexitc.coinalerts.commons.actions.LoggingAction
 import com.alexitc.coinalerts.errors.JsonErrorRenderer
 import com.alexitc.coinalerts.services.JWTService
 import play.api.mvc.MessagesControllerComponents
