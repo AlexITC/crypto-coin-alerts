@@ -3,14 +3,11 @@ package com.alexitc.coinalerts.models
 import com.alexitc.coinalerts.core.RandomIdGenerator
 import org.mindrot.jbcrypt.BCrypt
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsPath, JsString, Reads, Writes}
+import play.api.libs.json._
 
 case class User(id: UserId, email: UserEmail)
 object User {
-  implicit val writes: Writes[User] = (
-      (JsPath \ "id").write[UserId] and
-          (JsPath \ "email").write[UserEmail]
-      )(unlift(User.unapply))
+  implicit val writes: Writes[User] = Json.writes[User]
 }
 
 case class UserId(string: String) extends AnyVal
@@ -51,20 +48,10 @@ object UserHiddenPassword {
 
 case class CreateUserModel(email: UserEmail, password: UserPassword)
 object CreateUserModel {
-  implicit val reads: Reads[CreateUserModel] = {
-    val builder = (JsPath \ "email").read[UserEmail] and
-        (JsPath \ "password").read[UserPassword]
-
-    builder(CreateUserModel.apply _)
-  }
+  implicit val reads: Reads[CreateUserModel] = Json.reads[CreateUserModel]
 }
 
 case class LoginByEmailModel(email: UserEmail, password: UserPassword)
 object LoginByEmailModel {
-  implicit val reads: Reads[LoginByEmailModel] = {
-    val builder = (JsPath \ "email").read[UserEmail] and
-        (JsPath \ "password").read[UserPassword]
-
-    builder(LoginByEmailModel.apply _)
-  }
+  implicit val reads: Reads[LoginByEmailModel] = Json.reads[LoginByEmailModel]
 }
