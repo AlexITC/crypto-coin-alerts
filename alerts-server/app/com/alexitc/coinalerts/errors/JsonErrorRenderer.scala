@@ -71,6 +71,9 @@ class JsonErrorRenderer @Inject() (messagesApi: MessagesApi) {
 
     case error: PaginatedQueryError =>
       List(renderPaginatedQueryError(error))
+
+    case error: CreateDailyPriceAlertError =>
+      List(renderCreateDailyPriceAlertError(error))
   }
 
   private def renderJWTError(jwtError: JWTError)(implicit lang: Lang) = jwtError match {
@@ -148,5 +151,11 @@ class JsonErrorRenderer @Inject() (messagesApi: MessagesApi) {
     case InvalidQueryLimitError(maxValue) =>
       val message = messagesApi("error.paginatedQuery.limit.invalid", maxValue)
       FieldValidationError("limit", message)
+  }
+
+  private def renderCreateDailyPriceAlertError(error: CreateDailyPriceAlertError)(implicit lang: Lang) = error match {
+    case RepeatedDailyPriceAlertError =>
+      val message = messagesApi("error.createDailyPriceAlert.repeated")
+      FieldValidationError("book", message)
   }
 }

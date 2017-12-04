@@ -40,6 +40,8 @@ object RandomDataGenerator {
 
   def alertId = FixedPriceAlertId(Random.nextLong())
 
+  def dailyPriceAlertId = DailyPriceAlertId(Random.nextLong())
+
   def createDefaultAlertModel(
       market: Market = Market.BITSO,
       book: Book = Book("BTC", "MXN"),

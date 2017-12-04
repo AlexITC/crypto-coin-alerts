@@ -10,3 +10,5 @@ GET    /users/me                        controllers.UsersController.whoAmI()
 
 POST   /fixed-price-alerts              controllers.FixedPriceAlertsController.create()
 GET    /fixed-price-alerts              controllers.FixedPriceAlertsController.getAlerts(query: com.alexitc.coinalerts.core.PaginatedQuery)
+
+POST   /daily-price-alerts              controllers.DailyPriceAlertsController.create()
