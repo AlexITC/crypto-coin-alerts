@@ -63,7 +63,7 @@ trait PlayAPISpec extends PlaySpec with ScalaFutures {
   private val EmptyJson = "{}"
 
   private def logRequestResponse[T](request: FakeRequest[T], response: Future[Result]) = {
-    logger.info(s"REQUEST: $request, RESPONSE: ${contentAsString(response)}")
+    logger.info(s"REQUEST > $request, headers = ${request.headers}; RESPONSE < status = ${status(response)}, body = ${contentAsString(response)}")
   }
 
   /** Syntactic sugar for calling APIs **/
