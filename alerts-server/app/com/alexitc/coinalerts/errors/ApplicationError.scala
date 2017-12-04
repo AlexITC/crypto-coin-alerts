@@ -69,3 +69,7 @@ case object AlertNotFound extends NotFoundError
 sealed trait PaginatedQueryError extends ApplicationError
 case object InvalidQueryOffsetError extends PaginatedQueryError with InputValidationError
 case class InvalidQueryLimitError(maxValue: Int) extends PaginatedQueryError with InputValidationError
+
+// Create daily price alert
+sealed trait CreateDailyPriceAlertError extends ApplicationError
+case object RepeatedDailyPriceAlertError extends CreateDailyPriceAlertError with ConflictError
