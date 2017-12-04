@@ -13,6 +13,16 @@ class BitsoService @Inject() (bitso: Bitso)(implicit ec: ExecutionContext) {
 
   private val logger = LoggerFactory.getLogger(this.getClass)
 
+  def availableBooks: Future[List[Book]] = Future {
+    bitso.getTicker.toList.flatMap { ticker =>
+      Book.fromString(ticker.getBook)
+          .orElse {
+            logger.warn(s"Unable to create book from string = [${ticker.getBook}]")
+            None
+          }
+    }
+  }
+
   def getTickerList: Future[List[Ticker]] = Future {
     bitso.getTicker
         .toList

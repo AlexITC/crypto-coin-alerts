@@ -3,8 +3,11 @@ package com.alexitc.coinalerts.commons
 import java.net.URLEncoder
 
 import com.alexitc.coinalerts.core.{AuthorizationToken, PaginatedQuery}
+import com.alexitc.coinalerts.models.Book
 import com.alexitc.coinalerts.modules.AlertTaskModule
 import com.alexitc.coinalerts.services.EmailServiceTrait
+import com.alexitc.coinalerts.services.validators.{BitsoBookValidator, BittrexBookValidator}
+import org.scalactic.Good
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.PlaySpec
 import org.slf4j.LoggerFactory
@@ -50,12 +53,26 @@ trait PlayAPISpec extends PlaySpec with ScalaFutures {
     Configuration.load(env) ++ Configuration.from(map)
   }
 
+  private val fakeBitsoBookValidator = new BitsoBookValidator {
+    override protected def availableBooks: List[Book] = ???
+
+    override def validateBook(book: Book): ApplicationResult[Book] = Good(book)
+  }
+
+  private val fakeBittrexBookValidator = new BittrexBookValidator {
+    override protected def availableBooks: List[Book] = ???
+
+    override def validateBook(book: Book): ApplicationResult[Book] = Good(book)
+  }
+
   val guiceApplicationBuilder: GuiceApplicationBuilder = GuiceApplicationBuilder(loadConfiguration = loadConfigWithoutEvolutions)
       .in(Mode.Test)
       .disable(classOf[AlertTaskModule])
       .overrides(bind[Database].to(dummyDB))
       .overrides(bind[DBApi].to(dummyDBApi))
       .overrides(bind[EmailServiceTrait].to(new FakeEmailService))
+      .overrides(bind[BitsoBookValidator].to(fakeBitsoBookValidator))
+      .overrides(bind[BittrexBookValidator].to(fakeBittrexBookValidator))
 
   def application: Application
 

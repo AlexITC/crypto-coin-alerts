@@ -6,7 +6,7 @@ import com.alexitc.coinalerts.models.Book
 import com.alexitc.coinalerts.tasks.models.Ticker
 import org.slf4j.LoggerFactory
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsPath, Reads}
+import play.api.libs.json.{JsPath, JsValue, Reads}
 import play.api.libs.ws.{WSClient, WSResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -16,6 +16,30 @@ class BittrexService @Inject() (ws: WSClient)(implicit ec: ExecutionContext) {
   private val logger = LoggerFactory.getLogger(this.getClass)
 
   private val BaseURL = "https://bittrex.com/api/v1.1/public"
+
+  def availableBooks: Future[List[Book]] = {
+    val url = s"$BaseURL/getmarkets"
+    ws.url(url)
+        .get()
+        .map { response =>
+          Option(response)
+              .flatMap(toJson)
+              .map { json =>
+                val resultList = (json \ "result")
+                    .as[List[JsValue]]
+
+                resultList.flatMap { result =>
+                  val baseMaybe = (result \ "BaseCurrency").asOpt[String]
+                  val marketMaybe = (result \ "MarketCurrency").asOpt[String]
+                  for (base <- baseMaybe; market <- marketMaybe)
+                    yield Book(base, market)
+                }
+              }.getOrElse {
+                logger.warn(s"Unexpected response from BITTREX, status = [${response.status}]")
+                List.empty
+              }
+        }
+  }
 
   def getTickerList(): Future[List[Ticker]] = {
     val url = s"$BaseURL/getmarketsummaries"
