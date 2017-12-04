@@ -1,13 +1,15 @@
 package com.alexitc.coinalerts.services.validators
 
+import javax.inject.Inject
+
 import com.alexitc.coinalerts.commons.ApplicationResult
 import com.alexitc.coinalerts.models.CreateDailyPriceAlertModel
-import org.scalactic.Good
 
-class DailyPriceAlertValidator {
+class DailyPriceAlertValidator @Inject() (marketBookValidator: MarketBookValidator) {
 
-  def validate(createDailyPriceAlert: CreateDailyPriceAlertModel): ApplicationResult[CreateDailyPriceAlertModel] = {
-    // TODO: Validate Book and Price
-    Good(createDailyPriceAlert)
+  def validate(createModel: CreateDailyPriceAlertModel): ApplicationResult[CreateDailyPriceAlertModel] = {
+    marketBookValidator
+        .validate(createModel.book, createModel.market)
+        .map(_ => createModel)
   }
 }
