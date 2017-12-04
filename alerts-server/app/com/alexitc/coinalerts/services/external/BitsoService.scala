@@ -1,16 +1,15 @@
-package com.alexitc.coinalerts.tasks.clients
+package com.alexitc.coinalerts.services.external
 
 import javax.inject.Inject
 
-import com.alexitc.coinalerts.config.TaskExecutionContext
 import com.alexitc.coinalerts.models.Book
 import com.alexitc.coinalerts.tasks.models.Ticker
 import com.bitso.{Bitso, BitsoTicker}
 import org.slf4j.LoggerFactory
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-class BitsoClient @Inject() (bitso: Bitso)(implicit ec: TaskExecutionContext) {
+class BitsoService @Inject() (bitso: Bitso)(implicit ec: ExecutionContext) {
 
   private val logger = LoggerFactory.getLogger(this.getClass)
 
