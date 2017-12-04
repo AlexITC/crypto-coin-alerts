@@ -1,13 +1,18 @@
 package com.alexitc.coinalerts.services.validators
 
-import com.alexitc.coinalerts.errors.{InvalidBasePriceError, InvalidPriceError}
+import com.alexitc.coinalerts.commons.ApplicationResult
+import com.alexitc.coinalerts.errors.{InvalidBasePriceError, InvalidPriceError, UnknownBookError}
 import com.alexitc.coinalerts.models.{Book, CreateFixedPriceAlertModel, Market}
-import org.scalactic.Bad
+import org.scalactic.{Bad, Good}
 import org.scalatest.{MustMatchers, WordSpec}
 
 class FixedPriceAlertValidatorSpec extends WordSpec with MustMatchers {
 
-  val validator = new FixedPriceAlertValidator
+  val anyMarketBookValidator = new MarketBookValidator {
+    override def validate(book: Book, market: Market): ApplicationResult[Book] = Good(book)
+  }
+
+  val validator = new FixedPriceAlertValidator(anyMarketBookValidator)
   val validAlert = CreateFixedPriceAlertModel(Market.BITSO, Book("BTC", "MXN"), true, BigDecimal("4000.00"), None)
   val validAlertWithBasePrice = validAlert.copy(basePrice = Some(BigDecimal("3000.00")))
 
@@ -32,6 +37,16 @@ class FixedPriceAlertValidatorSpec extends WordSpec with MustMatchers {
       val alert = validAlertWithBasePrice.copy(basePrice = Some(BigDecimal("0")))
       val result = validator.validateCreateModel(alert)
       result mustEqual Bad(InvalidBasePriceError).accumulating
+    }
+
+    "reject an alert having an invalid book" in {
+      val allInvalidValidator = new MarketBookValidator {
+        override def validate(book: Book, market: Market): ApplicationResult[Book] = Bad(UnknownBookError).accumulating
+      }
+      val validator = new FixedPriceAlertValidator(allInvalidValidator)
+
+      val result = validator.validateCreateModel(validAlert)
+      result mustEqual Bad(UnknownBookError).accumulating
     }
   }
 }

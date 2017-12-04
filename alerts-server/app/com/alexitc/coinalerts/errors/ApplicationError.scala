@@ -61,6 +61,7 @@ case object InvalidPriceError extends CreateAlertError with InputValidationError
 case object InvalidBasePriceError extends CreateAlertError with InputValidationError
 case object BasePriceRequiredError extends CreateAlertError with InputValidationError
 case object BasePriceNotExpectedError extends CreateAlertError with InputValidationError
+case object UnknownBookError extends CreateAlertError with InputValidationError
 
 //
 case object AlertNotFound extends NotFoundError
