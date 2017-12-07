@@ -1,5 +1,6 @@
 package com.alexitc.coinalerts.models
 
+import com.alexitc.coinalerts.core.WrappedLong
 import play.api.libs.json._
 
 case class FixedPriceAlert(
@@ -15,11 +16,7 @@ object FixedPriceAlert {
   implicit val writes: Writes[FixedPriceAlert] = Json.writes[FixedPriceAlert]
 }
 
-case class FixedPriceAlertId(long: Long) extends AnyVal
-object FixedPriceAlertId {
-
-  implicit val writes: Writes[FixedPriceAlertId] = Writes[FixedPriceAlertId] { id => JsNumber(id.long) }
-}
+case class FixedPriceAlertId(long: Long) extends AnyVal with WrappedLong
 
 case class CreateFixedPriceAlertModel(
     market: Market,
