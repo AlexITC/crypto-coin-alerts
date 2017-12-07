@@ -2,6 +2,7 @@ package com.alexitc.coinalerts.data
 import java.time.OffsetDateTime
 
 import com.alexitc.coinalerts.commons.{ApplicationResult, RandomDataGenerator}
+import com.alexitc.coinalerts.core.{Count, PaginatedQuery, PaginatedResult}
 import com.alexitc.coinalerts.errors.RepeatedDailyPriceAlertError
 import com.alexitc.coinalerts.models.{CreateDailyPriceAlertModel, DailyPriceAlert, UserId}
 import org.scalactic.{Bad, Good}
@@ -26,5 +27,17 @@ class DailyPriceAlertInMemoryDataHandler extends DailyPriceAlertBlockingDataHand
       alertList += alert
       Good(alert)
     }
+  }
+
+  override def getAlerts(userId: UserId, query: PaginatedQuery): ApplicationResult[PaginatedResult[DailyPriceAlert]] = {
+    val userAlertList = alertList.toList.filter(_.userId == userId)
+
+    val result = PaginatedResult(
+      total = Count(userAlertList.length),
+      offset = query.offset,
+      limit = query.limit,
+      data = userAlertList.slice(query.offset.int, query.offset.int + query.limit.int))
+
+    Good(result)
   }
 }

@@ -1,14 +1,16 @@
 package com.alexitc.coinalerts.data.anorm
 
-import com.alexitc.coinalerts.commons.{DataHelper, PostgresDataHandlerSpec}
-import com.alexitc.coinalerts.data.anorm.dao.{DailyPriceAlertDAO, UserPostgresDAO}
+import com.alexitc.coinalerts.commons.DataHelper.createUnverifiedUser
+import com.alexitc.coinalerts.commons.{DataHelper, PostgresDataHandlerSpec, RandomDataGenerator}
+import com.alexitc.coinalerts.core.{Count, Limit, Offset, PaginatedQuery}
+import com.alexitc.coinalerts.data.anorm.dao.{DailyPriceAlertPostgresDAO, UserPostgresDAO}
 import com.alexitc.coinalerts.errors.RepeatedDailyPriceAlertError
-import com.alexitc.coinalerts.models.{Book, CreateDailyPriceAlertModel, Market}
+import com.alexitc.coinalerts.models.{Book, CreateDailyPriceAlertModel, Market, UserId}
 import org.scalactic.Bad
 
 class DailyPriceAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
 
-  lazy val dailyPriceAlertDataHandler = new DailyPriceAlertPostgresDataHandler(database, new DailyPriceAlertDAO)
+  lazy val dailyPriceAlertDataHandler = new DailyPriceAlertPostgresDataHandler(database, new DailyPriceAlertPostgresDAO)
   implicit lazy val userDataHandler = new UserPostgresDataHandler(database, new UserPostgresDAO)
 
   "Creating a daily price alert" should {
@@ -29,6 +31,53 @@ class DailyPriceAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
       val result = dailyPriceAlertDataHandler.create(user.id, model)
 
       result mustEqual Bad(RepeatedDailyPriceAlertError).accumulating
+    }
+  }
+
+  "retrieving user alerts" should {
+    "return empty result for non-existent user" in {
+      val userId = UserId.create
+      val query = PaginatedQuery(Offset(0), Limit(10))
+      val result = dailyPriceAlertDataHandler.getAlerts(userId, query).get
+      result.data.isEmpty mustEqual true
+      result.total mustEqual Count(0)
+    }
+
+    "return empty result when the offset is greater than the total elements" in {
+      val user = createUnverifiedUser()
+      dailyPriceAlertDataHandler.create(user.id, RandomDataGenerator.createDailyPriceAlertModel())
+
+      val query = PaginatedQuery(Offset(1), Limit(1))
+      val result = dailyPriceAlertDataHandler.getAlerts(user.id, query).get
+      result.data.isEmpty mustEqual true
+      result.total mustEqual Count(1)
+    }
+
+    "return a result that is paginated properly" in {
+      val user = createUnverifiedUser()
+      dailyPriceAlertDataHandler.create(user.id, RandomDataGenerator.createDailyPriceAlertModel())
+      dailyPriceAlertDataHandler.create(user.id, RandomDataGenerator.createDailyPriceAlertModel())
+
+      val query = PaginatedQuery(Offset(0), Limit(1))
+      val result = dailyPriceAlertDataHandler.getAlerts(user.id, query).get
+      result.offset mustEqual query.offset
+      result.limit mustEqual query.limit
+      result.total mustEqual Count(2)
+      result.data.length mustEqual query.limit.int
+    }
+
+    "return a result for the second page different to the one on the first page" in {
+      val user = createUnverifiedUser()
+      dailyPriceAlertDataHandler.create(user.id, RandomDataGenerator.createDailyPriceAlertModel())
+      dailyPriceAlertDataHandler.create(user.id, RandomDataGenerator.createDailyPriceAlertModel())
+
+      val page1Query = PaginatedQuery(Offset(0), Limit(1))
+      val page1Result = dailyPriceAlertDataHandler.getAlerts(user.id, page1Query).get
+
+      val page2Query = PaginatedQuery(Offset(1), Limit(1))
+      val page2Result = dailyPriceAlertDataHandler.getAlerts(user.id, page2Query).get
+
+      page1Result.data.head.id mustNot be(page2Result.data.head.id)
     }
   }
 }

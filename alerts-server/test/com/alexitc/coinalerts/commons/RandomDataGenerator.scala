@@ -1,5 +1,6 @@
 package com.alexitc.coinalerts.commons
 
+import com.alexitc.coinalerts.models.Market.{BITSO, BITTREX}
 import com.alexitc.coinalerts.models._
 
 import scala.util.Random
@@ -28,6 +29,11 @@ object RandomDataGenerator {
     charset(index)
   }
 
+  def item[A](list: Seq[A]): A = {
+    val index = Random.nextInt(list.length)
+    list(index)
+  }
+
   def email = {
     val user = alpha(8)
     val domain = alpha(5)
@@ -47,4 +53,18 @@ object RandomDataGenerator {
       book: Book = Book("BTC", "MXN"),
       isGreaterThan: Boolean = Random.nextBoolean(),
       givenPrice: BigDecimal = BigDecimal(Math.abs(Random.nextDouble()))) = CreateFixedPriceAlertModel(market, book, isGreaterThan, givenPrice, None)
+
+  def market = {
+    val marketList = List(BITSO.string, BITTREX.string)
+    Market.fromDatabaseString(item(marketList))
+  }
+
+  def book = {
+    val baseList = "BTC ETH XRP XMR ADA".split(" ")
+    val otherList = "MXN USD EUR GBP".split(" ")
+
+    Book(item(baseList), item(otherList))
+  }
+
+  def createDailyPriceAlertModel(market: Market = market, book: Book = book) = CreateDailyPriceAlertModel(market, book)
 }
