@@ -163,8 +163,8 @@ class FixedPriceAlertsControllerSpec extends PlayAPISpec {
     "Return a paginated result based on the query" in {
       val user = createVerifiedUser()
       val token = jwtService.createToken(user.id)
-      createAlert(user.id)
-      createAlert(user.id)
+      createFixedPriceAlert(user.id)
+      createFixedPriceAlert(user.id)
 
       val query = PaginatedQuery(Offset(1), Limit(10))
       val response = GET(url.withQueryParams(query), token.toHeader)

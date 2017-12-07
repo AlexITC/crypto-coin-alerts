@@ -23,7 +23,7 @@ object DataHelper {
     userDataHandler.create(email, UserHiddenPassword.fromPassword(password)).get
   }
 
-  def createAlert(
+  def createFixedPriceAlert(
       userId: UserId,
       createAlertModel: CreateFixedPriceAlertModel = RandomDataGenerator.createDefaultAlertModel())(
       implicit alertDataHandler: FixedPriceAlertBlockingDataHandler) = {
