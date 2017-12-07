@@ -4,7 +4,7 @@ import javax.inject.Inject
 
 import com.alexitc.coinalerts.commons.FutureApplicationResult
 import com.alexitc.coinalerts.commons.FutureOr.Implicits.{FutureOps, OrOps}
-import com.alexitc.coinalerts.core.{PaginatedQuery, PaginatedResult}
+import com.alexitc.coinalerts.core.{FuturePaginatedResult, PaginatedQuery}
 import com.alexitc.coinalerts.data.async.FixedPriceAlertFutureDataHandler
 import com.alexitc.coinalerts.models._
 import com.alexitc.coinalerts.services.validators.{FixedPriceAlertValidator, PaginatedQueryValidator}
@@ -29,7 +29,7 @@ class FixedPriceAlertService @Inject() (
     result.toFuture
   }
 
-  def getAlerts(userId: UserId, query: PaginatedQuery): FutureApplicationResult[PaginatedResult[FixedPriceAlert]] = {
+  def getAlerts(userId: UserId, query: PaginatedQuery): FuturePaginatedResult[FixedPriceAlert] = {
     val result = for {
       validatedQuery <- paginatedQueryValidator.validate(query).toFutureOr
       paginatedResult <- alertFutureDataHandler.getAlerts(userId, validatedQuery).toFutureOr

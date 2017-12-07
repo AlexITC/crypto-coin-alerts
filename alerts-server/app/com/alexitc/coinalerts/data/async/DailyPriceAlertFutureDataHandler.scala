@@ -4,7 +4,7 @@ import javax.inject.Inject
 
 import com.alexitc.coinalerts.commons.FutureApplicationResult
 import com.alexitc.coinalerts.config.DatabaseExecutionContext
-import com.alexitc.coinalerts.core.{PaginatedQuery, PaginatedResult}
+import com.alexitc.coinalerts.core.{FuturePaginatedResult, PaginatedQuery}
 import com.alexitc.coinalerts.data.{DailyPriceAlertBlockingDataHandler, DailyPriceAlertDataHandler}
 import com.alexitc.coinalerts.models.{CreateDailyPriceAlertModel, DailyPriceAlert, UserId}
 
@@ -19,7 +19,7 @@ class DailyPriceAlertFutureDataHandler @Inject() (
     dailyPriceAlertBlockingDataHandler.create(userId, createDailyPriceAlert)
   }
 
-  override def getAlerts(userId: UserId, query: PaginatedQuery): FutureApplicationResult[PaginatedResult[DailyPriceAlert]] = Future {
+  override def getAlerts(userId: UserId, query: PaginatedQuery): FuturePaginatedResult[DailyPriceAlert] = Future {
     dailyPriceAlertBlockingDataHandler.getAlerts(userId, query)
   }
 }

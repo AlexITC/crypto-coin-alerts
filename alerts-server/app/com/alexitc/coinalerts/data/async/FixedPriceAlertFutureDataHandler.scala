@@ -4,7 +4,7 @@ import javax.inject.Inject
 
 import com.alexitc.coinalerts.commons.FutureApplicationResult
 import com.alexitc.coinalerts.config.DatabaseExecutionContext
-import com.alexitc.coinalerts.core.{PaginatedQuery, PaginatedResult}
+import com.alexitc.coinalerts.core.{FuturePaginatedResult, PaginatedQuery}
 import com.alexitc.coinalerts.data.{FixedPriceAlertBlockingDataHandler, FixedPriceAlertDataHandler}
 import com.alexitc.coinalerts.models._
 
@@ -31,7 +31,7 @@ class FixedPriceAlertFutureDataHandler @Inject() (
     blockingDataHandler.findPendingAlertsForPrice(market, book, currentPrice)
   }
 
-  override def getAlerts(userId: UserId, query: PaginatedQuery): FutureApplicationResult[PaginatedResult[FixedPriceAlert]] = Future {
+  override def getAlerts(userId: UserId, query: PaginatedQuery): FuturePaginatedResult[FixedPriceAlert] = Future {
     blockingDataHandler.getAlerts(userId, query)
   }
 }
