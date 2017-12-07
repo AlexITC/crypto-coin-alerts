@@ -3,7 +3,7 @@ package com.alexitc.coinalerts.data.anorm
 import com.alexitc.coinalerts.commons.DataHelper.createUnverifiedUser
 import com.alexitc.coinalerts.commons.{DataHelper, PostgresDataHandlerSpec, RandomDataGenerator}
 import com.alexitc.coinalerts.core.{Count, Limit, Offset, PaginatedQuery}
-import com.alexitc.coinalerts.data.anorm.dao.{DailyPriceAlertPostgresDAO, UserPostgresDAO}
+import com.alexitc.coinalerts.data.anorm.dao.DailyPriceAlertPostgresDAO
 import com.alexitc.coinalerts.errors.RepeatedDailyPriceAlertError
 import com.alexitc.coinalerts.models.{Book, CreateDailyPriceAlertModel, Market, UserId}
 import org.scalactic.Bad
@@ -11,7 +11,6 @@ import org.scalactic.Bad
 class DailyPriceAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
 
   lazy val dailyPriceAlertDataHandler = new DailyPriceAlertPostgresDataHandler(database, new DailyPriceAlertPostgresDAO)
-  implicit lazy val userDataHandler = new UserPostgresDataHandler(database, new UserPostgresDAO)
 
   "Creating a daily price alert" should {
     "be able to create a valid alert" in {

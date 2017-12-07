@@ -3,8 +3,7 @@ package com.alexitc.coinalerts.controllers
 import com.alexitc.coinalerts.commons.DataHelper._
 import com.alexitc.coinalerts.commons.PlayAPISpec
 import com.alexitc.coinalerts.core.{Limit, Offset, PaginatedQuery}
-import com.alexitc.coinalerts.data._
-import com.alexitc.coinalerts.services.JWTService
+import com.alexitc.coinalerts.data.{FixedPriceAlertBlockingDataHandler, FixedPriceAlertInMemoryDataHandler}
 import play.api.Application
 import play.api.inject.bind
 import play.api.libs.json.JsValue
@@ -14,15 +13,11 @@ class FixedPriceAlertsControllerSpec extends PlayAPISpec {
 
   import PlayAPISpec._
 
-  implicit val userDataHandler: UserBlockingDataHandler = new UserInMemoryDataHandler {}
   implicit val alertDataHandler: FixedPriceAlertBlockingDataHandler = new FixedPriceAlertInMemoryDataHandler {}
 
   val application: Application = guiceApplicationBuilder
-      .overrides(bind[UserBlockingDataHandler].to(userDataHandler))
       .overrides(bind[FixedPriceAlertBlockingDataHandler].to(alertDataHandler))
       .build()
-
-  val jwtService = application.injector.instanceOf[JWTService]
 
   "POST /fixed-price-alerts" should {
     val url = "/fixed-price-alerts"

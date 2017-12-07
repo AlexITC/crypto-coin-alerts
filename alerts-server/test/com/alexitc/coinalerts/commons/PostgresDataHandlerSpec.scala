@@ -1,5 +1,7 @@
 package com.alexitc.coinalerts.commons
 
+import com.alexitc.coinalerts.data.anorm.UserPostgresDataHandler
+import com.alexitc.coinalerts.data.anorm.dao.UserPostgresDAO
 import com.spotify.docker.client.DefaultDockerClient
 import com.whisk.docker.DockerFactory
 import com.whisk.docker.impl.spotify.SpotifyDockerFactory
@@ -57,4 +59,6 @@ trait PostgresDataHandlerSpec
 
     database
   }
+
+  implicit lazy val userDataHandler = new UserPostgresDataHandler(database, new UserPostgresDAO)
 }

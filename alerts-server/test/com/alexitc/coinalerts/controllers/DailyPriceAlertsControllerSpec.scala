@@ -2,11 +2,10 @@ package com.alexitc.coinalerts.controllers
 
 import java.time.OffsetDateTime
 
-import com.alexitc.coinalerts.commons.{DataHelper, PlayAPISpec}
+import com.alexitc.coinalerts.commons.{DataHelper, PlayAPISpec, RandomDataGenerator}
 import com.alexitc.coinalerts.core.{Limit, Offset, PaginatedQuery}
-import com.alexitc.coinalerts.data._
+import com.alexitc.coinalerts.data.{DailyPriceAlertBlockingDataHandler, DailyPriceAlertInMemoryDataHandler}
 import com.alexitc.coinalerts.models.{Book, CreateDailyPriceAlertModel, Market}
-import com.alexitc.coinalerts.services.JWTService
 import play.api.Application
 import play.api.inject.bind
 import play.api.libs.json.JsValue
@@ -16,15 +15,11 @@ class DailyPriceAlertsControllerSpec extends PlayAPISpec {
 
   import PlayAPISpec._
 
-  implicit val userDataHandler: UserBlockingDataHandler = new UserInMemoryDataHandler {}
   implicit val dailyPriceAlertDataHandler: DailyPriceAlertBlockingDataHandler = new DailyPriceAlertInMemoryDataHandler {}
 
   val application: Application = guiceApplicationBuilder
-      .overrides(bind[UserBlockingDataHandler].to(userDataHandler))
       .overrides(bind[DailyPriceAlertBlockingDataHandler].to(dailyPriceAlertDataHandler))
       .build()
-
-  val jwtService = application.injector.instanceOf[JWTService]
 
   "POST /daily-price-alerts" should {
     val url = "/daily-price-alerts"
@@ -105,8 +100,8 @@ class DailyPriceAlertsControllerSpec extends PlayAPISpec {
       val query = PaginatedQuery(Offset(1), Limit(10))
       val user = DataHelper.createVerifiedUser()
       val token = jwtService.createToken(user.id)
-      DataHelper.createDailyPriceAlert(user.id)
-      DataHelper.createDailyPriceAlert(user.id)
+      DataHelper.createDailyPriceAlert(user.id, RandomDataGenerator.createDailyPriceAlertModel(book = Book("ETH", "MXN")))
+      DataHelper.createDailyPriceAlert(user.id, RandomDataGenerator.createDailyPriceAlertModel(book = Book("BTC", "MXN")))
 
       val response = GET(url.withQueryParams(query), token.toHeader)
       status(response) mustEqual OK

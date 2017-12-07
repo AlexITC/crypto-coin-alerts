@@ -3,10 +3,11 @@ package com.alexitc.coinalerts.commons
 import java.net.URLEncoder
 
 import com.alexitc.coinalerts.core.{AuthorizationToken, PaginatedQuery}
+import com.alexitc.coinalerts.data._
 import com.alexitc.coinalerts.models.Book
 import com.alexitc.coinalerts.modules.AlertTaskModule
-import com.alexitc.coinalerts.services.EmailServiceTrait
 import com.alexitc.coinalerts.services.validators.{BitsoBookValidator, BittrexBookValidator}
+import com.alexitc.coinalerts.services.{EmailServiceTrait, JWTService}
 import org.scalactic.Good
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.PlaySpec
@@ -65,6 +66,10 @@ trait PlayAPISpec extends PlaySpec with ScalaFutures {
     override def validateBook(book: Book): ApplicationResult[Book] = Good(book)
   }
 
+  /***********************************************************************/
+
+  implicit val userDataHandler: UserBlockingDataHandler = new UserInMemoryDataHandler {}
+
   val guiceApplicationBuilder: GuiceApplicationBuilder = GuiceApplicationBuilder(loadConfiguration = loadConfigWithoutEvolutions)
       .in(Mode.Test)
       .disable(classOf[AlertTaskModule])
@@ -73,8 +78,14 @@ trait PlayAPISpec extends PlaySpec with ScalaFutures {
       .overrides(bind[EmailServiceTrait].to(new FakeEmailService))
       .overrides(bind[BitsoBookValidator].to(fakeBitsoBookValidator))
       .overrides(bind[BittrexBookValidator].to(fakeBittrexBookValidator))
+      .overrides(bind[UserBlockingDataHandler].to(userDataHandler))
 
   def application: Application
+
+  lazy val jwtService = application.injector.instanceOf[JWTService]
+
+
+  /***********************************************************************/
 
   private val JsonHeader = CONTENT_TYPE -> "application/json"
   private val EmptyJson = "{}"

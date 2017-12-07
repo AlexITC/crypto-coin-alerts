@@ -2,21 +2,13 @@ package com.alexitc.coinalerts.controllers
 
 import com.alexitc.coinalerts.commons.PlayAPISpec.AuthorizationTokenExt
 import com.alexitc.coinalerts.commons.{DataHelper, PlayAPISpec, RandomDataGenerator}
-import com.alexitc.coinalerts.data.{UserBlockingDataHandler, UserInMemoryDataHandler}
 import com.alexitc.coinalerts.models._
-import com.alexitc.coinalerts.services.JWTService
 import play.api.Application
-import play.api.inject.bind
 import play.api.test.Helpers._
 
 class UsersControllerSpec extends PlayAPISpec {
 
-  implicit val userDataHandler = new UserInMemoryDataHandler {}
-  val application: Application = guiceApplicationBuilder
-      .overrides(bind[UserBlockingDataHandler].to(userDataHandler))
-      .build()
-
-  val jwtService = application.injector.instanceOf[JWTService]
+  val application: Application = guiceApplicationBuilder.build()
 
   "POST /users" should {
 

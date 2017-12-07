@@ -3,14 +3,13 @@ package com.alexitc.coinalerts.data.anorm
 import com.alexitc.coinalerts.commons.DataHelper._
 import com.alexitc.coinalerts.commons.{PostgresDataHandlerSpec, RandomDataGenerator}
 import com.alexitc.coinalerts.core.{Count, Limit, Offset, PaginatedQuery}
-import com.alexitc.coinalerts.data.anorm.dao.{FixedPriceAlertPostgresDAO, UserPostgresDAO}
+import com.alexitc.coinalerts.data.anorm.dao.FixedPriceAlertPostgresDAO
 import com.alexitc.coinalerts.errors.{AlertNotFound, InvalidPriceError}
 import com.alexitc.coinalerts.models._
 import org.scalactic.Bad
 
 class FixedPriceAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
 
-  implicit lazy val userPostgresDataHandler = new UserPostgresDataHandler(database, new UserPostgresDAO)
   lazy val alertPostgresDataHandler = new FixedPriceAlertPostgresDataHandler(database, new FixedPriceAlertPostgresDAO)
   lazy val verifiedUser = createVerifiedUser()
 
