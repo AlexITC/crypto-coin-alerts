@@ -12,3 +12,4 @@ POST   /fixed-price-alerts              controllers.FixedPriceAlertsController.c
 GET    /fixed-price-alerts              controllers.FixedPriceAlertsController.getAlerts(query: com.alexitc.coinalerts.core.PaginatedQuery)
 
 POST   /daily-price-alerts              controllers.DailyPriceAlertsController.create()
+GET    /daily-price-alerts              controllers.DailyPriceAlertsController.getAlerts(query: com.alexitc.coinalerts.core.PaginatedQuery)

@@ -1,6 +1,9 @@
 package com.alexitc.coinalerts.controllers
 
+import java.time.OffsetDateTime
+
 import com.alexitc.coinalerts.commons.{DataHelper, PlayAPISpec}
+import com.alexitc.coinalerts.core.{Limit, Offset, PaginatedQuery}
 import com.alexitc.coinalerts.data._
 import com.alexitc.coinalerts.models.{Book, CreateDailyPriceAlertModel, Market}
 import com.alexitc.coinalerts.services.JWTService
@@ -92,6 +95,36 @@ class DailyPriceAlertsControllerSpec extends PlayAPISpec {
       (error \ "type").as[String] mustEqual "field-validation-error"
       (error \ "field").as[String] mustEqual "book"
       (error \ "message").as[String].nonEmpty mustEqual true
+    }
+  }
+
+  "GET /daily-price-alerts" should {
+    val url = "/daily-price-alerts"
+
+    "Return a paginated result based on the query" in {
+      val query = PaginatedQuery(Offset(1), Limit(10))
+      val user = DataHelper.createVerifiedUser()
+      val token = jwtService.createToken(user.id)
+      DataHelper.createDailyPriceAlert(user.id)
+      DataHelper.createDailyPriceAlert(user.id)
+
+      val response = GET(url.withQueryParams(query), token.toHeader)
+      status(response) mustEqual OK
+
+      val json = contentAsJson(response)
+      (json \ "total").as[Int] mustEqual 2
+      (json \ "offset").as[Int] mustEqual query.offset.int
+      (json \ "limit").as[Int] mustEqual query.limit.int
+
+      val jsonList = (contentAsJson(response) \ "data").as[List[JsValue]]
+      jsonList.length mustEqual 1
+
+      val jsonItem = jsonList.head
+      (jsonItem \ "id").asOpt[Long].isDefined mustEqual true
+      (jsonItem \ "createdOn").asOpt[OffsetDateTime].isDefined mustEqual true
+      (jsonItem \ "userId").as[String] mustEqual user.id.string
+      (jsonItem \ "market").asOpt[String].isDefined mustEqual true
+      (jsonItem \ "book").asOpt[String].isDefined mustEqual true
     }
   }
 }

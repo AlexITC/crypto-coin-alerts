@@ -45,7 +45,7 @@ class DailyPriceAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
 
     "return empty result when the offset is greater than the total elements" in {
       val user = createUnverifiedUser()
-      dailyPriceAlertDataHandler.create(user.id, RandomDataGenerator.createDailyPriceAlertModel())
+      dailyPriceAlertDataHandler.create(user.id, RandomDataGenerator.createDailyPriceAlertModel(book = Book("ETH", "MXN")))
 
       val query = PaginatedQuery(Offset(1), Limit(1))
       val result = dailyPriceAlertDataHandler.getAlerts(user.id, query).get
@@ -55,8 +55,8 @@ class DailyPriceAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
 
     "return a result that is paginated properly" in {
       val user = createUnverifiedUser()
-      dailyPriceAlertDataHandler.create(user.id, RandomDataGenerator.createDailyPriceAlertModel())
-      dailyPriceAlertDataHandler.create(user.id, RandomDataGenerator.createDailyPriceAlertModel())
+      dailyPriceAlertDataHandler.create(user.id, RandomDataGenerator.createDailyPriceAlertModel(book = Book("ETH", "MXN")))
+      dailyPriceAlertDataHandler.create(user.id, RandomDataGenerator.createDailyPriceAlertModel(book = Book("BTC", "MXN")))
 
       val query = PaginatedQuery(Offset(0), Limit(1))
       val result = dailyPriceAlertDataHandler.getAlerts(user.id, query).get
@@ -68,8 +68,8 @@ class DailyPriceAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
 
     "return a result for the second page different to the one on the first page" in {
       val user = createUnverifiedUser()
-      dailyPriceAlertDataHandler.create(user.id, RandomDataGenerator.createDailyPriceAlertModel())
-      dailyPriceAlertDataHandler.create(user.id, RandomDataGenerator.createDailyPriceAlertModel())
+      dailyPriceAlertDataHandler.create(user.id, RandomDataGenerator.createDailyPriceAlertModel(book = Book("ETH", "MXN")))
+      dailyPriceAlertDataHandler.create(user.id, RandomDataGenerator.createDailyPriceAlertModel(book = Book("BTC", "MXN")))
 
       val page1Query = PaginatedQuery(Offset(0), Limit(1))
       val page1Result = dailyPriceAlertDataHandler.getAlerts(user.id, page1Query).get
