@@ -1,6 +1,5 @@
 package com.alexitc.coinalerts.models
 
-import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
 case class FixedPriceAlert(
@@ -13,17 +12,7 @@ case class FixedPriceAlert(
     basePrice: Option[BigDecimal] = None
 )
 object FixedPriceAlert {
-  implicit val writes: Writes[FixedPriceAlert] = (
-      (JsPath \ "id").write[FixedPriceAlertId] and
-          (JsPath \ "market").write[Market] and
-          (JsPath \ "book").write[Book] and
-          (JsPath \ "isGreaterThan").write[Boolean] and
-          (JsPath \ "price").write[BigDecimal] and
-          (JsPath \ "basePrice").writeNullable[BigDecimal]
-      ) { alert =>
-
-    (alert.id, alert.market, alert.book, alert.isGreaterThan, alert.price, alert.basePrice)
-  }
+  implicit val writes: Writes[FixedPriceAlert] = Json.writes[FixedPriceAlert]
 }
 
 case class FixedPriceAlertId(long: Long) extends AnyVal
@@ -41,13 +30,5 @@ case class CreateFixedPriceAlertModel(
 )
 object CreateFixedPriceAlertModel {
 
-  implicit val reads: Reads[CreateFixedPriceAlertModel] = {
-    val builder = (JsPath \ "market").read[Market] and
-        (JsPath \ "book").read[Book] and
-        (JsPath \ "isGreaterThan").read[Boolean] and
-        (JsPath \ "price").read[BigDecimal] and
-        (JsPath \ "basePrice").readNullable[BigDecimal]
-
-    builder(CreateFixedPriceAlertModel.apply _)
-  }
+  implicit val reads: Reads[CreateFixedPriceAlertModel] = Json.reads[CreateFixedPriceAlertModel]
 }
