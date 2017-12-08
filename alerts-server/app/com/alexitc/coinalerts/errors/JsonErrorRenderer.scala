@@ -66,8 +66,8 @@ class JsonErrorRenderer @Inject() (messagesApi: MessagesApi) {
     case error: LoginByEmailError =>
       List(renderLoginByEmailError(error))
 
-    case error: CreateAlertError =>
-      List(renderCreateAlertError(error))
+    case error: CreateFixedPriceAlertError =>
+      List(renderCreateFixedPriceAlertError(error))
 
     case error: PaginatedQueryError =>
       List(renderPaginatedQueryError(error))
@@ -121,7 +121,7 @@ class JsonErrorRenderer @Inject() (messagesApi: MessagesApi) {
       FieldValidationError("password", message)
   }
 
-  private def renderCreateAlertError(error: CreateAlertError)(implicit lang: Lang) = error match {
+  private def renderCreateFixedPriceAlertError(error: CreateFixedPriceAlertError)(implicit lang: Lang) = error match {
     case UnknownAlertTypeError =>
       val message = messagesApi("error.alertType.unknown")
       FieldValidationError("alertType", message)
