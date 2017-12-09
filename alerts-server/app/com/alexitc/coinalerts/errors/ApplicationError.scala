@@ -56,11 +56,8 @@ case object MailgunSendEmailError extends MailgunError with InputValidationError
 
 // Create alert
 sealed trait CreateFixedPriceAlertError extends ApplicationError
-case object UnknownAlertTypeError extends CreateFixedPriceAlertError with InputValidationError
 case object InvalidPriceError extends CreateFixedPriceAlertError with InputValidationError
 case object InvalidBasePriceError extends CreateFixedPriceAlertError with InputValidationError
-case object BasePriceRequiredError extends CreateFixedPriceAlertError with InputValidationError
-case object BasePriceNotExpectedError extends CreateFixedPriceAlertError with InputValidationError
 case object UnknownBookError extends CreateFixedPriceAlertError with InputValidationError
 
 //

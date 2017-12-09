@@ -122,24 +122,12 @@ class JsonErrorRenderer @Inject() (messagesApi: MessagesApi) {
   }
 
   private def renderCreateFixedPriceAlertError(error: CreateFixedPriceAlertError)(implicit lang: Lang) = error match {
-    case UnknownAlertTypeError =>
-      val message = messagesApi("error.alertType.unknown")
-      FieldValidationError("alertType", message)
-
     case InvalidPriceError =>
       val message = messagesApi("error.price.invalid")
       FieldValidationError("price", message)
 
     case InvalidBasePriceError =>
       val message = messagesApi("error.basePrice.invalid")
-      FieldValidationError("basePrice", message)
-
-    case BasePriceRequiredError =>
-      val message = messagesApi("error.basePrice.required")
-      FieldValidationError("basePrice", message)
-
-    case BasePriceNotExpectedError =>
-      val message = messagesApi("error.basePrice.notRequired")
       FieldValidationError("basePrice", message)
 
     case UnknownBookError =>
