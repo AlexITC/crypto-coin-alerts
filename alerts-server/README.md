@@ -31,10 +31,10 @@ In order to run the application locally, you will need the following dependencie
 There are some environment specific configuration values that you need to set to run the application successfully, the recommended way is to create a file `.env` (which is ignored by git to avoid you pushing sensitive data by accident)), then take the following content and update it according to your needs:
 ```bash
 # database
-export CRYTO_COIN_ALERTS_PSQL_HOST="localhost:5432"
-export CRYTO_COIN_ALERTS_PSQL_DATABASE="crypto_coin_alerts"
-export CRYTO_COIN_ALERTS_PSQL_USERNAME="postgres"
-export CRYTO_COIN_ALERTS_PSQL_PASSWORD="password"
+export CRYPTO_COIN_ALERTS_PSQL_HOST="localhost:5432"
+export CRYPTO_COIN_ALERTS_PSQL_DATABASE="crypto_coin_alerts"
+export CRYPTO_COIN_ALERTS_PSQL_USERNAME="postgres"
+export CRYPTO_COIN_ALERTS_PSQL_PASSWORD="password"
 # from mailgun
 export MAILGUN_API_SECRET_KEY="REPLACE_ME"
 export MAILGUN_DOMAIN="noreply.ccoinalerts.com"
