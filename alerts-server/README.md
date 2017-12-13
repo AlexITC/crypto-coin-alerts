@@ -17,8 +17,8 @@ At the moment it is supporting the following currency exchanges, more exchanges 
 - [BITSO](https://bitso.com/?l=en).
 
 The following alerts are supported while more alert types should be added soon:
-- Fixed price - Receive a notification when a currency gets above or below the given price.
-- Base price - The same as fixed price with better details, you set the price where you bought a coin and the price of interest, the received notification will contain details about the percentage of gain or loss.
+- Fixed price - Receive a notification when a currency gets above or below the given price, you can set a base price to receive a more detailed message.
+- Daily price - Receive a daily notification with the price of the currencies of your choice.
 
 ## Compile
 Execute `sbt compile` command for compiling the application.
