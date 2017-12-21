@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { isComponentView } from '@angular/core/src/view/util';
-import { unescape } from 'querystring';
 import { UsersService } from '../users.service';
 
 @Component({
@@ -98,7 +96,7 @@ export class NewAccountComponent implements OnInit {
   }
 
   hasCorrectValue(fieldName: string): boolean {
-    const control = this.findFieldControl(name);
+    const control = this.findFieldControl(fieldName);
     // field found && user changed it && it doesn't hold a wrong value
     const isCorrect = control && !control.pristine && !this.hasWrongValue(fieldName);
 
