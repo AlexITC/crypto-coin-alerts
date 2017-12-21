@@ -130,11 +130,6 @@ export class NewAccountComponent implements OnInit {
   }
 
   protected findFieldControl(fieldName: string): AbstractControl {
-    // TODO: verify why I'm not retrieving the control from the form
-    if (this.form.contains(fieldName)) {
-      return this.form.get(fieldName);
-    } else {
-      return this.form;
-    }
+    return this.form.get(fieldName);
   }
 }
