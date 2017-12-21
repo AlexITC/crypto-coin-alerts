@@ -60,7 +60,6 @@ export class NewAccountComponent implements OnInit {
 
   onSubmit() {
     console.log('submitting form');
-    // TODO: handle server errors
     // TODO: Disable submit button to avoid sending the same request twice
     this.usersService
       .create(this.form.get('email').value, this.form.get('password').value)
@@ -89,8 +88,8 @@ export class NewAccountComponent implements OnInit {
 
   protected setFieldError(fieldName: string, message: string) {
     const control = this.findFieldControl(fieldName);
-    // TODO: show the message in the field
-    const errors = { error: true };
+    // TODO: find a better way to set the error message
+    const errors = { [message]: true };
     control.setErrors(errors);
   }
 
