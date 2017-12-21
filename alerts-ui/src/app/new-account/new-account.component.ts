@@ -27,7 +27,7 @@ export class NewAccountComponent implements OnInit {
       const repeatPassword = group.controls[repeatPasswordKey];
 
       if (password.value !== repeatPassword.value) {
-        const errors = { passwordMismatch: true };
+        const errors = { 'validation.passwordMismatch': true };
         group.get(repeatPasswordKey).setErrors(errors);
       }
 
