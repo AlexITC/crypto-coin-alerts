@@ -10,12 +10,14 @@ import { AppNavbarComponent } from './app-navbar/app-navbar.component';
 import { NewAccountComponent } from './new-account/new-account.component';
 
 import { UsersService } from './users.service';
+import { LoginComponent } from './login/login.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     AppNavbarComponent,
-    NewAccountComponent
+    NewAccountComponent,
+    LoginComponent
   ],
   imports: [
     AlertModule.forRoot(),

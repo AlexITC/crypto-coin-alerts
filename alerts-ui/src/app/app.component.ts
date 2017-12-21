@@ -32,6 +32,7 @@ export class AppComponent {
       'field.repeatPassword': 'Repeat password',
       // actions
       'action.createAccount': 'Create account',
+      'action.login': 'Log in',
       // custom validations
       'validation.passwordMismatch': 'the password does not match'
     };
