@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UsersService } from '../users.service';
 
 @Component({
   selector: 'app-login',
@@ -12,7 +13,8 @@ export class LoginComponent implements OnInit {
   submitted = false;
 
   constructor(
-    private formBuilder: FormBuilder) {
+    private formBuilder: FormBuilder,
+    private usersService: UsersService) {
 
     this.createForm();
   }
@@ -36,10 +38,16 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log('submitting form');
+    // TODO: Disable submit button to avoid sending the same request twice
+    this.usersService
+      .login(this.form.get('email').value, this.form.get('password').value)
+      .subscribe(
+        response => this.onSubmitSuccess(response),
+        response => this.onSubmitError(response)
+      );
   }
 
-  protected onSubmitSuccess(response) {
+  protected onSubmitSuccess(response: any) {
     // TODO: do something useful
     console.log('Logged in: ' + JSON.stringify(response));
   }

@@ -11,6 +11,10 @@ class User {
   email: string;
 }
 
+class AuthorizationToken {
+  token: string;
+}
+
 @Injectable()
 export class UsersService {
 
@@ -22,5 +26,11 @@ export class UsersService {
   create(email: string, password: string): Observable<User> {
     const body = { email: email, password: password };
     return this.http.post<User>(this.baseUrl, body, httpOptions);
+  }
+
+  login(email: string, password: string): Observable<AuthorizationToken> {
+    const body = { email: email, password: password };
+    const url = this.baseUrl + '/login';
+    return this.http.post<AuthorizationToken>(url, body, httpOptions);
   }
 }
