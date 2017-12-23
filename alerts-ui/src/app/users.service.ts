@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
+
+import { AuthorizationToken } from './authorization-token';
 import { environment } from '../environments/environment';
 
 const httpOptions = {
@@ -10,10 +12,6 @@ const httpOptions = {
 class User {
   id: string;
   email: string;
-}
-
-class AuthorizationToken {
-  token: string;
 }
 
 @Injectable()
