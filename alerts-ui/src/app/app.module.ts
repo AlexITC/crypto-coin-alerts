@@ -11,6 +11,7 @@ import { NewAccountComponent } from './new-account/new-account.component';
 
 import { UsersService } from './users.service';
 import { LoginComponent } from './login/login.component';
+import { AuthService } from './auth.service';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,7 @@ import { LoginComponent } from './login/login.component';
     HttpClientModule,
     TranslateModule.forRoot()
   ],
-  providers: [UsersService],
+  providers: [UsersService, AuthService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
