@@ -17,30 +17,21 @@
       <li>
         <a href="#">Link 2</a>
       </li>
-      <li class="dropdown" dropdown>
-        <a dropdownToggle role="button">
-          Dropdown
-          <span class="caret"></span>
-        </a>
-        <ul *dropdownMenu class="dropdown-menu">
-          <li>
-            <a href="#">Item 1</a>
-          </li>
-          <li>
-            <a href="#">Item 2</a>
-          </li>
-          <li>
-            <a href="#">Item 3</a>
-          </li>
-          <li role="separator" class="divider"></li>
-          <li>
-            <a href="#">Item 4</a>
-          </li>
-          <li role="separator" class="divider"></li>
-          <li>
-            <a href="#">Item 5</a>
-          </li>
-        </ul>
+    </ul>
+    <ul [hidden]="isAuthenticated()" class="nav navbar-nav navbar-right">
+      <li>
+        <a href="/new-account">New account</a>
+      </li>
+      <li>
+        <a href="/login">Log in</a>
+      </li>
+    </ul>
+    <ul div [hidden]="!isAuthenticated()" class="nav navbar-nav navbar-right">
+      <li>
+        <button type="button" class="btn btn-link">{{getAuthenticatedUser()}}</button>
+      </li>
+      <li>
+        <button type="button" class="btn btn-link" (click)="logout()">Log out</button>
       </li>
     </ul>
   </div>
