@@ -1,23 +1,23 @@
 <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate role="form" class="form-horizontal">
 
-  <div [ngClass]="{ 'has-success': hasCorrectValue('email'), 'has-error': hasWrongValue('email') }" class="form-group">
+  <div [ngClass]="{ 'has-success': errorService.hasCorrectValue(form, 'email'), 'has-error': errorService.hasWrongValue(form, 'email') }" class="form-group">
     <label for="email" class="col-xs-3 col-sm-3 col-md-2 col-lg-2 control-label">{{ 'field.email' | translate }}</label>
     <div class="col-xs-3 col-sm-3 col-md-2 col-lg-2">
       <input formControlName="email" type="email" id="email" name="email" class="form-control">
     </div>
 
-    <div [hidden]="!hasWrongValue('email')" class="col-xs-4 col-sm-4 col-md-3 col-md-3">
-      <span class="help-block">{{ getFieldError('email') | translate }}</span>
+    <div [hidden]="!errorService.hasWrongValue(form, 'email')" class="col-xs-4 col-sm-4 col-md-3 col-md-3">
+      <span class="help-block">{{ errorService.getFieldError(form, 'email') | translate }}</span>
     </div>
   </div>
 
-  <div [ngClass]="{ 'has-error': hasWrongValue('password'), 'has-success': hasCorrectValue('password') }" class="form-group has-success">
+  <div [ngClass]="{ 'has-error': errorService.hasWrongValue(form, 'password'), 'has-success': errorService.hasCorrectValue(form, 'password') }" class="form-group has-success">
     <label for="password" class="col-xs-3 col-sm-3 col-md-2 col-lg-2 control-label">{{ 'field.password' | translate }}</label>
     <div class="col-xs-3 col-sm-3 col-md-2 col-lg-2">
       <input formControlName="password" type="password" id="password" name="password" class="form-control">
     </div>
-    <div [hidden]="!hasWrongValue('password')" class="col-xs-4 col-sm-4 col-md-3 col-md-3">
-      <span class="help-block">{{ getFieldError('password') | translate }}</span>
+    <div [hidden]="!errorService.hasWrongValue(form, 'password')" class="col-xs-4 col-sm-4 col-md-3 col-md-3">
+      <span class="help-block">{{ errorService.getFieldError(form, 'password') | translate }}</span>
     </div>
   </div>
 
