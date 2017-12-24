@@ -13,6 +13,7 @@ import { JWTInterceptor } from './jwt.interceptor';
 import { UsersService } from './users.service';
 import { LoginComponent } from './login/login.component';
 import { AuthService } from './auth.service';
+import { AppRoutingModule } from './app-routing.module';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { AuthService } from './auth.service';
     LoginComponent
   ],
   imports: [
+    AppRoutingModule,
     AlertModule.forRoot(),
     BsDropdownModule.forRoot(),
     TooltipModule.forRoot(),
