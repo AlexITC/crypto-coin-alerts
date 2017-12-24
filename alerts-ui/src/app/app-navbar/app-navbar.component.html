@@ -1,7 +1,7 @@
 <nav class="navbar navbar-default">
   <div class="container-fluid">
     <div class="navbar-header">
-      <a class="navbar-brand">
+      <a routerLink="/" class="navbar-brand">
         <!-- TODO: Use custom logo -->
         <img src="https://angular.io/assets/images/logos/angular/logo-nav@2x.png" class="logo">
       </a>
@@ -20,10 +20,10 @@
     </ul>
     <ul [hidden]="isAuthenticated()" class="nav navbar-nav navbar-right">
       <li>
-        <a href="/new-account">New account</a>
+        <a routerLink="/new-account">New account</a>
       </li>
       <li>
-        <a href="/login">Log in</a>
+        <a routerLink="/login">Log in</a>
       </li>
     </ul>
     <ul div [hidden]="!isAuthenticated()" class="nav navbar-nav navbar-right">
