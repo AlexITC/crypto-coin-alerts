@@ -49,7 +49,7 @@ export class ErrorService {
       });
   }
 
-  findFieldControl(form: FormGroup, fieldName: string): AbstractControl {
+  private findFieldControl(form: FormGroup, fieldName: string): AbstractControl {
     return form.get(fieldName);
   }
 }

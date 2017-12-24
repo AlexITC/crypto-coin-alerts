@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UsersService } from '../users.service';
+import { ErrorService } from '../error.service';
 
 @Component({
   selector: 'app-new-account',
@@ -10,11 +11,11 @@ import { UsersService } from '../users.service';
 export class NewAccountComponent implements OnInit {
 
   form: FormGroup;
-  submitted = false;
 
   constructor(
       private formBuilder: FormBuilder,
-      private usersService: UsersService) {
+      private usersService: UsersService,
+      public errorService: ErrorService) {
 
     this.createForm();
   }
@@ -57,7 +58,6 @@ export class NewAccountComponent implements OnInit {
   ngOnInit() {}
 
   onSubmit() {
-    console.log('submitting form');
     // TODO: Disable submit button to avoid sending the same request twice
     this.usersService
       .create(this.form.get('email').value, this.form.get('password').value)
@@ -79,54 +79,8 @@ export class NewAccountComponent implements OnInit {
       if (element.type === 'field-validation-error') {
         const fieldName = element.field;
         const message = element.message;
-        this.setFieldError(fieldName, message);
+        this.errorService.setFieldError(this.form, fieldName, message);
       }
     });
-  }
-
-  protected setFieldError(fieldName: string, message: string) {
-    const control = this.findFieldControl(fieldName);
-    // TODO: find a better way to set the error message
-    const errors = { [message]: true };
-    control.setErrors(errors);
-  }
-
-  hasWrongValue(fieldName: string): boolean {
-    return this.getFieldErrors(fieldName).length > 0;
-  }
-
-  hasCorrectValue(fieldName: string): boolean {
-    const control = this.findFieldControl(fieldName);
-    // field found && user changed it && it doesn't hold a wrong value
-    const isCorrect = control && !control.pristine && !this.hasWrongValue(fieldName);
-
-    return isCorrect;
-  }
-
-  // right now we are rendering one error only for a field
-  getFieldError(fieldName: string): string {
-    return this.getFieldErrors(fieldName)[0];
-  }
-
-  getFieldErrors(fieldName: string): string[] {
-    const control = this.findFieldControl(fieldName);
-    if (control && (control.touched || this.submitted) && control.errors) {
-      return this.getErrors(control);
-    } else {
-      return [];
-    }
-  }
-
-  protected getErrors(control: AbstractControl): string[] {
-    return Object.keys(control.errors)
-      .filter((error) => control.errors[error])
-      .map((error) => {
-        const params = control.errors[error];
-        return error;
-      });
-  }
-
-  protected findFieldControl(fieldName: string): AbstractControl {
-    return this.form.get(fieldName);
   }
 }
