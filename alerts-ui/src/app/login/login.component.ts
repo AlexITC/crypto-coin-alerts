@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+
+import { AuthService } from '../auth.service';
 import { UsersService } from '../users.service';
+import { AuthorizationToken } from '../authorization-token';
 
 @Component({
   selector: 'app-login',
@@ -14,7 +17,8 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private usersService: UsersService) {
+    private usersService: UsersService,
+    private authService: AuthService) {
 
     this.createForm();
   }
@@ -47,9 +51,10 @@ export class LoginComponent implements OnInit {
       );
   }
 
-  protected onSubmitSuccess(response: any) {
+  protected onSubmitSuccess(response: AuthorizationToken) {
     // TODO: do something useful
     console.log('Logged in: ' + JSON.stringify(response));
+    this.authService.setToken(response);
   }
 
   protected onSubmitError(response: any): any {
