@@ -8,12 +8,14 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AppComponent } from './app.component';
 import { AppNavbarComponent } from './app-navbar/app-navbar.component';
 import { NewAccountComponent } from './new-account/new-account.component';
-import { JWTInterceptor } from './jwt.interceptor';
+import { LoginComponent } from './login/login.component';
 
 import { UsersService } from './users.service';
-import { LoginComponent } from './login/login.component';
+import { ErrorService } from './error.service';
 import { AuthService } from './auth.service';
+
 import { AppRoutingModule } from './app-routing.module';
+import { JWTInterceptor } from './jwt.interceptor';
 
 @NgModule({
   declarations: [
@@ -36,6 +38,7 @@ import { AppRoutingModule } from './app-routing.module';
   providers: [
     UsersService,
     AuthService,
+    ErrorService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: JWTInterceptor,
