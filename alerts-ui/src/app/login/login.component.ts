@@ -49,7 +49,7 @@ export class LoginComponent implements OnInit {
       .login(this.form.get('email').value, this.form.get('password').value)
       .subscribe(
         response => this.onSubmitSuccess(response),
-        response => this.onSubmitError(response)
+        response => this.errorService.renderServerErrors(this.form, response)
       );
   }
 
@@ -57,17 +57,5 @@ export class LoginComponent implements OnInit {
     // TODO: do something useful
     console.log('Logged in: ' + JSON.stringify(response));
     this.authService.setToken(response);
-  }
-
-  protected onSubmitError(response: any): any {
-    console.log('error: ' + JSON.stringify(response));
-    response.error.errors.forEach((element: any) => {
-      // field errors are handled here, different errors should be handled globally
-      if (element.type === 'field-validation-error') {
-        const fieldName = element.field;
-        const message = element.message;
-        this.errorService.setFieldError(this.form, fieldName, message);
-      }
-    });
   }
 }

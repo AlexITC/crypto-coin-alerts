@@ -63,24 +63,12 @@ export class NewAccountComponent implements OnInit {
       .create(this.form.get('email').value, this.form.get('password').value)
       .subscribe(
         response => this.onSubmitSuccess(response),
-        response => this.onSubmitError(response)
+        response => this.errorService.renderServerErrors(this.form, response)
       );
   }
 
   protected onSubmitSuccess(response) {
     // TODO: do something useful
     console.log('user created: ' + JSON.stringify(response));
-  }
-
-  protected onSubmitError(response: any) {
-    console.log('error: ' + JSON.stringify(response));
-    response.error.errors.forEach(element => {
-      // field errors are handled here, different errors should be handled globally
-      if (element.type === 'field-validation-error') {
-        const fieldName = element.field;
-        const message = element.message;
-        this.errorService.setFieldError(this.form, fieldName, message);
-      }
-    });
   }
 }

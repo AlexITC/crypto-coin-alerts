@@ -1,16 +1,31 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms/src/model';
 
+import { ToastrService } from 'ngx-toastr';
+
 @Injectable()
 export class ErrorService {
 
-  constructor() { }
+  constructor(private toastrService: ToastrService) { }
 
-  setFieldError(form: FormGroup, fieldName: string, message: string) {
-    const control = this.findFieldControl(form, fieldName);
-    // TODO: find a better way to set the error message
-    const errors = { [message]: true };
-    control.setErrors(errors);
+  renderServerErrors(form: FormGroup, response: any) {
+    console.log('error: ' + JSON.stringify(response));
+    response.error.errors.forEach((element: any) => {
+      // field errors are handled here, different errors should be handled globally
+      if (element.type === 'field-validation-error') {
+        const fieldName = element.field;
+        const message = element.message;
+        this.setFieldError(form, fieldName, message);
+      } else {
+        const message = element.message;
+        // TODO: set it as default options
+        const options = {
+          tapToDismiss: true,
+          positionClass: 'toast-top-center'
+        };
+        this.toastrService.error(message, '', options);
+      }
+    });
   }
 
   hasWrongValue(form: FormGroup, fieldName: string): boolean {
@@ -47,6 +62,13 @@ export class ErrorService {
         const params = control.errors[error];
         return error;
       });
+  }
+
+  private setFieldError(form: FormGroup, fieldName: string, message: string) {
+    const control = this.findFieldControl(form, fieldName);
+    // TODO: find a better way to set the error message
+    const errors = { [message]: true };
+    control.setErrors(errors);
   }
 
   private findFieldControl(form: FormGroup, fieldName: string): AbstractControl {
