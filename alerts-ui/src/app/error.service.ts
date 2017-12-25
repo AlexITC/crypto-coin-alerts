@@ -15,17 +15,25 @@ export class ErrorService {
       if (element.type === 'field-validation-error') {
         const fieldName = element.field;
         const message = element.message;
-        this.setFieldError(form, fieldName, message);
+        if (form == null) {
+          this.addToastrError(`${fieldName}: ${message}`);
+        } else {
+          this.setFieldError(form, fieldName, message);
+        }
       } else {
         const message = element.message;
-        // TODO: set it as default options
-        const options = {
-          tapToDismiss: true,
-          positionClass: 'toast-top-center'
-        };
-        this.toastrService.error(message, '', options);
+        this.addToastrError(message);
       }
     });
+  }
+
+  private addToastrError(message: string) {
+    // TODO: set it as default options
+    const options = {
+      tapToDismiss: true,
+      positionClass: 'toast-top-center'
+    };
+    this.toastrService.error(message, '', options);
   }
 
   hasWrongValue(form: FormGroup, fieldName: string): boolean {
