@@ -27,7 +27,7 @@ error.paginatedQuery.limit.invalid=Invalid limit, it should be a number between 
 error.createDailyPriceAlert.repeated=The alert is already registered
 
 email.verificationToken.subject=Verify your email
-email.verificationToken.text=Someone registered your email in our site, if that was you, please go to this page to verify your email: <a href="{0}">{0}</a>.
+email.verificationToken.text=Someone registered your email in our site, if that was you, please go to this page to verify your email: {0}
 
 email.yourAlerts.subject=Your Coin Alerts
 message.alert.priceIncreased={0} has increased to {1}
