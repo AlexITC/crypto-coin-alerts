@@ -4,7 +4,7 @@
 # ~~~~
 
 POST   /users                           controllers.UsersController.create()
-POST   /verification-tokens/:token      controllers.UsersController.verifyEmail(token: com.alexitc.coinalerts.models.UserVerificationToken)
+POST   /users/verify-email/:token       controllers.UsersController.verifyEmail(token: com.alexitc.coinalerts.models.UserVerificationToken)
 POST   /users/login                     controllers.UsersController.loginByEmail()
 GET    /users/me                        controllers.UsersController.whoAmI()
 
