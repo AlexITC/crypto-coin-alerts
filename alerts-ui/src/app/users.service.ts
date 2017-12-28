@@ -31,4 +31,9 @@ export class UsersService {
     const url = this.baseUrl + '/login';
     return this.http.post<AuthorizationToken>(url, body, httpOptions);
   }
+
+  verifyEmail(token: string): Observable<any> {
+    const url = this.baseUrl + '/verify-email/' + token;
+    return this.http.post(url, {}, httpOptions);
+  }
 }

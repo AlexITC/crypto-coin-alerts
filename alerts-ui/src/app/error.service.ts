@@ -33,7 +33,7 @@ export class ErrorService {
       tapToDismiss: true,
       positionClass: 'toast-top-center'
     };
-    this.toastrService.error(message, '', options);
+    this.toastrService.error(message || 'Internal error', '', options);
   }
 
   hasWrongValue(form: FormGroup, fieldName: string): boolean {

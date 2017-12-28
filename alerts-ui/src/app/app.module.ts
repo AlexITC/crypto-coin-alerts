@@ -13,6 +13,7 @@ import { AppComponent } from './app.component';
 import { AppNavbarComponent } from './app-navbar/app-navbar.component';
 import { NewAccountComponent } from './new-account/new-account.component';
 import { LoginComponent } from './login/login.component';
+import { VerifyEmailComponent } from './verify-email/verify-email.component';
 
 import { UsersService } from './users.service';
 import { ErrorService } from './error.service';
@@ -26,7 +27,8 @@ import { JWTInterceptor } from './jwt.interceptor';
     AppComponent,
     AppNavbarComponent,
     NewAccountComponent,
-    LoginComponent
+    LoginComponent,
+    VerifyEmailComponent
   ],
   imports: [
     AppRoutingModule,
