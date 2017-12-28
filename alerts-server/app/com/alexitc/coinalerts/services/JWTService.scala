@@ -6,15 +6,15 @@ import com.alexitc.coinalerts.commons.ApplicationResult
 import com.alexitc.coinalerts.config.JWTConfig
 import com.alexitc.coinalerts.core.AuthorizationToken
 import com.alexitc.coinalerts.errors.InvalidJWTError
-import com.alexitc.coinalerts.models.UserId
+import com.alexitc.coinalerts.models.{User, UserEmail, UserId}
 import org.scalactic.{Bad, Good}
 import pdi.jwt.{Jwt, JwtAlgorithm, JwtClaim}
 import play.api.libs.json.Json
 
 class JWTService @Inject() (config: JWTConfig) {
 
-  def createToken(userId: UserId): AuthorizationToken = {
-    val json = s"""{ "id": "${userId.string}" }"""
+  def createToken(user: User): AuthorizationToken = {
+    val json = s"""{ "id": "${user.id.string}", "email": "${user.email.string}" }"""
     val expiresInSeconds = 30L * 24 * 60 * 60 // 30 days
     val claim = JwtClaim(json)
         .issuedNow
@@ -24,11 +24,13 @@ class JWTService @Inject() (config: JWTConfig) {
     AuthorizationToken(token)
   }
 
-  def decodeToken(token: AuthorizationToken): ApplicationResult[UserId] = {
+  def decodeToken(token: AuthorizationToken): ApplicationResult[User] = {
     Jwt.decode(token.string, config.secretKey.string, Seq(JwtAlgorithm.HS384))
         .map { decodedClaim =>
-          val id = (Json.parse(decodedClaim) \ "id").as[String]
-          Good(UserId(id))
+          val json = Json.parse(decodedClaim)
+          val id = (json \ "id").as[String]
+          val email = (json \ "email").as[String]
+          Good(User(UserId(id), UserEmail(email)))
         }
         .getOrElse {
           Bad(InvalidJWTError).accumulating

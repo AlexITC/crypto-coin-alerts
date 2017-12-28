@@ -44,15 +44,19 @@ class UserService @Inject() (
     result.toFuture
   }
 
-  def verifyEmail(token: UserVerificationToken): FutureApplicationResult[User] = {
-    userDataHandler.verifyEmail(token)
+  def verifyEmail(token: UserVerificationToken): FutureApplicationResult[AuthorizationToken] = {
+    val result = for {
+      user <- userDataHandler.verifyEmail(token).toFutureOr
+    } yield jwtService.createToken(user)
+
+    result.toFuture
   }
 
   def loginByEmail(email: UserEmail, password: UserPassword): FutureApplicationResult[AuthorizationToken] = {
     val result = for {
       _ <- enforcePasswordMatches(email, password).toFutureOr
       user <- userDataHandler.getVerifiedUserByEmail(email).toFutureOr
-    } yield jwtService.createToken(user.id)
+    } yield jwtService.createToken(user)
 
     result.toFuture
   }

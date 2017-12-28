@@ -34,7 +34,7 @@ class FixedPriceAlertsControllerSpec extends PlayAPISpec {
         """.stripMargin
 
       val user = createVerifiedUser()
-      val token = jwtService.createToken(user.id)
+      val token = jwtService.createToken(user)
       val response = POST(url, Some(body), token.toHeader)
       status(response) mustEqual CREATED
 
@@ -60,7 +60,7 @@ class FixedPriceAlertsControllerSpec extends PlayAPISpec {
         """.stripMargin
 
       val user = createVerifiedUser()
-      val token = jwtService.createToken(user.id)
+      val token = jwtService.createToken(user)
       val response = POST(url, Some(body), token.toHeader)
       status(response) mustEqual CREATED
 
@@ -85,7 +85,7 @@ class FixedPriceAlertsControllerSpec extends PlayAPISpec {
         """.stripMargin
 
       val user = createVerifiedUser()
-      val token = jwtService.createToken(user.id)
+      val token = jwtService.createToken(user)
       val response = POST(url, Some(body), token.toHeader)
       status(response) mustEqual BAD_REQUEST
 
@@ -111,7 +111,7 @@ class FixedPriceAlertsControllerSpec extends PlayAPISpec {
         """.stripMargin
 
       val user = createVerifiedUser()
-      val token = jwtService.createToken(user.id)
+      val token = jwtService.createToken(user)
       val response = POST(url, Some(body), token.toHeader)
       status(response) mustEqual BAD_REQUEST
 
@@ -137,7 +137,7 @@ class FixedPriceAlertsControllerSpec extends PlayAPISpec {
         """.stripMargin
 
       val user = createVerifiedUser()
-      val token = jwtService.createToken(user.id)
+      val token = jwtService.createToken(user)
       val response = POST(url, Some(body), token.toHeader)
       status(response) mustEqual BAD_REQUEST
 
@@ -157,7 +157,7 @@ class FixedPriceAlertsControllerSpec extends PlayAPISpec {
 
     "Return a paginated result based on the query" in {
       val user = createVerifiedUser()
-      val token = jwtService.createToken(user.id)
+      val token = jwtService.createToken(user)
       createFixedPriceAlert(user.id)
       createFixedPriceAlert(user.id)
 
@@ -178,7 +178,7 @@ class FixedPriceAlertsControllerSpec extends PlayAPISpec {
 
     "Allow to not set limit and offset params" in {
       val user = createVerifiedUser()
-      val token = jwtService.createToken(user.id)
+      val token = jwtService.createToken(user)
 
       val response = GET(url, token.toHeader)
       status(response) mustEqual OK
@@ -186,7 +186,7 @@ class FixedPriceAlertsControllerSpec extends PlayAPISpec {
 
     "Fail when offset param is negative" in {
       val user = createVerifiedUser()
-      val token = jwtService.createToken(user.id)
+      val token = jwtService.createToken(user)
 
       val response = GET(url.withQueryParams("offset" -> "-1"), token.toHeader)
       status(response) mustEqual BAD_REQUEST
@@ -203,7 +203,7 @@ class FixedPriceAlertsControllerSpec extends PlayAPISpec {
 
     "Fail when offset param is not an integer" in {
       val user = createVerifiedUser()
-      val token = jwtService.createToken(user.id)
+      val token = jwtService.createToken(user)
 
       val response = GET(url.withQueryParams("offset" -> "whoops"), token.toHeader)
       status(response) mustEqual BAD_REQUEST
@@ -219,7 +219,7 @@ class FixedPriceAlertsControllerSpec extends PlayAPISpec {
 
     "Fail when limit param is negative" in {
       val user = createVerifiedUser()
-      val token = jwtService.createToken(user.id)
+      val token = jwtService.createToken(user)
 
       val response = GET(url.withQueryParams("limit" -> "-1"), token.toHeader)
       status(response) mustEqual BAD_REQUEST
@@ -236,7 +236,7 @@ class FixedPriceAlertsControllerSpec extends PlayAPISpec {
 
     "Fail when limit param is not an integer" in {
       val user = createVerifiedUser()
-      val token = jwtService.createToken(user.id)
+      val token = jwtService.createToken(user)
 
       val response = GET(url.withQueryParams("limit" -> "whoops"), token.toHeader)
       status(response) mustEqual BAD_REQUEST

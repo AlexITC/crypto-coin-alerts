@@ -56,9 +56,9 @@ class UsersControllerSpec extends PlayAPISpec {
     }
   }
 
-  "POST /verification-tokens/:token" should {
+  "POST /users/verify-email/:token" should {
     def verifyEmailUrl(token: UserVerificationToken) = {
-      s"/verification-tokens/${token.string}"
+      s"/users/verify-email/${token.string}"
     }
     "Allow to verify a user based on the token" in {
       val email = RandomDataGenerator.email
@@ -118,7 +118,7 @@ class UsersControllerSpec extends PlayAPISpec {
       val email = RandomDataGenerator.email
       val password = RandomDataGenerator.password
       val user = DataHelper.createVerifiedUser(email, password)
-      val token = jwtService.createToken(user.id)
+      val token = jwtService.createToken(user)
       val response = GET(url, token.toHeader)
       status(response) mustEqual OK
       (contentAsJson(response) \ "id").as[String] mustEqual user.id.string

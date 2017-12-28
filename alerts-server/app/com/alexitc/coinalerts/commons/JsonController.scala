@@ -201,7 +201,9 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
         .filter(_.head === tokenType)
         .map(_.drop(1).head)
         .map(AuthorizationToken.apply)
-        .map(components.jwtService.decodeToken)
+        .map { token =>
+          components.jwtService.decodeToken(token).map(_.id)
+        }
         .getOrElse(Bad(InvalidJWTError).accumulating)
   }
 

@@ -26,7 +26,7 @@ class DailyPriceAlertsControllerSpec extends PlayAPISpec {
 
     "be able to create a valid daily price alert" in {
       val user = DataHelper.createVerifiedUser()
-      val token = jwtService.createToken(user.id)
+      val token = jwtService.createToken(user)
 
       val market = Market.BITTREX
       val book = Book.fromString("BTC_ETH").get
@@ -70,7 +70,7 @@ class DailyPriceAlertsControllerSpec extends PlayAPISpec {
 
     "reject a repeated alert" in {
       val user = DataHelper.createVerifiedUser()
-      val token = jwtService.createToken(user.id)
+      val token = jwtService.createToken(user)
 
       val market = Market.BITTREX
       val book = Book.fromString("BTC_ETH").get
@@ -99,7 +99,7 @@ class DailyPriceAlertsControllerSpec extends PlayAPISpec {
     "Return a paginated result based on the query" in {
       val query = PaginatedQuery(Offset(1), Limit(10))
       val user = DataHelper.createVerifiedUser()
-      val token = jwtService.createToken(user.id)
+      val token = jwtService.createToken(user)
       DataHelper.createDailyPriceAlert(user.id, RandomDataGenerator.createDailyPriceAlertModel(book = Book("ETH", "MXN")))
       DataHelper.createDailyPriceAlert(user.id, RandomDataGenerator.createDailyPriceAlertModel(book = Book("BTC", "MXN")))
 
