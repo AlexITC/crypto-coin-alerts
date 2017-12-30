@@ -19,8 +19,7 @@ export class AppNavbarComponent implements OnInit {
 
   getAuthenticatedUser() {
     if (this.isAuthenticated()) {
-      // TODO: load user
-      return this.authService.getToken().token.substr(0, 3);
+      return this.authService.getAuthenticatedUser().email;
     } else {
       return undefined;
     }
