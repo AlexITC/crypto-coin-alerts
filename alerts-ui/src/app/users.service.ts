@@ -3,16 +3,12 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 
 import { AuthorizationToken } from './authorization-token';
+import { User } from './user';
 import { environment } from '../environments/environment';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
 };
-
-class User {
-  id: string;
-  email: string;
-}
 
 @Injectable()
 export class UsersService {
