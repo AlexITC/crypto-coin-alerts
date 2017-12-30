@@ -9,6 +9,8 @@ import { AlertModule, BsDropdownModule, TooltipModule, ModalModule } from 'ngx-b
 import { TranslateModule } from '@ngx-translate/core';
 import { ToastrModule } from 'ngx-toastr';
 
+import { NgHttpLoaderModule } from 'ng-http-loader/ng-http-loader.module'
+
 import { AppComponent } from './app.component';
 import { AppNavbarComponent } from './app-navbar/app-navbar.component';
 import { NewAccountComponent } from './new-account/new-account.component';
@@ -42,6 +44,7 @@ import { JWTInterceptor } from './jwt.interceptor';
     BrowserModule,
     ReactiveFormsModule,
     HttpClientModule,
+    NgHttpLoaderModule,
     TranslateModule.forRoot()
   ],
   providers: [
