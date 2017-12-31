@@ -22,7 +22,7 @@ object Exchange {
   }
 
   implicit val reads: Reads[Exchange] = {
-    JsPath.read[String].collect(JsonValidationError("error.market.unknown"))(fromStringPF)
+    JsPath.read[String].collect(JsonValidationError("error.exchange.unknown"))(fromStringPF)
   }
 
   implicit val writes: Writes[Exchange] = Writes[Exchange] { market => JsString(market.string) }

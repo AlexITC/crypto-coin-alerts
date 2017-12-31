@@ -16,7 +16,7 @@ error.header.missing=The header {0} is required
 error.jwt.invalid=The given authorization token is incorrect or is expired
 
 error.book.invalid=The given book format is incorrect, it should be like BTC_MXN
-error.market.unknown=The given market is unknown
+error.exchange.unknown=The given exchange is unknown
 error.price.invalid=The price should be greater than 0
 error.basePrice.invalid=The basePrice should be greater than 0
 error.book.unknown=The given book does not exist
