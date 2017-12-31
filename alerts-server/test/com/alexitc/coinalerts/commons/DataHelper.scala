@@ -25,7 +25,14 @@ object DataHelper {
 
   def createFixedPriceAlert(
       userId: UserId,
-      createAlertModel: CreateFixedPriceAlertModel = RandomDataGenerator.createDefaultAlertModel())(
+      exchangeCurrencyId: ExchangeCurrencyId)(
+      implicit alertDataHandler: FixedPriceAlertBlockingDataHandler) = {
+
+    alertDataHandler.create(RandomDataGenerator.createFixedPriceAlertModel(exchangeCurrencyId), userId)
+  }
+  def createFixedPriceAlert(
+      userId: UserId,
+      createAlertModel: CreateFixedPriceAlertModel)(
       implicit alertDataHandler: FixedPriceAlertBlockingDataHandler) = {
 
     alertDataHandler.create(createAlertModel, userId)
@@ -33,9 +40,10 @@ object DataHelper {
 
   def createDailyPriceAlert(
       userId: UserId,
-      createModel: CreateDailyPriceAlertModel = RandomDataGenerator.createDailyPriceAlertModel())(
+      exchangeCurrencyId: ExchangeCurrencyId)(
       implicit dataHandler: DailyPriceAlertBlockingDataHandler) = {
 
+    val createModel = CreateDailyPriceAlertModel(exchangeCurrencyId)
     dataHandler.create(userId, createModel)
   }
 }

@@ -7,20 +7,19 @@ import com.alexitc.coinalerts.commons.FutureOr.Implicits.{FutureOps, OrOps}
 import com.alexitc.coinalerts.core.{FuturePaginatedResult, PaginatedQuery}
 import com.alexitc.coinalerts.data.async.DailyPriceAlertFutureDataHandler
 import com.alexitc.coinalerts.models.{CreateDailyPriceAlertModel, DailyPriceAlert, UserId}
-import com.alexitc.coinalerts.services.validators.{DailyPriceAlertValidator, PaginatedQueryValidator}
+import com.alexitc.coinalerts.services.validators.PaginatedQueryValidator
 
 import scala.concurrent.ExecutionContext
 
 class DailyPriceAlertService @Inject() (
     queryValidator: PaginatedQueryValidator,
-    dailyPriceAlertValidator: DailyPriceAlertValidator,
     dailyPriceAlertsFutureDataHandler: DailyPriceAlertFutureDataHandler)(
     implicit ec: ExecutionContext) {
 
   def create(userId: UserId, createDailyPriceAlert: CreateDailyPriceAlertModel): FutureApplicationResult[DailyPriceAlert] = {
     val result = for {
-      validatedModel <- dailyPriceAlertValidator.validate(createDailyPriceAlert).toFutureOr
-      dailyPriceAlert <- dailyPriceAlertsFutureDataHandler.create(userId, validatedModel).toFutureOr
+      // there is nothing to validate
+      dailyPriceAlert <- dailyPriceAlertsFutureDataHandler.create(userId, createDailyPriceAlert).toFutureOr
     } yield dailyPriceAlert
 
     result.toFuture

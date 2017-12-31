@@ -48,23 +48,22 @@ object RandomDataGenerator {
 
   def dailyPriceAlertId = DailyPriceAlertId(Random.nextLong())
 
-  def createDefaultAlertModel(
-      market: Exchange = Exchange.BITSO,
-      book: Book = Book("BTC", "MXN"),
-      isGreaterThan: Boolean = Random.nextBoolean(),
-      givenPrice: BigDecimal = BigDecimal(Math.abs(Random.nextDouble()))) = CreateFixedPriceAlertModel(market, book, isGreaterThan, givenPrice, None)
-
-  def market = {
-    val marketList = List(BITSO.string, BITTREX.string)
-    Exchange.fromDatabaseString(item(marketList))
+  def exchange = {
+    val list = List(BITSO, BITTREX)
+    item(list)
   }
 
   def book = {
-    val baseList = "BTC ETH XRP XMR ADA".split(" ")
-    val otherList = "MXN USD EUR GBP".split(" ")
+    val marketList = "BTC ETH XRP XMR ADA".split(" ")
+    val currencyList = "MXN USD EUR GBP".split(" ")
 
-    Book(item(baseList), item(otherList))
+    Book(Market(item(marketList)), Currency(item(currencyList)))
   }
 
-  def createDailyPriceAlertModel(market: Exchange = market, book: Book = book) = CreateDailyPriceAlertModel(market, book)
+  def createFixedPriceAlertModel(
+      exchangeCurrencyId: ExchangeCurrencyId,
+      isGreaterThan: Boolean = Random.nextBoolean(),
+      givenPrice: BigDecimal = BigDecimal(Math.abs(Random.nextDouble()))) = CreateFixedPriceAlertModel(exchangeCurrencyId, isGreaterThan, givenPrice, None)
+
+  def createDailyPriceAlertModel(exchangeCurrencyId: ExchangeCurrencyId) = CreateDailyPriceAlertModel(exchangeCurrencyId)
 }

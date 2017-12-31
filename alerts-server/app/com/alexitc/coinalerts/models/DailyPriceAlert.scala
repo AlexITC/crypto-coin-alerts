@@ -17,7 +17,7 @@ object DailyPriceAlert {
 
 case class DailyPriceAlertId(long: Long) extends AnyVal with WrappedLong
 
-case class CreateDailyPriceAlertModel(market: Exchange, book: Book)
+case class CreateDailyPriceAlertModel(exchangeCurrencyId: ExchangeCurrencyId)
 object CreateDailyPriceAlertModel {
   implicit val reads: Reads[CreateDailyPriceAlertModel] = Json.reads[CreateDailyPriceAlertModel]
 }

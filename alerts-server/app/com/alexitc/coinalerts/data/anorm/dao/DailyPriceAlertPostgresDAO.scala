@@ -20,16 +20,15 @@ class DailyPriceAlertPostgresDAO {
     val alertMaybe = SQL(
       """
         |INSERT INTO daily_price_alerts
-        |  (user_id, market, book)
+        |  (user_id, currency_id)
         |VALUES
-        |  ({user_id}, {market}, {book})
+        |  ({user_id}, {currency_id})
         |ON CONFLICT DO NOTHING
-        |RETURNING daily_price_alert_id, user_id, market, book, created_on
+        |RETURNING daily_price_alert_id, user_id, currency_id, created_on
       """.stripMargin
     ).on(
       "user_id" -> userId.string,
-      "market" -> createDailyPriceAlert.market.string,
-      "book" -> createDailyPriceAlert.book.string
+      "currency_id" -> createDailyPriceAlert.exchangeCurrencyId.int,
     ).as(AnormParsers.parseDailyPriceAlert.singleOpt)
 
     Or.from(alertMaybe, One(RepeatedDailyPriceAlertError))
@@ -42,7 +41,7 @@ class DailyPriceAlertPostgresDAO {
 
     SQL(
       """
-        |SELECT daily_price_alert_id, user_id, market, book, created_on
+        |SELECT daily_price_alert_id, user_id, currency_id, created_on
         |FROM daily_price_alerts
         |WHERE user_id = {user_id}
         |ORDER BY daily_price_alert_id
