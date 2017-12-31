@@ -4,7 +4,7 @@ import javax.inject.Inject
 
 import com.alexitc.coinalerts.config.TaskExecutionContext
 import com.alexitc.coinalerts.data.async.FixedPriceAlertFutureDataHandler
-import com.alexitc.coinalerts.models.{FixedPriceAlert, Market}
+import com.alexitc.coinalerts.models.{FixedPriceAlert, Exchange}
 import com.alexitc.coinalerts.tasks.collectors.TickerCollector
 import com.alexitc.coinalerts.tasks.models.{FixedPriceAlertEvent, Ticker}
 import org.scalactic.{Bad, Good}
@@ -38,7 +38,7 @@ class FixedPriceAlertCollector @Inject()(
     }
   }
 
-  private def getEventsForTicker(market: Market, ticker: Ticker): Future[List[FixedPriceAlertEvent]] = {
+  private def getEventsForTicker(market: Exchange, ticker: Ticker): Future[List[FixedPriceAlertEvent]] = {
     val book = ticker.book
     val currentPrice = ticker.currentPrice
 

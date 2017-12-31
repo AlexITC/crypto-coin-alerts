@@ -16,7 +16,7 @@ object AnormParsers {
   val parseLang = str("lang").map(Lang.apply)
 
   val parseFixedPriceAlertId = long("fixed_price_alert_id").map(FixedPriceAlertId.apply)
-  val parseMarket = str("market").map(Market.fromDatabaseString)
+  val parseMarket = str("market").map(Exchange.fromDatabaseString)
   val parseBook = str("book").map(Book.fromString(_).get) // Assumes db value is always properly formatted.
   val parseisGreaterThan = bool("is_greater_than")
   val parsePrice = get[BigDecimal]("price")

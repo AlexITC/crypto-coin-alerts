@@ -76,7 +76,7 @@ class AlertsTask @Inject() (
     }
   }
 
-  private def groupByMarket(eventList: List[FixedPriceAlertEvent]): Map[Market, List[FixedPriceAlertEvent]] = {
+  private def groupByMarket(eventList: List[FixedPriceAlertEvent]): Map[Exchange, List[FixedPriceAlertEvent]] = {
     eventList.groupBy(_.alert.market)
   }
 

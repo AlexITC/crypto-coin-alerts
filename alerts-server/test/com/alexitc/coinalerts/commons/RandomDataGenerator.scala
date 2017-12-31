@@ -1,6 +1,6 @@
 package com.alexitc.coinalerts.commons
 
-import com.alexitc.coinalerts.models.Market.{BITSO, BITTREX}
+import com.alexitc.coinalerts.models.Exchange.{BITSO, BITTREX}
 import com.alexitc.coinalerts.models._
 
 import scala.util.Random
@@ -49,14 +49,14 @@ object RandomDataGenerator {
   def dailyPriceAlertId = DailyPriceAlertId(Random.nextLong())
 
   def createDefaultAlertModel(
-      market: Market = Market.BITSO,
+      market: Exchange = Exchange.BITSO,
       book: Book = Book("BTC", "MXN"),
       isGreaterThan: Boolean = Random.nextBoolean(),
       givenPrice: BigDecimal = BigDecimal(Math.abs(Random.nextDouble()))) = CreateFixedPriceAlertModel(market, book, isGreaterThan, givenPrice, None)
 
   def market = {
     val marketList = List(BITSO.string, BITTREX.string)
-    Market.fromDatabaseString(item(marketList))
+    Exchange.fromDatabaseString(item(marketList))
   }
 
   def book = {
@@ -66,5 +66,5 @@ object RandomDataGenerator {
     Book(item(baseList), item(otherList))
   }
 
-  def createDailyPriceAlertModel(market: Market = market, book: Book = book) = CreateDailyPriceAlertModel(market, book)
+  def createDailyPriceAlertModel(market: Exchange = market, book: Book = book) = CreateDailyPriceAlertModel(market, book)
 }

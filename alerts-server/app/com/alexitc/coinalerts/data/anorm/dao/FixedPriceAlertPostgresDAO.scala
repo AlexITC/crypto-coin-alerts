@@ -42,7 +42,7 @@ class FixedPriceAlertPostgresDAO {
     ).executeUpdate()
   }
 
-  def findPendingAlertsForPrice(market: Market, book: Book, currentPrice: BigDecimal)(implicit conn: Connection): List[FixedPriceAlert] = {
+  def findPendingAlertsForPrice(market: Exchange, book: Book, currentPrice: BigDecimal)(implicit conn: Connection): List[FixedPriceAlert] = {
     SQL(
       """
         |SELECT fixed_price_alert_id, user_id, book, market, is_greater_than, price, base_price

@@ -31,7 +31,7 @@ class FixedPriceAlertPostgresDataHandler @Inject() (
     }
   }
 
-  override def findPendingAlertsForPrice(market: Market, book: Book, currentPrice: BigDecimal): ApplicationResult[List[FixedPriceAlert]] = withConnection { implicit conn =>
+  override def findPendingAlertsForPrice(market: Exchange, book: Book, currentPrice: BigDecimal): ApplicationResult[List[FixedPriceAlert]] = withConnection { implicit conn =>
     if (currentPrice <= 0) {
       Bad(InvalidPriceError).accumulating
     } else {

@@ -5,7 +5,7 @@ import java.time.OffsetDateTime
 import com.alexitc.coinalerts.commons.{DataHelper, PlayAPISpec, RandomDataGenerator}
 import com.alexitc.coinalerts.core.{Limit, Offset, PaginatedQuery}
 import com.alexitc.coinalerts.data.{DailyPriceAlertBlockingDataHandler, DailyPriceAlertInMemoryDataHandler}
-import com.alexitc.coinalerts.models.{Book, CreateDailyPriceAlertModel, Market}
+import com.alexitc.coinalerts.models.{Book, CreateDailyPriceAlertModel, Exchange}
 import play.api.Application
 import play.api.inject.bind
 import play.api.libs.json.JsValue
@@ -28,7 +28,7 @@ class DailyPriceAlertsControllerSpec extends PlayAPISpec {
       val user = DataHelper.createVerifiedUser()
       val token = jwtService.createToken(user)
 
-      val market = Market.BITTREX
+      val market = Exchange.BITTREX
       val book = Book.fromString("BTC_ETH").get
       val body =
         s"""
@@ -49,7 +49,7 @@ class DailyPriceAlertsControllerSpec extends PlayAPISpec {
     }
 
     "reject a valid daily price alert when no auth token is present" in {
-      val market = Market.BITTREX
+      val market = Exchange.BITTREX
       val book = Book.fromString("BTC_ETH").get
       val body =
         s"""
@@ -72,7 +72,7 @@ class DailyPriceAlertsControllerSpec extends PlayAPISpec {
       val user = DataHelper.createVerifiedUser()
       val token = jwtService.createToken(user)
 
-      val market = Market.BITTREX
+      val market = Exchange.BITTREX
       val book = Book.fromString("BTC_ETH").get
       val body =
         s"""

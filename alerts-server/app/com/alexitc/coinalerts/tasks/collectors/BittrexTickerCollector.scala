@@ -10,7 +10,7 @@ import scala.concurrent.Future
 
 class BittrexTickerCollector @Inject() (bittrexService: BittrexService) extends TickerCollector {
 
-  override val market: Market = Market.BITTREX
+  override val market: Exchange = Exchange.BITTREX
 
   override def getTickerList: Future[List[Ticker]] = {
     bittrexService.getTickerList()

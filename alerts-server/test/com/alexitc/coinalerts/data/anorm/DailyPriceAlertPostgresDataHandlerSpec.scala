@@ -5,7 +5,7 @@ import com.alexitc.coinalerts.commons.{DataHelper, PostgresDataHandlerSpec, Rand
 import com.alexitc.coinalerts.core.{Count, Limit, Offset, PaginatedQuery}
 import com.alexitc.coinalerts.data.anorm.dao.DailyPriceAlertPostgresDAO
 import com.alexitc.coinalerts.errors.RepeatedDailyPriceAlertError
-import com.alexitc.coinalerts.models.{Book, CreateDailyPriceAlertModel, Market, UserId}
+import com.alexitc.coinalerts.models.{Book, CreateDailyPriceAlertModel, Exchange, UserId}
 import org.scalactic.Bad
 
 class DailyPriceAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
@@ -15,7 +15,7 @@ class DailyPriceAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
   "Creating a daily price alert" should {
     "be able to create a valid alert" in {
       val user = DataHelper.createVerifiedUser()
-      val model = CreateDailyPriceAlertModel(Market.BITTREX, Book.fromString("BTC_ETH").get)
+      val model = CreateDailyPriceAlertModel(Exchange.BITTREX, Book.fromString("BTC_ETH").get)
       val result = dailyPriceAlertDataHandler.create(user.id, model).get
 
       result.book mustEqual model.book
@@ -25,7 +25,7 @@ class DailyPriceAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
 
     "reject a repeated alert" in {
       val user = DataHelper.createVerifiedUser()
-      val model = CreateDailyPriceAlertModel(Market.BITTREX, Book.fromString("BTC_ETH").get)
+      val model = CreateDailyPriceAlertModel(Exchange.BITTREX, Book.fromString("BTC_ETH").get)
       dailyPriceAlertDataHandler.create(user.id, model)
       val result = dailyPriceAlertDataHandler.create(user.id, model)
 

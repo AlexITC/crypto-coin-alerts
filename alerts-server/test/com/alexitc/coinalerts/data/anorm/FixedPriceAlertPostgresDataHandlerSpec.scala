@@ -13,7 +13,7 @@ class FixedPriceAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
   lazy val alertPostgresDataHandler = new FixedPriceAlertPostgresDataHandler(database, new FixedPriceAlertPostgresDAO)
   lazy val verifiedUser = createVerifiedUser()
 
-  val createDefaultAlertModel = CreateFixedPriceAlertModel(Market.BITSO, Book.fromString("BTC_MXN").get, true, BigDecimal("5000.00"), None)
+  val createDefaultAlertModel = CreateFixedPriceAlertModel(Exchange.BITSO, Book.fromString("BTC_MXN").get, true, BigDecimal("5000.00"), None)
   val createBasePriceAlertModel = createDefaultAlertModel.copy(basePrice = Some(BigDecimal("4000.00")))
 
   "Creating an alert" should {
@@ -61,7 +61,7 @@ class FixedPriceAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
 
     "retrieve an alert requiring the current price to be greater than the given price" in {
       val user = createUnverifiedUser()
-      val market = Market.BITSO
+      val market = Exchange.BITSO
       val book = Book("BTC", "MXN")
       val givenPrice = BigDecimal("1000")
       val createModel = RandomDataGenerator.createDefaultAlertModel(market = market, book = book, givenPrice = givenPrice, isGreaterThan = true)
@@ -73,7 +73,7 @@ class FixedPriceAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
 
     "retrieve an alert requiring the current price to be lower than the given price" in {
       val user = createUnverifiedUser()
-      val market = Market.BITSO
+      val market = Exchange.BITSO
       val book = Book("BTC", "MXN")
       val givenPrice = BigDecimal("1000")
       val createModel = RandomDataGenerator.createDefaultAlertModel(market = market, book = book, givenPrice = givenPrice, isGreaterThan = false)
@@ -84,10 +84,10 @@ class FixedPriceAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
     }
 
     "retrieve several pending alerts" in {
-      val createAlertModel = CreateFixedPriceAlertModel(Market.BITSO, Book.fromString("BTC_MXN").get, true, BigDecimal("5000.00"), None)
+      val createAlertModel = CreateFixedPriceAlertModel(Exchange.BITSO, Book.fromString("BTC_MXN").get, true, BigDecimal("5000.00"), None)
       val createAlert1 = createAlertModel
       val createAlert2 = createAlertModel.copy(isGreaterThan = false)
-      val createAlert3 = createAlertModel.copy(market = Market.BITTREX)
+      val createAlert3 = createAlertModel.copy(market = Exchange.BITTREX)
       val createAlert4 = createAlertModel.copy(book = Book("BTC", "ETH"))
 
       val user = createUnverifiedUser()
@@ -96,13 +96,13 @@ class FixedPriceAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
       val alert3 = alertPostgresDataHandler.create(createAlert3, user.id).get
       val alert4 = alertPostgresDataHandler.create(createAlert4, user.id).get
 
-      val result1 = alertPostgresDataHandler.findPendingAlertsForPrice(Market.BITSO, Book("BTC", "MXN"), BigDecimal("5000.00000001")).get
+      val result1 = alertPostgresDataHandler.findPendingAlertsForPrice(Exchange.BITSO, Book("BTC", "MXN"), BigDecimal("5000.00000001")).get
       result1.exists(_.id == alert1.id) mustEqual true
       result1.exists(_.id == alert2.id) mustEqual false
       result1.exists(_.id == alert3.id) mustEqual false
       result1.exists(_.id == alert4.id) mustEqual false
 
-      val result2 = alertPostgresDataHandler.findPendingAlertsForPrice(Market.BITSO, Book("BTC", "MXN"), BigDecimal("4999.99999999")).get
+      val result2 = alertPostgresDataHandler.findPendingAlertsForPrice(Exchange.BITSO, Book("BTC", "MXN"), BigDecimal("4999.99999999")).get
       result2.exists(_.id == alert1.id) mustEqual false
       result2.exists(_.id == alert2.id) mustEqual true
       result2.exists(_.id == alert3.id) mustEqual false
@@ -111,7 +111,7 @@ class FixedPriceAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
 
     "not retrieve an alert that is already triggered" in {
       val user = createUnverifiedUser()
-      val market = Market.BITSO
+      val market = Exchange.BITSO
       val book = Book("BTC", "MXN")
       val givenPrice = BigDecimal("1000")
       val createModel = RandomDataGenerator.createDefaultAlertModel(market = market, book = book, givenPrice = givenPrice)
@@ -124,7 +124,7 @@ class FixedPriceAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
 
     "fail to filter by negative price" in {
       val currentPrice = BigDecimal("0")
-      val result = alertPostgresDataHandler.findPendingAlertsForPrice(Market.BITSO, Book("BTC", "MXN"), currentPrice)
+      val result = alertPostgresDataHandler.findPendingAlertsForPrice(Exchange.BITSO, Book("BTC", "MXN"), currentPrice)
       result mustEqual Bad(InvalidPriceError).accumulating
     }
   }

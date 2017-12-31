@@ -24,7 +24,7 @@ class FixedPriceAlertFutureDataHandler @Inject() (
   }
 
   override def findPendingAlertsForPrice(
-      market: Market,
+      market: Exchange,
       book: Book,
       currentPrice: BigDecimal): FutureApplicationResult[List[FixedPriceAlert]] = Future {
 

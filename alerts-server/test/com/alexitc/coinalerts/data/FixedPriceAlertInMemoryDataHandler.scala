@@ -37,7 +37,7 @@ trait FixedPriceAlertInMemoryDataHandler extends FixedPriceAlertBlockingDataHand
     }
   }
 
-  override def findPendingAlertsForPrice(market: Market, book: Book, currentPrice: BigDecimal): ApplicationResult[List[FixedPriceAlert]] = {
+  override def findPendingAlertsForPrice(market: Exchange, book: Book, currentPrice: BigDecimal): ApplicationResult[List[FixedPriceAlert]] = {
     val list = pendingAlertList
         .filter(_.market == market)
         .filter(_.book == book)
