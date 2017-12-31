@@ -16,9 +16,11 @@ object AnormParsers {
   val parseLang = str("lang").map(Lang.apply)
 
   val parseCurrencyId = int("currency_id").map(ExchangeCurrencyId.apply)
+  val parseExchange = str("exchange").map(Exchange.fromDatabaseString)
+  val parseMarket = str("market").map(Market.apply)
+  val parseCurrency = str("currency").map(Currency.apply)
+
   val parseFixedPriceAlertId = long("fixed_price_alert_id").map(FixedPriceAlertId.apply)
-  val parseMarket = str("market").map(Exchange.fromDatabaseString)
-  val parseBook = str("book").map(Book.fromString(_).get) // Assumes db value is always properly formatted.
   val parseisGreaterThan = bool("is_greater_than")
   val parsePrice = get[BigDecimal]("price")
   val parseBasePrice = get[BigDecimal]("base_price")
@@ -30,6 +32,10 @@ object AnormParsers {
     case userId ~ email => User.apply(userId, email)
   }
 
+  val parseExchangeCurrency = (parseCurrencyId ~ parseExchange ~ parseMarket ~ parseCurrency).map {
+    case id ~ exchange ~ market ~ currency => ExchangeCurrency(id, exchange, market, currency)
+  }
+
   val parseUserPreferences = (parseUserId ~ parseLang).map {
     case userId ~ lang => UserPreferences(userId, lang)
   }
@@ -39,9 +45,9 @@ object AnormParsers {
       FixedPriceAlert(alertId, userId, currencyId, isGreaterThan, price, basePrice)
   }
 
-  val parseDailyPriceAlert = (parseDailyPriceAlertId ~ parseUserId ~ parseMarket ~ parseBook ~ parseCreatedOn).map {
-    case alerId ~ userId ~ market ~ book ~ createdOn =>
-      DailyPriceAlert(alerId, userId, market, book, createdOn)
+  val parseDailyPriceAlert = (parseDailyPriceAlertId ~ parseUserId ~ parseCurrencyId ~ parseCreatedOn).map {
+    case id ~ userId ~ currencyId ~ createdOn =>
+      DailyPriceAlert(id, userId, currencyId, createdOn)
   }
 
   val parsePassword = str("password").map(UserHiddenPassword.fromDatabase)
