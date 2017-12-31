@@ -1,6 +1,5 @@
 package com.alexitc.coinalerts.commons
 
-import com.alexitc.coinalerts.commons.FutureApplicationResult
 import com.alexitc.coinalerts.models.UserEmail
 import com.alexitc.coinalerts.services.{EmailServiceTrait, EmailSubject, EmailText}
 import org.scalactic.Good
