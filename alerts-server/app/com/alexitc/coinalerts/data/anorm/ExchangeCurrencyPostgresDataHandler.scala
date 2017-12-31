@@ -15,6 +15,15 @@ class ExchangeCurrencyPostgresDataHandler @Inject() (
     extends ExchangeCurrencyBlockingDataHandler
     with AnormPostgresDAL {
 
+  override def create(
+      exchange: Exchange,
+      market: Market,
+      currency: Currency): ApplicationResult[Option[ExchangeCurrency]] = withConnection { implicit conn =>
+
+    val exchangeCurrencyMaybe = exchangeCurrencyDAO.create(exchange, market, currency)
+    Good(exchangeCurrencyMaybe)
+  }
+
   override def getBy(
       exchange: Exchange,
       market: Market,

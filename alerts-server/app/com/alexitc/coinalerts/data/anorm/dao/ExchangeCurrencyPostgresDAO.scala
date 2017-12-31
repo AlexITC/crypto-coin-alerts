@@ -8,6 +8,27 @@ import com.alexitc.coinalerts.models.{Currency, Exchange, ExchangeCurrency, Mark
 
 class ExchangeCurrencyPostgresDAO {
 
+  def create(exchange: Exchange,
+      market: Market,
+      currency: Currency)(
+      implicit conn: Connection): Option[ExchangeCurrency] = {
+
+    SQL(
+      """
+        |INSERT INTO currencies
+        |  (exchange, market, currency)
+        |VALUES
+        |  ({exchange}, {market}, {currency})
+        |ON CONFLICT DO NOTHING
+        |RETURNING currency_id, exchange, market, currency
+      """.stripMargin
+    ).on(
+      "exchange" -> exchange.string,
+      "market" -> market.string,
+      "currency" -> currency.string
+    ).as(AnormParsers.parseExchangeCurrency.singleOpt)
+  }
+
   def getBy(
       exchange: Exchange,
       market: Market,
