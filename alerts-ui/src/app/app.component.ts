@@ -26,13 +26,22 @@ export class AppComponent {
       'email': 'invalid email',
       'minlength': 'more characters are required',
       'maxlength': 'too many characters',
+      'min': 'the value is too small',
+      'max': 'the value is too big',
       // field names
       'field.email': 'Email',
       'field.password': 'Password',
       'field.repeatPassword': 'Repeat password',
+      'field.exchange': 'Exchange',
+      'field.market': 'Market',
+      'field.currency': 'Currency',
+      'field.isGreaterThan': 'Should the new price be greater than?',
+      'field.price': 'Price',
+      'field.basePrice': 'The price when you bought / sold (optional)',
       // actions
       'action.createAccount': 'Create account',
       'action.login': 'Log in',
+      'action.createAlert': 'Create alert',
       // custom validations
       'validation.passwordMismatch': 'the password does not match'
     };

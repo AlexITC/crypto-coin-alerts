@@ -1,0 +1,84 @@
+
+<form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate role="form" class="form-horizontal">
+
+  <legend>Create a fixed price alert</legend>
+
+  <div [ngClass]="{ 'has-success': errorService.hasCorrectValue(form, 'exchange'), 'has-error': errorService.hasWrongValue(form, 'exchange') }"
+    class="form-group">
+    <label for="exchange" class="col-xs-3 col-sm-3 col-md-2 col-lg-2 control-label">{{ 'field.exchange' | translate }}</label>
+    <div class="col-xs-3 col-sm-3 col-md-2 col-lg-2">
+      <select formControlName="exchange" id="exchange" class="form-control">
+        <option *ngFor="let exchange of availableExchanges" [value]="exchange">{{exchange}}</option>
+      </select>
+    </div>
+  
+    <div [hidden]="!errorService.hasWrongValue(form, 'exchange')" class="col-xs-4 col-sm-4 col-md-3 col-md-3">
+      <span class="help-block">{{ errorService.getFieldError(form, 'exchange') | translate }}</span>
+    </div>
+  </div>
+
+  <div [ngClass]="{ 'has-success': errorService.hasCorrectValue(form, 'market'), 'has-error': errorService.hasWrongValue(form, 'market') }"
+    class="form-group">
+    <label for="market" class="col-xs-3 col-sm-3 col-md-2 col-lg-2 control-label">{{ 'field.market' | translate }}</label>
+    <div class="col-xs-3 col-sm-3 col-md-2 col-lg-2">
+      <select formControlName="market" id="market" class="form-control">
+        <option *ngFor="let market of availableMarkets(form.getRawValue().exchange)" [value]="market">{{market}}</option>
+      </select>
+    </div>
+  
+    <div [hidden]="!errorService.hasWrongValue(form, 'market')" class="col-xs-4 col-sm-4 col-md-3 col-md-3">
+      <span class="help-block">{{ errorService.getFieldError(form, 'market') | translate }}</span>
+    </div>
+  </div>
+
+  <!-- TODO: List valid currencies for the given market in a dropdown -->
+  <div [ngClass]="{ 'has-success': errorService.hasCorrectValue(form, 'currency'), 'has-error': errorService.hasWrongValue(form, 'currency') }"
+    class="form-group">
+    <label for="currency" class="col-xs-3 col-sm-3 col-md-2 col-lg-2 control-label">{{ 'field.currency' | translate }}</label>
+    <div class="col-xs-3 col-sm-3 col-md-2 col-lg-2">
+      <input formControlName="currency" type="text" id="currency" class="form-control">
+    </div>
+
+    <div [hidden]="!errorService.hasWrongValue(form, 'currency')" class="col-xs-4 col-sm-4 col-md-3 col-md-3">
+      <span class="help-block">{{ errorService.getFieldError(form, 'currency') | translate }}</span>
+    </div>
+  </div>
+
+  <div [ngClass]="{ 'has-success': errorService.hasCorrectValue(form, 'price'), 'has-error': errorService.hasWrongValue(form, 'price') }"
+    class="form-group">
+    <label for="price" class="col-xs-3 col-sm-3 col-md-2 col-lg-2 control-label">{{ 'field.price' | translate }}</label>
+    <div class="col-xs-3 col-sm-3 col-md-2 col-lg-2">
+      <input formControlName="price" type="number" id="price" class="form-control">
+    </div>
+  
+    <div [hidden]="!errorService.hasWrongValue(form, 'price')" class="col-xs-4 col-sm-4 col-md-3 col-md-3">
+      <span class="help-block">{{ errorService.getFieldError(form, 'price') | translate }}</span>
+    </div>
+  </div>
+
+  <div [ngClass]="{ 'has-success': errorService.hasCorrectValue(form, 'isGreaterThan'), 'has-error': errorService.hasWrongValue(form, 'isGreaterThan') }"
+    class="form-group">
+    <label for="isGreaterThan" class="col-xs-3 col-sm-3 col-md-2 col-lg-2 control-label">{{ 'field.isGreaterThan' | translate }}</label>
+    <div class="col-xs-3 col-sm-3 col-md-2 col-lg-2">
+      <input formControlName="isGreaterThan" type="checkbox" id="isGreaterThan" class="form-control" value="on">
+    </div>
+  
+    <div [hidden]="!errorService.hasWrongValue(form, 'isGreaterThan')" class="col-xs-4 col-sm-4 col-md-3 col-md-3">
+      <span class="help-block">{{ errorService.getFieldError(form, 'isGreaterThan') | translate }}</span>
+    </div>
+  </div>
+
+  <div [ngClass]="{ 'has-success': errorService.hasCorrectValue(form, 'basePrice'), 'has-error': errorService.hasWrongValue(form, 'basePrice') }"
+    class="form-group">
+    <label for="basePrice" class="col-xs-3 col-sm-3 col-md-2 col-lg-2 control-label">{{ 'field.basePrice' | translate }}</label>
+    <div class="col-xs-3 col-sm-3 col-md-2 col-lg-2">
+      <input formControlName="basePrice" type="number" id="basePrice" class="form-control">
+    </div>
+  
+    <div [hidden]="!errorService.hasWrongValue(form, 'basePrice')" class="col-xs-4 col-sm-4 col-md-3 col-md-3">
+      <span class="help-block">{{ errorService.getFieldError(form, 'basePrice') | translate }}</span>
+    </div>
+  </div>
+
+  <input type="submit" [disabled]="!form.valid" value="{{ 'action.createAlert' | translate }}" class="btn btn-primary col-sm-offset-3">
+</form>
