@@ -2,7 +2,7 @@ package com.alexitc.coinalerts.services.external
 
 import javax.inject.Inject
 
-import com.alexitc.coinalerts.models.Book
+import com.alexitc.coinalerts.models.{Book, Currency, Market}
 import com.alexitc.coinalerts.tasks.models.Ticker
 import org.slf4j.LoggerFactory
 import play.api.libs.functional.syntax._
@@ -29,10 +29,10 @@ class BittrexService @Inject() (ws: WSClient)(implicit ec: ExecutionContext) {
                     .as[List[JsValue]]
 
                 resultList.flatMap { result =>
-                  val baseMaybe = (result \ "BaseCurrency").asOpt[String]
-                  val marketMaybe = (result \ "MarketCurrency").asOpt[String]
-                  for (base <- baseMaybe; market <- marketMaybe)
-                    yield Book(base, market)
+                  val marketMaybe = (result \ "BaseCurrency").asOpt[String].map(Market.apply)
+                  val currencyMaybe = (result \ "MarketCurrency").asOpt[String].map(Currency.apply)
+                  for (market <- marketMaybe; currency <- currencyMaybe)
+                    yield Book(market, currency)
                 }
               }.getOrElse {
                 logger.warn(s"Unexpected response from BITTREX, status = [${response.status}]")

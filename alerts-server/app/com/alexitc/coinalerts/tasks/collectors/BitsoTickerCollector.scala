@@ -10,7 +10,7 @@ import scala.concurrent.Future
 
 class BitsoTickerCollector @Inject() (bitsoService: BitsoService) extends TickerCollector {
 
-  override val market: Exchange = Exchange.BITSO
+  override val exchange: Exchange = Exchange.BITSO
 
   override def getTickerList: Future[List[Ticker]] = {
     bitsoService.getTickerList

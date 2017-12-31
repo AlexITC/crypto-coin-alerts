@@ -7,7 +7,7 @@ import scala.concurrent.Future
 
 trait TickerCollector {
 
-  def market: Exchange
+  def exchange: Exchange
 
   def getTickerList: Future[List[Ticker]]
 

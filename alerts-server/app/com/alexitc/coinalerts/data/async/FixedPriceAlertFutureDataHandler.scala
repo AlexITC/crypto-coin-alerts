@@ -24,11 +24,10 @@ class FixedPriceAlertFutureDataHandler @Inject() (
   }
 
   override def findPendingAlertsForPrice(
-      market: Exchange,
-      book: Book,
+      currencyId: ExchangeCurrencyId,
       currentPrice: BigDecimal): FutureApplicationResult[List[FixedPriceAlert]] = Future {
 
-    blockingDataHandler.findPendingAlertsForPrice(market, book, currentPrice)
+    blockingDataHandler.findPendingAlertsForPrice(currencyId, currentPrice)
   }
 
   override def getAlerts(userId: UserId, query: PaginatedQuery): FuturePaginatedResult[FixedPriceAlert] = Future {

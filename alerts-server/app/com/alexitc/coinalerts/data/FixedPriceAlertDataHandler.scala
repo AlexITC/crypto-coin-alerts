@@ -12,7 +12,7 @@ trait FixedPriceAlertDataHandler[F[_]] {
 
   def markAsTriggered(alertId: FixedPriceAlertId): F[Unit]
 
-  def findPendingAlertsForPrice(market: Exchange, book: Book, currentPrice: BigDecimal): F[List[FixedPriceAlert]]
+  def findPendingAlertsForPrice(currencyId: ExchangeCurrencyId, currentPrice: BigDecimal): F[List[FixedPriceAlert]]
 
   def getAlerts(userId: UserId, query: PaginatedQuery): F[PaginatedResult[FixedPriceAlert]]
 }

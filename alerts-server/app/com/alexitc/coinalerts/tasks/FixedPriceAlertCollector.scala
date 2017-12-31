@@ -4,7 +4,7 @@ import javax.inject.Inject
 
 import com.alexitc.coinalerts.config.TaskExecutionContext
 import com.alexitc.coinalerts.data.async.FixedPriceAlertFutureDataHandler
-import com.alexitc.coinalerts.models.{FixedPriceAlert, Exchange}
+import com.alexitc.coinalerts.models._
 import com.alexitc.coinalerts.tasks.collectors.TickerCollector
 import com.alexitc.coinalerts.tasks.models.{FixedPriceAlertEvent, Ticker}
 import org.scalactic.{Bad, Good}
@@ -18,50 +18,54 @@ class FixedPriceAlertCollector @Inject()(
 
   private val logger = LoggerFactory.getLogger(this.getClass)
 
+  private def getCurrency(exchange: Exchange, book: Book): ExchangeCurrency = {
+    ??? // TODO: Implement
+  }
+
   def collect(tickerCollector: TickerCollector): Future[List[FixedPriceAlertEvent]] = {
     tickerCollector.getTickerList.flatMap { tickerList =>
-      logger.info(s"Collecting ${tickerCollector.market} alerts")
+      logger.info(s"Collecting ${tickerCollector.exchange} alerts")
 
       val alertListFuture = Future
           .sequence {
             tickerList.map { ticker =>
-              getEventsForTicker(tickerCollector.market, ticker)
+              val currency = getCurrency(tickerCollector.exchange, ticker.book)
+              getEventsForTicker(currency, ticker)
             }
           }
           .map(_.flatten)
 
       alertListFuture.foreach { alertList =>
-        logger.info(s"There are [${alertList.length}] alerts for ${tickerCollector.market}")
+        logger.info(s"There are [${alertList.length}] alerts for ${tickerCollector.exchange}")
       }
 
       alertListFuture
     }
   }
 
-  private def getEventsForTicker(market: Exchange, ticker: Ticker): Future[List[FixedPriceAlertEvent]] = {
-    val book = ticker.book
+  private def getEventsForTicker(currency: ExchangeCurrency, ticker: Ticker): Future[List[FixedPriceAlertEvent]] = {
     val currentPrice = ticker.currentPrice
 
-    logger.info(s"Collecting alerts on $market for [${book.string}] and price = [$currentPrice]")
     fixedPriceAlertDataHandler
-        .findPendingAlertsForPrice(market, book, currentPrice)
+        .findPendingAlertsForPrice(currency.id, currentPrice)
         .flatMap {
           case Good(alertList) =>
-            val futures = alertList.map { alert => createEvent(alert, currentPrice) }
+            val futures = alertList.map { alert => createEvent(alert, currency, currentPrice) }
             Future.sequence(futures)
 
           case Bad(errors) =>
-            logger.error(s"Cannot retrieve pending alerts for $market, book = [${book.string}], currentPrice = [$currentPrice], errors = [$errors]")
+            logger.error(s"Cannot retrieve pending alerts for $currency, currentPrice = [$currentPrice], errors = [$errors]")
             Future.successful(List.empty)
         }
   }
 
   private def createEvent(
       alert: FixedPriceAlert,
+      currency: ExchangeCurrency,
       currentPrice: BigDecimal)(
       implicit ec: ExecutionContext): Future[FixedPriceAlertEvent] = {
 
-    val event = FixedPriceAlertEvent(alert, currentPrice)
+    val event = FixedPriceAlertEvent(alert, currency, currentPrice)
     Future.successful(event)
   }
 }

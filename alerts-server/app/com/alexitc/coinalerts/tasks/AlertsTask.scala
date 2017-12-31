@@ -77,7 +77,7 @@ class AlertsTask @Inject() (
   }
 
   private def groupByMarket(eventList: List[FixedPriceAlertEvent]): Map[Exchange, List[FixedPriceAlertEvent]] = {
-    eventList.groupBy(_.alert.market)
+    eventList.groupBy(_.exchangeCurrency.exchange)
   }
 
   private def createEmailText(eventList: List[FixedPriceAlertEvent])(implicit lang: Lang): EmailText = {
@@ -100,11 +100,17 @@ class AlertsTask @Inject() (
       percentage
     }
 
-    val message = if (alert.isGreaterThan) {
-      messagesApi("message.alert.priceIncreased", alert.book.string, event.currentPrice)
+    val messageKey = if (alert.isGreaterThan) {
+      "message.alert.priceIncreased"
     } else {
-      messagesApi("message.alert.priceDecreased", alert.book.string, event.currentPrice)
+      "message.alert.priceDecreased"
     }
+
+    val message = messagesApi(
+      messageKey,
+      event.exchangeCurrency.currency.string,
+      event.currentPrice,
+      event.exchangeCurrency.market.string)
 
     percentageDifferenceMaybe.map { percent =>
       val readablePercent = percent.toString()

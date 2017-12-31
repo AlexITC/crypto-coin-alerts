@@ -2,8 +2,8 @@ package com.alexitc.coinalerts.models
 
 import play.api.libs.json._
 
-case class Book(major: String, minor: String) {
-  val string = s"${major}_$minor".toUpperCase
+case class Book(market: Market, currency: Currency) {
+  val string: String = s"${market.string}_${currency.string}".toUpperCase
 }
 object Book {
 
@@ -11,9 +11,9 @@ object Book {
     Option(string.toUpperCase.split("_"))
         .filter(_.length == 2)
         .map { parts =>
-          val major = parts(0)
-          val minor = parts(1)
-          Book(major, minor)
+          val market = Market(parts(0))
+          val currency = Currency(parts(1))
+          Book(market, currency)
         }
   }
 

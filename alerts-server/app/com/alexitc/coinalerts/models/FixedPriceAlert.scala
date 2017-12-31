@@ -6,8 +6,7 @@ import play.api.libs.json._
 case class FixedPriceAlert(
     id: FixedPriceAlertId,
     userId: UserId,
-    market: Exchange,
-    book: Book,
+    currencyId: ExchangeCurrencyId,
     isGreaterThan: Boolean,
     price: BigDecimal,
     basePrice: Option[BigDecimal] = None
@@ -19,8 +18,7 @@ object FixedPriceAlert {
 case class FixedPriceAlertId(long: Long) extends AnyVal with WrappedLong
 
 case class CreateFixedPriceAlertModel(
-    market: Exchange,
-    book: Book,
+    exchangeCurrencyId: ExchangeCurrencyId,
     isGreaterThan: Boolean,
     price: BigDecimal,
     basePrice: Option[BigDecimal]
