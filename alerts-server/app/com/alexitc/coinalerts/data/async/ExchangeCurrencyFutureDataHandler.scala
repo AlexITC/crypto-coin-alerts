@@ -21,4 +21,8 @@ class ExchangeCurrencyFutureDataHandler @Inject() (
   override def getBy(exchange: Exchange, market: Market, currency: Currency): FutureApplicationResult[Option[ExchangeCurrency]] = Future {
     blockingDataHandler.getBy(exchange, market, currency)
   }
+
+  override def getAll(): FutureApplicationResult[List[ExchangeCurrency]] = Future {
+    blockingDataHandler.getAll()
+  }
 }

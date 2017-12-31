@@ -50,4 +50,18 @@ class ExchangeCurrencyPostgresDAO {
       "currency" -> currency.string
     ).as(AnormParsers.parseExchangeCurrency.singleOpt)
   }
+
+  /**
+   * The total amount of currencies should not be too big to retrieve
+   * them all at once, in case the number gets too big, we can get
+   * all currencies for a exchange.
+   */
+  def getAll(implicit conn: Connection): List[ExchangeCurrency] = {
+    SQL(
+      """
+        |SELECT currency_id, exchange, market, currency
+        |FROM currencies
+      """.stripMargin
+    ).as(AnormParsers.parseExchangeCurrency.*)
+  }
 }
