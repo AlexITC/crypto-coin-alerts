@@ -4,7 +4,7 @@ import java.sql.Connection
 
 import anorm._
 import com.alexitc.coinalerts.data.anorm.AnormParsers
-import com.alexitc.coinalerts.models.{Currency, Exchange, ExchangeCurrency, Market}
+import com.alexitc.coinalerts.models._
 
 class ExchangeCurrencyPostgresDAO {
 
@@ -26,6 +26,21 @@ class ExchangeCurrencyPostgresDAO {
       "exchange" -> exchange.string,
       "market" -> market.string,
       "currency" -> currency.string
+    ).as(AnormParsers.parseExchangeCurrency.singleOpt)
+  }
+
+  def getBy(
+      exchangeCurrencyId: ExchangeCurrencyId)(
+      implicit conn: Connection): Option[ExchangeCurrency] = {
+
+    SQL(
+      """
+        |SELECT currency_id, exchange, market, currency
+        |FROM currencies
+        |WHERE currency_id = {currency_id}
+      """.stripMargin
+    ).on(
+      "currency_id" -> exchangeCurrencyId.int
     ).as(AnormParsers.parseExchangeCurrency.singleOpt)
   }
 

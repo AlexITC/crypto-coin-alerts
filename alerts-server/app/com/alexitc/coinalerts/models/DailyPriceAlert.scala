@@ -8,7 +8,7 @@ import play.api.libs.json._
 case class DailyPriceAlert(
     id: DailyPriceAlertId,
     userId: UserId,
-    currencyId: ExchangeCurrencyId,
+    exchangeCurrencyId: ExchangeCurrencyId,
     createdOn: OffsetDateTime)
 
 object DailyPriceAlert {

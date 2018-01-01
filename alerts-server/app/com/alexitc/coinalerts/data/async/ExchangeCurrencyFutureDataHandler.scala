@@ -5,7 +5,7 @@ import javax.inject.Inject
 import com.alexitc.coinalerts.commons.FutureApplicationResult
 import com.alexitc.coinalerts.config.DatabaseExecutionContext
 import com.alexitc.coinalerts.data.{ExchangeCurrencyBlockingDataHandler, ExchangeCurrencyDataHandler}
-import com.alexitc.coinalerts.models.{Currency, Exchange, ExchangeCurrency, Market}
+import com.alexitc.coinalerts.models._
 
 import scala.concurrent.Future
 
@@ -16,6 +16,10 @@ class ExchangeCurrencyFutureDataHandler @Inject() (
 
   override def create(exchange: Exchange, market: Market, currency: Currency): FutureApplicationResult[Option[ExchangeCurrency]] = Future {
     blockingDataHandler.create(exchange, market, currency)
+  }
+
+  override def getBy(exchangeCurrencyId: ExchangeCurrencyId): FutureApplicationResult[Option[ExchangeCurrency]] = Future {
+    blockingDataHandler.getBy(exchangeCurrencyId)
   }
 
   override def getBy(exchange: Exchange, market: Market, currency: Currency): FutureApplicationResult[Option[ExchangeCurrency]] = Future {

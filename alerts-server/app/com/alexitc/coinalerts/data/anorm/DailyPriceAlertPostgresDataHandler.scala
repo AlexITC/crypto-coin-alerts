@@ -6,6 +6,7 @@ import com.alexitc.coinalerts.commons.ApplicationResult
 import com.alexitc.coinalerts.core.{PaginatedQuery, PaginatedResult}
 import com.alexitc.coinalerts.data.DailyPriceAlertBlockingDataHandler
 import com.alexitc.coinalerts.data.anorm.dao.DailyPriceAlertPostgresDAO
+import com.alexitc.coinalerts.errors.{PostgresIntegrityViolationError, UnknownExchangeCurrencyIdError}
 import com.alexitc.coinalerts.models.{CreateDailyPriceAlertModel, DailyPriceAlert, UserId}
 import org.scalactic.Good
 import play.api.db.Database
@@ -18,9 +19,18 @@ class DailyPriceAlertPostgresDataHandler @Inject() (
 
   override def create(
       userId: UserId,
-      createDailyPriceAlert: CreateDailyPriceAlertModel): ApplicationResult[DailyPriceAlert] = withConnection { implicit conn =>
+      createDailyPriceAlert: CreateDailyPriceAlertModel): ApplicationResult[DailyPriceAlert] = {
 
-    dailyPriceAlertDAO.create(userId, createDailyPriceAlert)
+    val result = withConnection { implicit conn =>
+      dailyPriceAlertDAO.create(userId, createDailyPriceAlert)
+    }
+
+    result.badMap { errors =>
+      errors.map {
+        case PostgresIntegrityViolationError(Some("currency_id"), _) => UnknownExchangeCurrencyIdError
+        case e => e
+      }
+    }
   }
 
   override def getAlerts(

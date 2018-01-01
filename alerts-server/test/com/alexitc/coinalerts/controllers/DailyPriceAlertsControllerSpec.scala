@@ -5,7 +5,7 @@ import java.time.OffsetDateTime
 import com.alexitc.coinalerts.commons.{DataHelper, PlayAPISpec, RandomDataGenerator}
 import com.alexitc.coinalerts.core.{Limit, Offset, PaginatedQuery}
 import com.alexitc.coinalerts.data.{DailyPriceAlertBlockingDataHandler, DailyPriceAlertInMemoryDataHandler}
-import com.alexitc.coinalerts.models.{Book, CreateDailyPriceAlertModel, Exchange}
+import com.alexitc.coinalerts.models._
 import play.api.Application
 import play.api.inject.bind
 import play.api.libs.json.JsValue
@@ -28,13 +28,13 @@ class DailyPriceAlertsControllerSpec extends PlayAPISpec {
       val user = DataHelper.createVerifiedUser()
       val token = jwtService.createToken(user)
 
-      val market = Exchange.BITTREX
-      val book = Book.fromString("BTC_ETH").get
+      val currencies = exchangeCurrencyDataHandler.getAll().get
+      val exchangeCurrency = RandomDataGenerator.item(currencies)
+
       val body =
         s"""
           |{
-          |  "market": "${market.string}",
-          |  "book": "${book.string}"
+          |  "exchangeCurrencyId": ${exchangeCurrency.id.int}
           |}
         """.stripMargin
 
@@ -44,18 +44,17 @@ class DailyPriceAlertsControllerSpec extends PlayAPISpec {
       val json = contentAsJson(response)
       (json \ "id").asOpt[Long].isDefined mustEqual true
       (json \ "userId").as[String] mustEqual user.id.string
-      (json \ "market").as[String] mustEqual market.string
-      (json \ "book").as[String] mustEqual book.string
+      (json \ "exchangeCurrencyId").as[Int] mustEqual exchangeCurrency.id.int
     }
 
     "reject a valid daily price alert when no auth token is present" in {
-      val market = Exchange.BITTREX
-      val book = Book.fromString("BTC_ETH").get
+      val currencies = exchangeCurrencyDataHandler.getAll().get
+      val exchangeCurrency = RandomDataGenerator.item(currencies)
+
       val body =
         s"""
            |{
-           |  "market": "${market.string}",
-           |  "book": "${book.string}"
+           |  "exchangeCurrencyId": ${exchangeCurrency.id.int}
            |}
         """.stripMargin
 
@@ -72,17 +71,17 @@ class DailyPriceAlertsControllerSpec extends PlayAPISpec {
       val user = DataHelper.createVerifiedUser()
       val token = jwtService.createToken(user)
 
-      val market = Exchange.BITTREX
-      val book = Book.fromString("BTC_ETH").get
+      val currencies = exchangeCurrencyDataHandler.getAll().get
+      val exchangeCurrency = RandomDataGenerator.item(currencies)
+
       val body =
         s"""
            |{
-           |  "market": "${market.string}",
-           |  "book": "${book.string}"
+           |  "exchangeCurrencyId": ${exchangeCurrency.id.int}
            |}
         """.stripMargin
 
-      dailyPriceAlertDataHandler.create(user.id, CreateDailyPriceAlertModel(market, book))
+      dailyPriceAlertDataHandler.create(user.id, CreateDailyPriceAlertModel(exchangeCurrency.id))
       val response = POST(url, Some(body), token.toHeader)
       status(response) mustEqual CONFLICT
 
@@ -100,8 +99,9 @@ class DailyPriceAlertsControllerSpec extends PlayAPISpec {
       val query = PaginatedQuery(Offset(1), Limit(10))
       val user = DataHelper.createVerifiedUser()
       val token = jwtService.createToken(user)
-      DataHelper.createDailyPriceAlert(user.id, RandomDataGenerator.createDailyPriceAlertModel(book = Book("ETH", "MXN")))
-      DataHelper.createDailyPriceAlert(user.id, RandomDataGenerator.createDailyPriceAlertModel(book = Book("BTC", "MXN")))
+      val currencies = exchangeCurrencyDataHandler.getAll().get
+      DataHelper.createDailyPriceAlert(user.id, RandomDataGenerator.item(currencies).id)
+      DataHelper.createDailyPriceAlert(user.id, RandomDataGenerator.item(currencies).id)
 
       val response = GET(url.withQueryParams(query), token.toHeader)
       status(response) mustEqual OK
@@ -118,8 +118,7 @@ class DailyPriceAlertsControllerSpec extends PlayAPISpec {
       (jsonItem \ "id").asOpt[Long].isDefined mustEqual true
       (jsonItem \ "createdOn").asOpt[OffsetDateTime].isDefined mustEqual true
       (jsonItem \ "userId").as[String] mustEqual user.id.string
-      (jsonItem \ "market").asOpt[String].isDefined mustEqual true
-      (jsonItem \ "book").asOpt[String].isDefined mustEqual true
+      (jsonItem \ "exchangeCurrencyId").asOpt[Int].isDefined mustEqual true
     }
   }
 }

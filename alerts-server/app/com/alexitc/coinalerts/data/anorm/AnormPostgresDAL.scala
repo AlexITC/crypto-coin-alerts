@@ -26,7 +26,7 @@ trait AnormPostgresDAL {
       database.withConnection(block)
     } catch {
       case e: PSQLException if isIntegrityConstraintViolationError(e) =>
-        Bad(PostgresIntegrityViolationError(e)).accumulating
+        Bad(createIntegrityConstraintViolationError(e)).accumulating
     }
   }
 
@@ -35,10 +35,23 @@ trait AnormPostgresDAL {
       database.withTransaction(block)
     } catch {
       case e: PSQLException if isIntegrityConstraintViolationError(e) =>
-        Bad(PostgresIntegrityViolationError(e)).accumulating
+        Bad(createIntegrityConstraintViolationError(e)).accumulating
     }
   }
 
   private def isIntegrityConstraintViolationError(e: PSQLException) = e.getSQLState startsWith "23"
+  private def createIntegrityConstraintViolationError(e: PSQLException) = {
+    // assumes not null
+    val detail = e.getServerErrorMessage.getDetail
 
+    // expected format = [Key (column)=(given_value) is not present in table "table".]
+    val regex = raw"Key (.*)=.*".r
+    detail match {
+      case regex(dirtyColumn, _*) =>
+        val column = dirtyColumn.substring(1, dirtyColumn.length - 1)
+        PostgresIntegrityViolationError(Some(column), e)
+
+      case _ => PostgresIntegrityViolationError(None, e)
+    }
+  }
 }

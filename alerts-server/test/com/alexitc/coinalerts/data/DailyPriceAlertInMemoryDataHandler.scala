@@ -14,11 +14,10 @@ class DailyPriceAlertInMemoryDataHandler extends DailyPriceAlertBlockingDataHand
   private val alertList = mutable.ListBuffer[DailyPriceAlert]()
 
   override def create(userId: UserId, createDailyPriceAlert: CreateDailyPriceAlertModel): ApplicationResult[DailyPriceAlert] = {
-    val alert = DailyPriceAlert(RandomDataGenerator.dailyPriceAlertId, userId, createDailyPriceAlert.market, createDailyPriceAlert.book, OffsetDateTime.now())
+    val alert = DailyPriceAlert(RandomDataGenerator.dailyPriceAlertId, userId, createDailyPriceAlert.exchangeCurrencyId, OffsetDateTime.now())
     val exists = alertList.toList.exists { existingAlert =>
       existingAlert.userId == userId &&
-      existingAlert.market == alert.market &&
-      existingAlert.book == alert.book
+      existingAlert.exchangeCurrencyId == alert.exchangeCurrencyId
     }
 
     if (exists) {

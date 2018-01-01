@@ -1,7 +1,7 @@
 package com.alexitc.coinalerts.commons
 
-import com.alexitc.coinalerts.data.anorm.UserPostgresDataHandler
-import com.alexitc.coinalerts.data.anorm.dao.UserPostgresDAO
+import com.alexitc.coinalerts.data.anorm.dao.{ExchangeCurrencyPostgresDAO, UserPostgresDAO}
+import com.alexitc.coinalerts.data.anorm.{ExchangeCurrencyPostgresDataHandler, UserPostgresDataHandler}
 import com.spotify.docker.client.DefaultDockerClient
 import com.whisk.docker.DockerFactory
 import com.whisk.docker.impl.spotify.SpotifyDockerFactory
@@ -57,8 +57,14 @@ trait PostgresDataHandlerSpec
 
     Evolutions.applyEvolutions(database)
 
+    // currencies is a core feature required by most tests
+    // the data handler is created here to avoid a cyclic dependency
+    CurrencySeeder.seed(
+      new ExchangeCurrencyPostgresDataHandler(database, new ExchangeCurrencyPostgresDAO))
+
     database
   }
 
   implicit lazy val userDataHandler = new UserPostgresDataHandler(database, new UserPostgresDAO)
+  implicit lazy val exchangeCurrencyDataHandler = new ExchangeCurrencyPostgresDataHandler(database, new ExchangeCurrencyPostgresDAO)
 }

@@ -6,7 +6,7 @@ import com.alexitc.coinalerts.commons.ApplicationResult
 import com.alexitc.coinalerts.core.{PaginatedQuery, PaginatedResult}
 import com.alexitc.coinalerts.data.FixedPriceAlertBlockingDataHandler
 import com.alexitc.coinalerts.data.anorm.dao.FixedPriceAlertPostgresDAO
-import com.alexitc.coinalerts.errors.{AlertNotFound, InvalidPriceError}
+import com.alexitc.coinalerts.errors._
 import com.alexitc.coinalerts.models._
 import org.scalactic.{Bad, Good}
 import play.api.db.Database
@@ -17,9 +17,19 @@ class FixedPriceAlertPostgresDataHandler @Inject() (
     extends FixedPriceAlertBlockingDataHandler
     with AnormPostgresDAL{
 
-  override def create(createAlertModel: CreateFixedPriceAlertModel, userId: UserId): ApplicationResult[FixedPriceAlert] = withConnection { implicit conn =>
-    val result = alertPostgresDAO.create(createAlertModel, userId)
-    Good(result)
+  override def create(createAlertModel: CreateFixedPriceAlertModel, userId: UserId): ApplicationResult[FixedPriceAlert] = {
+    val result = withConnection { implicit conn =>
+      val result = alertPostgresDAO.create(createAlertModel, userId)
+      Good(result)
+    }
+
+    result.badMap { errors =>
+      errors.map {
+        case PostgresIntegrityViolationError(Some("currency_id"), _) => UnknownExchangeCurrencyIdError
+        case PostgresIntegrityViolationError(Some("user_id"), _) => VerifiedUserNotFound
+        case e => e
+      }
+    }
   }
 
   override def markAsTriggered(alertId: FixedPriceAlertId): ApplicationResult[Unit] = withConnection { implicit conn =>

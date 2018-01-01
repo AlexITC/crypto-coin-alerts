@@ -6,7 +6,7 @@ import play.api.libs.json._
 case class FixedPriceAlert(
     id: FixedPriceAlertId,
     userId: UserId,
-    currencyId: ExchangeCurrencyId,
+    exchangeCurrencyId: ExchangeCurrencyId,
     isGreaterThan: Boolean,
     price: BigDecimal,
     basePrice: Option[BigDecimal] = None

@@ -130,9 +130,9 @@ class JsonErrorRenderer @Inject() (messagesApi: MessagesApi) {
       val message = messagesApi("error.basePrice.invalid")
       FieldValidationError("basePrice", message)
 
-    case UnknownBookError =>
-      val message = messagesApi("error.book.unknown")
-      FieldValidationError("book", message)
+    case UnknownExchangeCurrencyIdError =>
+      val message = messagesApi("error.exchangeCurrencyId.unknown")
+      FieldValidationError("exchangeCurrencyId", message)
   }
 
   private def renderPaginatedQueryError(error: PaginatedQueryError)(implicit lang: Lang) = error match {

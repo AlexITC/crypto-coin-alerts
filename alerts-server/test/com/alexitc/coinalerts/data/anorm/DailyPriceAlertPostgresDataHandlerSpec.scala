@@ -4,8 +4,8 @@ import com.alexitc.coinalerts.commons.DataHelper.createUnverifiedUser
 import com.alexitc.coinalerts.commons.{DataHelper, PostgresDataHandlerSpec, RandomDataGenerator}
 import com.alexitc.coinalerts.core.{Count, Limit, Offset, PaginatedQuery}
 import com.alexitc.coinalerts.data.anorm.dao.DailyPriceAlertPostgresDAO
-import com.alexitc.coinalerts.errors.RepeatedDailyPriceAlertError
-import com.alexitc.coinalerts.models.{Book, CreateDailyPriceAlertModel, Exchange, UserId}
+import com.alexitc.coinalerts.errors.{RepeatedDailyPriceAlertError, UnknownExchangeCurrencyIdError}
+import com.alexitc.coinalerts.models.{CreateDailyPriceAlertModel, ExchangeCurrencyId, UserId}
 import org.scalactic.Bad
 
 class DailyPriceAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
@@ -15,21 +15,30 @@ class DailyPriceAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
   "Creating a daily price alert" should {
     "be able to create a valid alert" in {
       val user = DataHelper.createVerifiedUser()
-      val model = CreateDailyPriceAlertModel(Exchange.BITTREX, Book.fromString("BTC_ETH").get)
+      val currencies = exchangeCurrencyDataHandler.getAll().get
+      val model = CreateDailyPriceAlertModel(RandomDataGenerator.item(currencies).id)
       val result = dailyPriceAlertDataHandler.create(user.id, model).get
 
-      result.book mustEqual model.book
-      result.market mustEqual model.market
       result.userId mustEqual user.id
     }
 
     "reject a repeated alert" in {
       val user = DataHelper.createVerifiedUser()
-      val model = CreateDailyPriceAlertModel(Exchange.BITTREX, Book.fromString("BTC_ETH").get)
+      val currencies = exchangeCurrencyDataHandler.getAll().get
+      val model = CreateDailyPriceAlertModel(RandomDataGenerator.item(currencies).id)
       dailyPriceAlertDataHandler.create(user.id, model)
       val result = dailyPriceAlertDataHandler.create(user.id, model)
 
       result mustEqual Bad(RepeatedDailyPriceAlertError).accumulating
+    }
+
+    "reject an alert with unknown exchangeCurrencyId" in {
+      val user = DataHelper.createVerifiedUser()
+      val currencies = exchangeCurrencyDataHandler.getAll().get
+      val exchangeCurrencyId = ExchangeCurrencyId(currencies.map(_.id.int).max + 1)
+      val result = dailyPriceAlertDataHandler.create(user.id, CreateDailyPriceAlertModel(exchangeCurrencyId))
+
+      result mustEqual Bad(UnknownExchangeCurrencyIdError).accumulating
     }
   }
 
@@ -44,7 +53,8 @@ class DailyPriceAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
 
     "return empty result when the offset is greater than the total elements" in {
       val user = createUnverifiedUser()
-      dailyPriceAlertDataHandler.create(user.id, RandomDataGenerator.createDailyPriceAlertModel(book = Book("ETH", "MXN")))
+      val currencies = exchangeCurrencyDataHandler.getAll().get
+      dailyPriceAlertDataHandler.create(user.id, CreateDailyPriceAlertModel(RandomDataGenerator.item(currencies).id))
 
       val query = PaginatedQuery(Offset(1), Limit(1))
       val result = dailyPriceAlertDataHandler.getAlerts(user.id, query).get
@@ -54,8 +64,10 @@ class DailyPriceAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
 
     "return a result that is paginated properly" in {
       val user = createUnverifiedUser()
-      dailyPriceAlertDataHandler.create(user.id, RandomDataGenerator.createDailyPriceAlertModel(book = Book("ETH", "MXN")))
-      dailyPriceAlertDataHandler.create(user.id, RandomDataGenerator.createDailyPriceAlertModel(book = Book("BTC", "MXN")))
+      val currencies = exchangeCurrencyDataHandler.getAll().get
+      val currencyIdList = RandomDataGenerator.items(currencies, 2).map(_.id)
+      dailyPriceAlertDataHandler.create(user.id, CreateDailyPriceAlertModel(currencyIdList.head))
+      dailyPriceAlertDataHandler.create(user.id, CreateDailyPriceAlertModel(currencyIdList(1)))
 
       val query = PaginatedQuery(Offset(0), Limit(1))
       val result = dailyPriceAlertDataHandler.getAlerts(user.id, query).get
@@ -67,8 +79,10 @@ class DailyPriceAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
 
     "return a result for the second page different to the one on the first page" in {
       val user = createUnverifiedUser()
-      dailyPriceAlertDataHandler.create(user.id, RandomDataGenerator.createDailyPriceAlertModel(book = Book("ETH", "MXN")))
-      dailyPriceAlertDataHandler.create(user.id, RandomDataGenerator.createDailyPriceAlertModel(book = Book("BTC", "MXN")))
+      val currencies = exchangeCurrencyDataHandler.getAll().get
+      val currencyIdList = RandomDataGenerator.items(currencies, 2).map(_.id)
+      dailyPriceAlertDataHandler.create(user.id, CreateDailyPriceAlertModel(currencyIdList.head))
+      dailyPriceAlertDataHandler.create(user.id, CreateDailyPriceAlertModel(currencyIdList(1)))
 
       val page1Query = PaginatedQuery(Offset(0), Limit(1))
       val page1Result = dailyPriceAlertDataHandler.getAlerts(user.id, page1Query).get

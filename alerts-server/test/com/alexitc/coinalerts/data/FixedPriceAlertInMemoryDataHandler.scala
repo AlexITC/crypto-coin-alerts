@@ -2,7 +2,7 @@ package com.alexitc.coinalerts.data
 
 import com.alexitc.coinalerts.commons.{ApplicationResult, RandomDataGenerator}
 import com.alexitc.coinalerts.core.{Count, PaginatedQuery, PaginatedResult}
-import com.alexitc.coinalerts.errors.AlertNotFound
+import com.alexitc.coinalerts.errors.{AlertNotFound, UnknownExchangeCurrencyIdError}
 import com.alexitc.coinalerts.models._
 import org.scalactic.{Bad, Good}
 
@@ -10,22 +10,27 @@ import scala.collection.mutable
 
 trait FixedPriceAlertInMemoryDataHandler extends FixedPriceAlertBlockingDataHandler {
 
+  def exchangeCurrencyBlocingDataHandler: ExchangeCurrencyBlockingDataHandler
+
   private val alertList = mutable.ListBuffer[FixedPriceAlert]()
   private val triggeredAlertList = mutable.ListBuffer[FixedPriceAlertId]()
 
   override def create(createAlertModel: CreateFixedPriceAlertModel, userId: UserId): ApplicationResult[FixedPriceAlert] = {
-    val alert = FixedPriceAlert(
-      RandomDataGenerator.alertId,
-      userId,
-      createAlertModel.market,
-      createAlertModel.book,
-      createAlertModel.isGreaterThan,
-      createAlertModel.price,
-      createAlertModel.basePrice)
+    if (exchangeCurrencyBlocingDataHandler.getBy(createAlertModel.exchangeCurrencyId).get.isDefined) {
+      val alert = FixedPriceAlert(
+        RandomDataGenerator.alertId,
+        userId,
+        createAlertModel.exchangeCurrencyId,
+        createAlertModel.isGreaterThan,
+        createAlertModel.price,
+        createAlertModel.basePrice)
 
-    alertList += alert
+      alertList += alert
 
-    Good(alert)
+      Good(alert)
+    } else {
+      Bad(UnknownExchangeCurrencyIdError).accumulating
+    }
   }
 
   override def markAsTriggered(alertId: FixedPriceAlertId): ApplicationResult[Unit] = {
@@ -37,10 +42,9 @@ trait FixedPriceAlertInMemoryDataHandler extends FixedPriceAlertBlockingDataHand
     }
   }
 
-  override def findPendingAlertsForPrice(market: Exchange, book: Book, currentPrice: BigDecimal): ApplicationResult[List[FixedPriceAlert]] = {
+  override def findPendingAlertsForPrice(currencyId: ExchangeCurrencyId, currentPrice: BigDecimal): ApplicationResult[List[FixedPriceAlert]] = {
     val list = pendingAlertList
-        .filter(_.market == market)
-        .filter(_.book == book)
+        .filter(_.exchangeCurrencyId == currencyId)
         .filter { alert =>
           (alert.isGreaterThan && currentPrice >= alert.price) ||
               (!alert.isGreaterThan && currentPrice <= alert.price)

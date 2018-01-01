@@ -1,7 +1,7 @@
 package com.alexitc.coinalerts.controllers
 
 import com.alexitc.coinalerts.commons.DataHelper._
-import com.alexitc.coinalerts.commons.PlayAPISpec
+import com.alexitc.coinalerts.commons.{PlayAPISpec, RandomDataGenerator}
 import com.alexitc.coinalerts.core.{Limit, Offset, PaginatedQuery}
 import com.alexitc.coinalerts.data.{FixedPriceAlertBlockingDataHandler, FixedPriceAlertInMemoryDataHandler}
 import play.api.Application
@@ -13,7 +13,9 @@ class FixedPriceAlertsControllerSpec extends PlayAPISpec {
 
   import PlayAPISpec._
 
-  implicit val alertDataHandler: FixedPriceAlertBlockingDataHandler = new FixedPriceAlertInMemoryDataHandler {}
+  implicit val alertDataHandler: FixedPriceAlertBlockingDataHandler = new FixedPriceAlertInMemoryDataHandler {
+    override def exchangeCurrencyBlocingDataHandler = exchangeCurrencyDataHandler
+  }
 
   val application: Application = guiceApplicationBuilder
       .overrides(bind[FixedPriceAlertBlockingDataHandler].to(alertDataHandler))
@@ -23,11 +25,12 @@ class FixedPriceAlertsControllerSpec extends PlayAPISpec {
     val url = "/fixed-price-alerts"
 
     "Create an alert" in {
+      val currencies = exchangeCurrencyDataHandler.getAll().get
+      val exchangeCurrency = RandomDataGenerator.item(currencies)
       val body =
-        """
+        s"""
           | {
-          |   "market": "BITTREX",
-          |   "book": "BTC_ETH",
+          |   "exchangeCurrencyId": ${exchangeCurrency.id.int},
           |   "isGreaterThan": false,
           |   "price": "0.123456789"
           | }
@@ -40,19 +43,19 @@ class FixedPriceAlertsControllerSpec extends PlayAPISpec {
 
       val json = contentAsJson(response)
       (json \ "id").asOpt[Long].isDefined mustEqual true
-      (json \ "market").as[String] mustEqual "BITTREX"
-      (json \ "book").as[String] mustEqual "BTC_ETH"
+      (json \ "exchangeCurrencyId").as[Int] mustEqual exchangeCurrency.id.int
       (json \ "isGreaterThan").as[Boolean] mustEqual false
       (json \ "price").asOpt[BigDecimal].isDefined mustEqual true
       (json \ "basePrice").asOpt[BigDecimal].isDefined mustEqual false
     }
 
     "Create an alert with basePrice" in {
+      val currencies = exchangeCurrencyDataHandler.getAll().get
+      val exchangeCurrency = RandomDataGenerator.item(currencies)
       val body =
-        """
+        s"""
           | {
-          |   "market": "BITSO",
-          |   "book": "BTC_ETH",
+          |   "exchangeCurrencyId": ${exchangeCurrency.id.int},
           |   "isGreaterThan": true,
           |   "price": "0.123456789",
           |   "basePrice": "0.1234"
@@ -66,19 +69,19 @@ class FixedPriceAlertsControllerSpec extends PlayAPISpec {
 
       val json = contentAsJson(response)
       (json \ "id").asOpt[Long].isDefined mustEqual true
-      (json \ "market").as[String] mustEqual "BITSO"
-      (json \ "book").as[String] mustEqual "BTC_ETH"
+      (json \ "exchangeCurrencyId").as[Int] mustEqual exchangeCurrency.id.int
       (json \ "isGreaterThan").as[Boolean] mustEqual true
       (json \ "price").asOpt[BigDecimal].isDefined mustEqual true
       (json \ "basePrice").asOpt[BigDecimal].isDefined mustEqual true
     }
 
-    "Fail to create an alert with an invalid market" in {
+    "Fail to create an alert with an unknown currency id" in {
+      val currencies = exchangeCurrencyDataHandler.getAll().get
+      val missingCurrencyIdInt = currencies.map(_.id.int).max + 1
       val body =
-        """
+        s"""
           | {
-          |   "market": "UNKNOWN",
-          |   "book": "BTC_ETH",
+          |   "exchangeCurrencyId": $missingCurrencyIdInt,
           |   "isGreaterThan": false,
           |   "price": "0.123456789"
           | }
@@ -95,42 +98,17 @@ class FixedPriceAlertsControllerSpec extends PlayAPISpec {
 
       val error = errorList.head
       (error \ "type").as[String] mustEqual "field-validation-error"
-      (error \ "field").as[String] mustEqual "market"
-      (error \ "message").as[String].nonEmpty mustEqual true
-    }
-
-    "Fail to create an alert with an incorrect book format" in {
-      val body =
-        """
-          | {
-          |   "market": "BITTREX",
-          |   "book": "BTC.ETH",
-          |   "isGreaterThan": false,
-          |   "price": "0.123456789"
-          | }
-        """.stripMargin
-
-      val user = createVerifiedUser()
-      val token = jwtService.createToken(user)
-      val response = POST(url, Some(body), token.toHeader)
-      status(response) mustEqual BAD_REQUEST
-
-      val json = contentAsJson(response)
-      val errorList = (json \ "errors").as[List[JsValue]]
-      errorList.nonEmpty mustEqual true
-
-      val error = errorList.head
-      (error \ "type").as[String] mustEqual "field-validation-error"
-      (error \ "field").as[String] mustEqual "book"
+      (error \ "field").as[String] mustEqual "exchangeCurrencyId"
       (error \ "message").as[String].nonEmpty mustEqual true
     }
 
     "Fail to create an alert having price less than 0" in {
+      val currencies = exchangeCurrencyDataHandler.getAll().get
+      val exchangeCurrency = RandomDataGenerator.item(currencies)
       val body =
-        """
+        s"""
           | {
-          |   "market": "BITTREX",
-          |   "book": "BTC_ETH",
+          |   "exchangeCurrencyId": ${exchangeCurrency.id.int},
           |   "isGreaterThan": false,
           |   "price": "-0.123456789"
           | }
@@ -158,8 +136,9 @@ class FixedPriceAlertsControllerSpec extends PlayAPISpec {
     "Return a paginated result based on the query" in {
       val user = createVerifiedUser()
       val token = jwtService.createToken(user)
-      createFixedPriceAlert(user.id)
-      createFixedPriceAlert(user.id)
+      val currencies = exchangeCurrencyDataHandler.getAll().get
+      createFixedPriceAlert(user.id, RandomDataGenerator.item(currencies).id)
+      createFixedPriceAlert(user.id, RandomDataGenerator.item(currencies).id)
 
       val query = PaginatedQuery(Offset(1), Limit(10))
       val response = GET(url.withQueryParams(query), token.toHeader)

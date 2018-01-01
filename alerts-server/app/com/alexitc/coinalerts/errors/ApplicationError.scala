@@ -21,7 +21,7 @@ sealed trait PrivateError extends ApplicationError {
 sealed trait PostgresError extends PrivateError {
   def cause: PSQLException
 }
-case class PostgresIntegrityViolationError(cause: PSQLException) extends PostgresError
+case class PostgresIntegrityViolationError(column: Option[String], cause: PSQLException) extends PostgresError
 
 case class WrappedExceptionError(cause: Throwable) extends PrivateError
 
@@ -54,11 +54,11 @@ case object InvalidJWTError extends JWTError with AuthenticationError
 sealed trait MailgunError extends ApplicationError
 case object MailgunSendEmailError extends MailgunError with InputValidationError
 
-// Create alert
+// Create fixed price alert
 sealed trait CreateFixedPriceAlertError extends ApplicationError
 case object InvalidPriceError extends CreateFixedPriceAlertError with InputValidationError
 case object InvalidBasePriceError extends CreateFixedPriceAlertError with InputValidationError
-case object UnknownBookError extends CreateFixedPriceAlertError with InputValidationError
+case object UnknownExchangeCurrencyIdError extends CreateFixedPriceAlertError with InputValidationError
 
 //
 case object AlertNotFound extends NotFoundError
