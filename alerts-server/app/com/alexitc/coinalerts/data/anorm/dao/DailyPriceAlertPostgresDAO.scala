@@ -5,12 +5,14 @@ import java.sql.Connection
 import anorm._
 import com.alexitc.coinalerts.commons.ApplicationResult
 import com.alexitc.coinalerts.core.{Count, PaginatedQuery}
-import com.alexitc.coinalerts.data.anorm.AnormParsers
+import com.alexitc.coinalerts.data.anorm.parsers.DailyPriceAlertParsers
 import com.alexitc.coinalerts.errors.RepeatedDailyPriceAlertError
 import com.alexitc.coinalerts.models.{CreateDailyPriceAlertModel, DailyPriceAlert, UserId}
 import org.scalactic.{One, Or}
 
 class DailyPriceAlertPostgresDAO {
+
+  import DailyPriceAlertParsers._
 
   def create(
       userId: UserId,
@@ -29,7 +31,7 @@ class DailyPriceAlertPostgresDAO {
     ).on(
       "user_id" -> userId.string,
       "currency_id" -> createDailyPriceAlert.exchangeCurrencyId.int,
-    ).as(AnormParsers.parseDailyPriceAlert.singleOpt)
+    ).as(parseDailyPriceAlert.singleOpt)
 
     Or.from(alertMaybe, One(RepeatedDailyPriceAlertError))
   }
@@ -52,7 +54,7 @@ class DailyPriceAlertPostgresDAO {
       "user_id" -> userId.string,
       "offset" -> query.offset.int,
       "limit" -> query.limit.int
-    ).as(AnormParsers.parseDailyPriceAlert.*)
+    ).as(parseDailyPriceAlert.*)
   }
 
   def countAlerts(

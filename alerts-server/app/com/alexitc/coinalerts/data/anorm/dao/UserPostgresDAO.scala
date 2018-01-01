@@ -3,10 +3,12 @@ package com.alexitc.coinalerts.data.anorm.dao
 import java.sql.Connection
 
 import anorm.SQL
-import com.alexitc.coinalerts.data.anorm.AnormParsers._
+import com.alexitc.coinalerts.data.anorm.parsers.UserParsers
 import com.alexitc.coinalerts.models._
 
 class UserPostgresDAO {
+
+  import UserParsers._
 
   def create(email: UserEmail, password: UserHiddenPassword)(implicit conn: Connection): Option[User] = {
     val userId = UserId.create

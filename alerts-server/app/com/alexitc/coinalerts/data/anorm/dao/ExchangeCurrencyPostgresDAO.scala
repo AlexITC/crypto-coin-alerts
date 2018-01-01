@@ -3,10 +3,12 @@ package com.alexitc.coinalerts.data.anorm.dao
 import java.sql.Connection
 
 import anorm._
-import com.alexitc.coinalerts.data.anorm.AnormParsers
+import com.alexitc.coinalerts.data.anorm.parsers.ExchangeCurrencyParsers
 import com.alexitc.coinalerts.models._
 
 class ExchangeCurrencyPostgresDAO {
+
+  import ExchangeCurrencyParsers._
 
   def create(exchange: Exchange,
       market: Market,
@@ -26,7 +28,7 @@ class ExchangeCurrencyPostgresDAO {
       "exchange" -> exchange.string,
       "market" -> market.string,
       "currency" -> currency.string
-    ).as(AnormParsers.parseExchangeCurrency.singleOpt)
+    ).as(parseExchangeCurrency.singleOpt)
   }
 
   def getBy(
@@ -41,7 +43,7 @@ class ExchangeCurrencyPostgresDAO {
       """.stripMargin
     ).on(
       "currency_id" -> exchangeCurrencyId.int
-    ).as(AnormParsers.parseExchangeCurrency.singleOpt)
+    ).as(parseExchangeCurrency.singleOpt)
   }
 
   def getBy(
@@ -63,7 +65,7 @@ class ExchangeCurrencyPostgresDAO {
       "exchange" -> exchange.string,
       "market" -> market.string,
       "currency" -> currency.string
-    ).as(AnormParsers.parseExchangeCurrency.singleOpt)
+    ).as(parseExchangeCurrency.singleOpt)
   }
 
   /**
@@ -77,6 +79,6 @@ class ExchangeCurrencyPostgresDAO {
         |SELECT currency_id, exchange, market, currency
         |FROM currencies
       """.stripMargin
-    ).as(AnormParsers.parseExchangeCurrency.*)
+    ).as(parseExchangeCurrency.*)
   }
 }

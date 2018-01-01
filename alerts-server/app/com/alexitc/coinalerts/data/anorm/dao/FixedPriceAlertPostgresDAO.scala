@@ -4,11 +4,13 @@ import java.sql.Connection
 
 import anorm._
 import com.alexitc.coinalerts.core.{Count, PaginatedQuery}
-import com.alexitc.coinalerts.data.anorm.AnormParsers._
+import com.alexitc.coinalerts.data.anorm.parsers.FixedPriceAlertParsers
 import com.alexitc.coinalerts.models._
 
 class FixedPriceAlertPostgresDAO {
-  
+
+  import FixedPriceAlertParsers._
+
   def create(createAlertModel: CreateFixedPriceAlertModel, userId: UserId)(implicit conn: Connection): FixedPriceAlert = {
     SQL(
       """
