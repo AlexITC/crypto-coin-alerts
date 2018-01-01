@@ -34,13 +34,13 @@ object RandomDataGenerator {
     list(index)
   }
 
-  def items[A](list: Seq[A], count: Int): Seq[A] = {
+  def uniqueItems[A](list: Seq[A], count: Int): Seq[A] = {
     if (count == 0) List.empty
     else {
       val index = Random.nextInt(list.length)
       val value = list(index)
-      val (left, right) = list.splitAt(index)
-      value :: items(left ++ right, count - 1).toList
+      val remaining = list.filter(_ != value)
+      value :: uniqueItems(remaining, count - 1).toList
     }
   }
 

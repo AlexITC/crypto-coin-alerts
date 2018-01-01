@@ -65,9 +65,10 @@ class DailyPriceAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
     "return a result that is paginated properly" in {
       val user = createUnverifiedUser()
       val currencies = exchangeCurrencyDataHandler.getAll().get
-      val currencyIdList = RandomDataGenerator.items(currencies, 2).map(_.id)
-      dailyPriceAlertDataHandler.create(user.id, CreateDailyPriceAlertModel(currencyIdList.head))
-      dailyPriceAlertDataHandler.create(user.id, CreateDailyPriceAlertModel(currencyIdList(1)))
+      val currencyIdList = RandomDataGenerator.uniqueItems(currencies, 2).map(_.id)
+      currencyIdList.foreach { currencyId =>
+        dailyPriceAlertDataHandler.create(user.id, CreateDailyPriceAlertModel(currencyId))
+      }
 
       val query = PaginatedQuery(Offset(0), Limit(1))
       val result = dailyPriceAlertDataHandler.getAlerts(user.id, query).get
@@ -80,7 +81,7 @@ class DailyPriceAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
     "return a result for the second page different to the one on the first page" in {
       val user = createUnverifiedUser()
       val currencies = exchangeCurrencyDataHandler.getAll().get
-      val currencyIdList = RandomDataGenerator.items(currencies, 2).map(_.id)
+      val currencyIdList = RandomDataGenerator.uniqueItems(currencies, 2).map(_.id)
       dailyPriceAlertDataHandler.create(user.id, CreateDailyPriceAlertModel(currencyIdList.head))
       dailyPriceAlertDataHandler.create(user.id, CreateDailyPriceAlertModel(currencyIdList(1)))
 
