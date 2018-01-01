@@ -44,6 +44,8 @@ trait PostgresDataHandlerSpec
     val _ = isContainerReady(postgresContainer).futureValue mustEqual true
   }
 
+  def seedCurrencies: Boolean = true
+
   def database: Database = {
     val database = Databases(
       driver = "org.postgresql.Driver",
@@ -59,8 +61,10 @@ trait PostgresDataHandlerSpec
 
     // currencies is a core feature required by most tests
     // the data handler is created here to avoid a cyclic dependency
-    CurrencySeeder.seed(
-      new ExchangeCurrencyPostgresDataHandler(database, new ExchangeCurrencyPostgresDAO))
+    if (seedCurrencies) {
+      CurrencySeeder.seed(
+        new ExchangeCurrencyPostgresDataHandler(database, new ExchangeCurrencyPostgresDAO))
+    }
 
     database
   }
