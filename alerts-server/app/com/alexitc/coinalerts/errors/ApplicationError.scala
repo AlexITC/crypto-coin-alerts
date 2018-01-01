@@ -71,3 +71,6 @@ case class InvalidQueryLimitError(maxValue: Int) extends PaginatedQueryError wit
 // Create daily price alert
 sealed trait CreateDailyPriceAlertError extends ApplicationError
 case object RepeatedDailyPriceAlertError extends CreateDailyPriceAlertError with ConflictError
+
+sealed trait ExchangeCurrencyError extends ApplicationError
+case object RepeatedExchangeCurrencyError extends ExchangeCurrencyError with InputValidationError

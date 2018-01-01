@@ -1,7 +1,8 @@
 package com.alexitc.coinalerts.data
 import com.alexitc.coinalerts.commons.ApplicationResult
+import com.alexitc.coinalerts.errors.RepeatedExchangeCurrencyError
 import com.alexitc.coinalerts.models._
-import org.scalactic.Good
+import org.scalactic.{Bad, Good}
 
 import scala.collection.mutable
 
@@ -12,10 +13,10 @@ trait ExchangeCurrencyInMemoryDataHandler extends ExchangeCurrencyBlockingDataHa
   override def create(
       exchange: Exchange,
       market: Market,
-      currency: Currency): ApplicationResult[Option[ExchangeCurrency]] = {
+      currency: Currency): ApplicationResult[ExchangeCurrency] = {
 
     if (getBy(exchange, market, currency).get.isDefined) {
-      Good(None)
+      Bad(RepeatedExchangeCurrencyError).accumulating
     } else {
       val newCurrency = ExchangeCurrency(
         ExchangeCurrencyId(currencyList.length),
@@ -25,7 +26,7 @@ trait ExchangeCurrencyInMemoryDataHandler extends ExchangeCurrencyBlockingDataHa
 
       currencyList += newCurrency
 
-      Good(Some(newCurrency))
+      Good(newCurrency)
     }
   }
 
