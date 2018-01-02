@@ -21,6 +21,17 @@ class ExchangeCurrencyPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
       result.currency mustEqual currency
     }
 
+    "be able to create a currency having 2 characters" in {
+      val exchange = Exchange.BITTREX
+      val market = Market("BTC")
+      val currency = Currency("TX") // TransferCoin
+      val result = exchangeCurrencyDataHandler.create(exchange, market, currency).get
+
+      result.exchange mustEqual exchange
+      result.market mustEqual market
+      result.currency mustEqual currency
+    }
+
     "fail to create a repeated currency" in {
       val exchange = Exchange.BITTREX
       val market = Market("BTC")

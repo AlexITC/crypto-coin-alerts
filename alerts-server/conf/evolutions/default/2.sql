@@ -11,8 +11,8 @@ CREATE TABLE currencies(
   CONSTRAINT currencies_currency_id_pk PRIMARY KEY (currency_id),
   CONSTRAINT currencies_unique UNIQUE (exchange, market, currency),
   CONSTRAINT currencies_exchange_format CHECK (exchange ~ '^[A-Z]{3,20}$'),
-  CONSTRAINT currencies_market_format CHECK (market ~ '^[A-Z0-9]{3,10}$'),
-  CONSTRAINT currencies_currency_format CHECK (currency ~ '^[A-Z0-9]{3,10}$')
+  CONSTRAINT currencies_market_format CHECK (market ~ '^[A-Z0-9]{2,10}$'),
+  CONSTRAINT currencies_currency_format CHECK (currency ~ '^[A-Z0-9]{2,10}$')
 );
 
 
