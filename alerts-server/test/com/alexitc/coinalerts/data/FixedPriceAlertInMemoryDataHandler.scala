@@ -15,7 +15,7 @@ trait FixedPriceAlertInMemoryDataHandler extends FixedPriceAlertBlockingDataHand
   private val alertList = mutable.ListBuffer[FixedPriceAlert]()
   private val triggeredAlertList = mutable.ListBuffer[FixedPriceAlertId]()
 
-  override def create(createAlertModel: CreateFixedPriceAlertModel, userId: UserId): ApplicationResult[FixedPriceAlert] = {
+  override def create(createAlertModel: CreateFixedPriceAlertModel, userId: UserId): ApplicationResult[FixedPriceAlert] = alertList.synchronized {
     if (exchangeCurrencyBlocingDataHandler.getBy(createAlertModel.exchangeCurrencyId).get.isDefined) {
       val alert = FixedPriceAlert(
         RandomDataGenerator.alertId,
@@ -33,7 +33,7 @@ trait FixedPriceAlertInMemoryDataHandler extends FixedPriceAlertBlockingDataHand
     }
   }
 
-  override def markAsTriggered(alertId: FixedPriceAlertId): ApplicationResult[Unit] = {
+  override def markAsTriggered(alertId: FixedPriceAlertId): ApplicationResult[Unit] = alertList.synchronized {
     if (triggeredAlertList.contains(alertId)) {
       Bad(AlertNotFound).accumulating
     } else {
@@ -42,7 +42,7 @@ trait FixedPriceAlertInMemoryDataHandler extends FixedPriceAlertBlockingDataHand
     }
   }
 
-  override def findPendingAlertsForPrice(currencyId: ExchangeCurrencyId, currentPrice: BigDecimal): ApplicationResult[List[FixedPriceAlert]] = {
+  override def findPendingAlertsForPrice(currencyId: ExchangeCurrencyId, currentPrice: BigDecimal): ApplicationResult[List[FixedPriceAlert]] = alertList.synchronized {
     val list = pendingAlertList
         .filter(_.exchangeCurrencyId == currencyId)
         .filter { alert =>
@@ -53,7 +53,7 @@ trait FixedPriceAlertInMemoryDataHandler extends FixedPriceAlertBlockingDataHand
     Good(list)
   }
 
-  override def getAlerts(userId: UserId, query: PaginatedQuery): ApplicationResult[PaginatedResult[FixedPriceAlert]] = {
+  override def getAlerts(userId: UserId, query: PaginatedQuery): ApplicationResult[PaginatedResult[FixedPriceAlert]] = alertList.synchronized {
     val userAlerts = alertList.toList.filter(_.userId == userId)
     val data = userAlerts.slice(query.offset.int, query.offset.int + query.limit.int)
     val result = PaginatedResult(query.offset, query.limit, Count(userAlerts.length), data)
