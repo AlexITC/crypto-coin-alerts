@@ -74,3 +74,4 @@ case object RepeatedDailyPriceAlertError extends CreateDailyPriceAlertError with
 
 sealed trait ExchangeCurrencyError extends ApplicationError
 case object RepeatedExchangeCurrencyError extends ExchangeCurrencyError with InputValidationError
+case object ExchangeCurrencyNotFoundError extends ExchangeCurrencyError with NotFoundError
