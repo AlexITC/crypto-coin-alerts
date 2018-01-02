@@ -8,6 +8,7 @@ import com.alexitc.coinalerts.errors._
 import com.alexitc.coinalerts.models.UserId
 import org.scalactic.TypeCheckedTripleEquals._
 import org.scalactic.{Bad, Every, Good}
+import org.slf4j.LoggerFactory
 import play.api.i18n.Lang
 import play.api.libs.json._
 import play.api.mvc._
@@ -25,7 +26,7 @@ import scala.util.control.NonFatal
 abstract class JsonController @Inject() (components: JsonControllerComponents)
     extends MessagesBaseController {
 
-  protected def logger: org.slf4j.Logger
+  protected val logger = LoggerFactory.getLogger(this.getClass)
 
   protected implicit val ec = components.executionContext
 
@@ -55,7 +56,7 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
   def publicWithInput[R: Reads, M](
       successStatus: Status)(
       block: PublicRequestContextWithModel[R] => FutureApplicationResult[M])(
-      implicit tjs: Writes[M]): Action[JsValue] = components.loggingAction.async(parse.json) { request =>
+      implicit tjs: Writes[M]): Action[JsValue] = Action.async(parse.json) { request =>
 
     val result = for {
       input <- validate[R](request.body).toFutureOr
@@ -91,7 +92,7 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
   def publicNoInput[M](
       successStatus: Status)(
       block: PublicRequestContext => FutureApplicationResult[M])(
-      implicit tjs: Writes[M]): Action[JsValue] = components.loggingAction.async(EmptyJsonParser) { request =>
+      implicit tjs: Writes[M]): Action[JsValue] = Action.async(EmptyJsonParser) { request =>
 
     val context = PublicRequestContext(messagesApi.preferred(request).lang)
     val result = block(context)
@@ -125,7 +126,7 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
   def authenticatedWithInput[R: Reads, M](
       successStatus: Status)(
       block: AuthenticatedRequestContextWithModel[R] => FutureApplicationResult[M])(
-      implicit tjs: Writes[M]): Action[JsValue] = components.loggingAction.async(parse.json) { request =>
+      implicit tjs: Writes[M]): Action[JsValue] = Action.async(parse.json) { request =>
 
     val lang = messagesApi.preferred(request).lang
     val result = for {
@@ -166,7 +167,7 @@ abstract class JsonController @Inject() (components: JsonControllerComponents)
   def authenticatedNoInput[M](
       successStatus: Status)(
       block: AuthenticatedRequestContext => FutureApplicationResult[M])(
-      implicit tjs: Writes[M]): Action[JsValue] = components.loggingAction.async(EmptyJsonParser) { request =>
+      implicit tjs: Writes[M]): Action[JsValue] = Action.async(EmptyJsonParser) { request =>
 
     val lang = messagesApi.preferred(request).lang
     val result = for {

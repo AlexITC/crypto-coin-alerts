@@ -5,13 +5,11 @@ import javax.inject.Inject
 import com.alexitc.coinalerts.commons._
 import com.alexitc.coinalerts.models._
 import com.alexitc.coinalerts.services.UserService
-import com.alexitc.play.tracer.PlayRequestTracing
 
 class UsersController @Inject() (
     components: JsonControllerComponents,
     userService: UserService)
-    extends JsonController(components)
-    with PlayRequestTracing {
+    extends JsonController(components) {
 
   def create() = publicWithInput(Created) { context: PublicCtxModel[CreateUserModel] =>
     userService.create(context.model)(context.lang)
