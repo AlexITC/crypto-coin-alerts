@@ -4,7 +4,7 @@ import com.alexitc.coinalerts.commons.DataHelper._
 import com.alexitc.coinalerts.commons.{PostgresDataHandlerSpec, RandomDataGenerator}
 import com.alexitc.coinalerts.core.{Count, Limit, Offset, PaginatedQuery}
 import com.alexitc.coinalerts.data.anorm.dao.FixedPriceAlertPostgresDAO
-import com.alexitc.coinalerts.errors.{AlertNotFound, InvalidPriceError, UnknownExchangeCurrencyIdError, VerifiedUserNotFound}
+import com.alexitc.coinalerts.errors.{FixedPriceAlertNotFoundError, InvalidPriceError, UnknownExchangeCurrencyIdError, VerifiedUserNotFound}
 import com.alexitc.coinalerts.models._
 import org.scalactic.Bad
 
@@ -57,12 +57,12 @@ class FixedPriceAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
       alertPostgresDataHandler.markAsTriggered(alert.id)
 
       val result = alertPostgresDataHandler.markAsTriggered(alert.id)
-      result mustEqual Bad(AlertNotFound).accumulating
+      result mustEqual Bad(FixedPriceAlertNotFoundError).accumulating
     }
 
     "fail to mark a non existent alert" in {
       val result = alertPostgresDataHandler.markAsTriggered(RandomDataGenerator.alertId)
-      result mustEqual Bad(AlertNotFound).accumulating
+      result mustEqual Bad(FixedPriceAlertNotFoundError).accumulating
     }
   }
 

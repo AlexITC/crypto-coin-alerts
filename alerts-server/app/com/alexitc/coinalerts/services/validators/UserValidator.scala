@@ -1,7 +1,7 @@
 package com.alexitc.coinalerts.services.validators
 
 import com.alexitc.coinalerts.commons.ApplicationResult
-import com.alexitc.coinalerts.errors.{InvalidEmailFormat, InvalidEmailLength, InvalidPasswordLength}
+import com.alexitc.coinalerts.errors.{InvalidEmailFormatError, InvalidEmailLengthError, InvalidPasswordLengthError}
 import com.alexitc.coinalerts.models.{CreateUserModel, UserEmail, UserPassword}
 import org.apache.commons.validator.routines.EmailValidator
 import org.scalactic.Accumulation.withGood
@@ -27,10 +27,10 @@ class UserValidator {
       if (email.string.length <= MaxEmailLength) {
         Good(email)
       } else {
-        Bad(InvalidEmailLength(MaxEmailLength)).accumulating
+        Bad(InvalidEmailLengthError(MaxEmailLength)).accumulating
       }
     } else {
-      Bad(InvalidEmailFormat).accumulating
+      Bad(InvalidEmailFormatError).accumulating
     }
   }
 
@@ -39,7 +39,7 @@ class UserValidator {
       // TODO: enforce strong password?
       Good(password)
     } else {
-      Bad(InvalidPasswordLength(PasswordLengthRange)).accumulating
+      Bad(InvalidPasswordLengthError(PasswordLengthRange)).accumulating
     }
   }
 }

@@ -2,7 +2,7 @@ package com.alexitc.coinalerts.data
 
 import com.alexitc.coinalerts.commons.{ApplicationResult, RandomDataGenerator}
 import com.alexitc.coinalerts.core.{Count, PaginatedQuery, PaginatedResult}
-import com.alexitc.coinalerts.errors.{AlertNotFound, UnknownExchangeCurrencyIdError}
+import com.alexitc.coinalerts.errors.{FixedPriceAlertNotFoundError, UnknownExchangeCurrencyIdError}
 import com.alexitc.coinalerts.models._
 import org.scalactic.{Bad, Good}
 
@@ -35,7 +35,7 @@ trait FixedPriceAlertInMemoryDataHandler extends FixedPriceAlertBlockingDataHand
 
   override def markAsTriggered(alertId: FixedPriceAlertId): ApplicationResult[Unit] = alertList.synchronized {
     if (triggeredAlertList.contains(alertId)) {
-      Bad(AlertNotFound).accumulating
+      Bad(FixedPriceAlertNotFoundError).accumulating
     } else {
       triggeredAlertList += alertId
       Good(())

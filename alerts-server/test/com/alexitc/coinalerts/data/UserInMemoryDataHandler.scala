@@ -1,7 +1,7 @@
 package com.alexitc.coinalerts.data
 
 import com.alexitc.coinalerts.commons.ApplicationResult
-import com.alexitc.coinalerts.errors.{EmailAlreadyExists, UserVerificationTokenNotFound, VerifiedUserNotFound}
+import com.alexitc.coinalerts.errors.{EmailAlreadyExistsError, UserVerificationTokenNotFoundError, VerifiedUserNotFound}
 import com.alexitc.coinalerts.models._
 import org.scalactic.{Bad, Good, One, Or}
 
@@ -16,7 +16,7 @@ trait UserInMemoryDataHandler extends UserBlockingDataHandler {
 
   override def create(email: UserEmail, password: UserHiddenPassword): ApplicationResult[User] = userList.synchronized {
     if (userList.exists(_.email.string.equalsIgnoreCase(email.string))) {
-      Bad(EmailAlreadyExists).accumulating
+      Bad(EmailAlreadyExistsError).accumulating
     } else {
       val newUser = User(UserId.create, email)
       userList += newUser
@@ -40,7 +40,7 @@ trait UserInMemoryDataHandler extends UserBlockingDataHandler {
       user
     }
 
-    Or.from(userMaybe, One(UserVerificationTokenNotFound))
+    Or.from(userMaybe, One(UserVerificationTokenNotFoundError))
   }
 
   override def getVerifiedUserPassword(email: UserEmail): ApplicationResult[UserHiddenPassword] = userList.synchronized {

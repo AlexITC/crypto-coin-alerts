@@ -28,22 +28,19 @@ case class WrappedExceptionError(cause: Throwable) extends PrivateError
 // play json validation errors
 case class JsonFieldValidationError(path: JsPath, errors: Seq[MessageKey]) extends InputValidationError
 
-// Create user errors
-sealed trait CreateUserError
-case object InvalidEmailFormat extends CreateUserError with InputValidationError
-case class InvalidEmailLength(maxLength: Int) extends CreateUserError with InputValidationError
-case class InvalidPasswordLength(validLength: Range) extends CreateUserError with InputValidationError
-case object EmailAlreadyExists extends CreateUserError with ConflictError
+// User errors
+sealed trait UserError
+case object InvalidEmailFormatError extends UserError with InputValidationError
+case class InvalidEmailLengthError(maxLength: Int) extends UserError with InputValidationError
+case class InvalidPasswordLengthError(validLength: Range) extends UserError with InputValidationError
+case object EmailAlreadyExistsError extends UserError with ConflictError
+case object VerifiedUserNotFound extends UserError with InputValidationError
+case object IncorrectPasswordError extends UserError with InputValidationError
 
 // Verify user email
 sealed trait UserVerificationTokenError
-case object UserVerificationTokenNotFound extends UserVerificationTokenError with NotFoundError
-case object UserVerificationTokenAlreadyExists extends UserVerificationTokenError with ConflictError
-
-// login
-sealed trait LoginByEmailError extends ApplicationError
-case object VerifiedUserNotFound extends LoginByEmailError with InputValidationError
-case object IncorrectPasswordError extends LoginByEmailError with InputValidationError
+case object UserVerificationTokenNotFoundError extends UserVerificationTokenError with NotFoundError
+case object UserVerificationTokenAlreadyExistsError extends UserVerificationTokenError with ConflictError
 
 // JWT
 sealed trait JWTError extends ApplicationError
@@ -54,24 +51,22 @@ case object InvalidJWTError extends JWTError with AuthenticationError
 sealed trait MailgunError extends ApplicationError
 case object MailgunSendEmailError extends MailgunError with InputValidationError
 
-// Create fixed price alert
-sealed trait CreateFixedPriceAlertError extends ApplicationError
-case object InvalidPriceError extends CreateFixedPriceAlertError with InputValidationError
-case object InvalidBasePriceError extends CreateFixedPriceAlertError with InputValidationError
-case object UnknownExchangeCurrencyIdError extends CreateFixedPriceAlertError with InputValidationError
-
-//
-case object AlertNotFound extends NotFoundError
+// Fixed price alert
+sealed trait FixedPriceAlertError extends ApplicationError
+case object InvalidPriceError extends FixedPriceAlertError with InputValidationError
+case object InvalidBasePriceError extends FixedPriceAlertError with InputValidationError
+case object FixedPriceAlertNotFoundError extends FixedPriceAlertError with NotFoundError
 
 // Paginated query
 sealed trait PaginatedQueryError extends ApplicationError
 case object InvalidQueryOffsetError extends PaginatedQueryError with InputValidationError
 case class InvalidQueryLimitError(maxValue: Int) extends PaginatedQueryError with InputValidationError
 
-// Create daily price alert
-sealed trait CreateDailyPriceAlertError extends ApplicationError
-case object RepeatedDailyPriceAlertError extends CreateDailyPriceAlertError with ConflictError
+// Daily price alert
+sealed trait DailyPriceAlertError extends ApplicationError
+case object RepeatedDailyPriceAlertError extends DailyPriceAlertError with ConflictError
 
 sealed trait ExchangeCurrencyError extends ApplicationError
+case object UnknownExchangeCurrencyIdError extends ExchangeCurrencyError with InputValidationError
 case object RepeatedExchangeCurrencyError extends ExchangeCurrencyError with InputValidationError
 case object ExchangeCurrencyNotFoundError extends ExchangeCurrencyError with NotFoundError

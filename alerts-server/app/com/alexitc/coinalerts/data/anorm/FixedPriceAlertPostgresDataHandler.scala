@@ -37,7 +37,7 @@ class FixedPriceAlertPostgresDataHandler @Inject() (
     if (updatedRows == 1) {
       Good(())
     } else {
-      Bad(AlertNotFound).accumulating
+      Bad(FixedPriceAlertNotFoundError).accumulating
     }
   }
 

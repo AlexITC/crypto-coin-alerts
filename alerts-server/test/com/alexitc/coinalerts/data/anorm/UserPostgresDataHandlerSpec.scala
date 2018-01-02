@@ -27,7 +27,7 @@ class UserPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
       userPostgresDataHandler.create(email, password).isGood mustEqual true
 
       val result = userPostgresDataHandler.create(email.copy(string = email.string.toUpperCase), password)
-      result mustEqual Bad(EmailAlreadyExists).accumulating
+      result mustEqual Bad(EmailAlreadyExistsError).accumulating
     }
   }
 
@@ -45,7 +45,7 @@ class UserPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
       val userId = userPostgresDataHandler.create(email, RandomDataGenerator.hiddenPassword).get.id
 
       userPostgresDataHandler.createVerificationToken(userId).isGood mustEqual true
-      userPostgresDataHandler.createVerificationToken(userId) mustEqual Bad(UserVerificationTokenAlreadyExists).accumulating
+      userPostgresDataHandler.createVerificationToken(userId) mustEqual Bad(UserVerificationTokenAlreadyExistsError).accumulating
     }
 
     "Fail to create a verification token for an unknown user" in {
@@ -69,7 +69,7 @@ class UserPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
     "Fail to verify user email given an invalid token" in {
       val token = new UserVerificationToken("no-one")
       val result = userPostgresDataHandler.verifyEmail(token)
-      result mustEqual Bad(UserVerificationTokenNotFound).accumulating
+      result mustEqual Bad(UserVerificationTokenNotFoundError).accumulating
     }
   }
 

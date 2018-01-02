@@ -50,6 +50,9 @@ class JsonErrorRenderer @Inject() (messagesApi: MessagesApi) {
     case error: JWTError =>
       List(renderJWTError(error))
 
+    case error: MailgunError =>
+      renderMailgunError(error)
+
     case JsonFieldValidationError(path, errors) =>
       val field = path.path.map(_.toJsonString.replace(".", "")).mkString(".")
       errors.map { messageKey =>
@@ -57,23 +60,20 @@ class JsonErrorRenderer @Inject() (messagesApi: MessagesApi) {
         FieldValidationError(field, message)
       }
 
-    case createUserError: CreateUserError =>
-      List(renderCreateUserError(createUserError))
+    case error: UserError =>
+      List(renderUserError(error))
 
-    case tokenError: UserVerificationTokenError =>
-      List(renderUserVerificationTokenError(tokenError))
+    case error: UserVerificationTokenError =>
+      List(renderUserVerificationTokenError(error))
 
-    case error: LoginByEmailError =>
-      List(renderLoginByEmailError(error))
-
-    case error: CreateFixedPriceAlertError =>
-      List(renderCreateFixedPriceAlertError(error))
+    case error: FixedPriceAlertError =>
+      List(renderFixedPriceAlertError(error))
 
     case error: PaginatedQueryError =>
       List(renderPaginatedQueryError(error))
 
-    case error: CreateDailyPriceAlertError =>
-      List(renderCreateDailyPriceAlertError(error))
+    case error: DailyPriceAlertError =>
+      List(renderDailyPriceAlertError(error))
 
     case error: ExchangeCurrencyError =>
       List(renderExchangeCurrencyError(error))
@@ -89,21 +89,35 @@ class JsonErrorRenderer @Inject() (messagesApi: MessagesApi) {
       HeaderValidationError("Authorization", message)
   }
 
-  private def renderCreateUserError(createUserError: CreateUserError)(implicit lang: Lang) = createUserError match {
-    case InvalidEmailLength(maxLength) =>
+  private def renderMailgunError(error: MailgunError)(implicit lang: Lang) = error match {
+    case MailgunSendEmailError =>
+      // this error should not happen
+      List.empty[PublicError]
+  }
+
+  private def renderUserError(error: UserError)(implicit lang: Lang) = error match {
+    case InvalidEmailLengthError(maxLength) =>
       val message = messagesApi("error.email.length", maxLength)
       FieldValidationError("email", message)
 
-    case InvalidEmailFormat =>
+    case InvalidEmailFormatError =>
       val message = messagesApi("error.email.format")
       FieldValidationError("email", message)
 
-    case EmailAlreadyExists =>
+    case EmailAlreadyExistsError =>
       val message = messagesApi("error.email.conflict")
       FieldValidationError("email", message)
 
-    case InvalidPasswordLength(range) =>
+    case InvalidPasswordLengthError(range) =>
       val message = messagesApi("error.password.length", range.start, range.end)
+      FieldValidationError("password", message)
+
+    case VerifiedUserNotFound =>
+      val message = messagesApi("error.verifiedUser.notFound")
+      FieldValidationError("email", message)
+
+    case IncorrectPasswordError =>
+      val message = messagesApi("error.password.incorrect")
       FieldValidationError("password", message)
   }
 
@@ -114,17 +128,7 @@ class JsonErrorRenderer @Inject() (messagesApi: MessagesApi) {
       FieldValidationError("token", message)
   }
 
-  private def renderLoginByEmailError(error: LoginByEmailError)(implicit lang: Lang) = error match {
-    case VerifiedUserNotFound =>
-      val message = messagesApi("error.verifiedUser.notFound")
-      FieldValidationError("email", message)
-
-    case IncorrectPasswordError =>
-      val message = messagesApi("error.password.incorrect")
-      FieldValidationError("password", message)
-  }
-
-  private def renderCreateFixedPriceAlertError(error: CreateFixedPriceAlertError)(implicit lang: Lang) = error match {
+  private def renderFixedPriceAlertError(error: FixedPriceAlertError)(implicit lang: Lang) = error match {
     case InvalidPriceError =>
       val message = messagesApi("error.price.invalid")
       FieldValidationError("price", message)
@@ -133,9 +137,9 @@ class JsonErrorRenderer @Inject() (messagesApi: MessagesApi) {
       val message = messagesApi("error.basePrice.invalid")
       FieldValidationError("basePrice", message)
 
-    case UnknownExchangeCurrencyIdError =>
-      val message = messagesApi("error.exchangeCurrencyId.unknown")
-      FieldValidationError("exchangeCurrencyId", message)
+    case FixedPriceAlertNotFoundError =>
+      val message = messagesApi("error.fixedPriceAlert.notFound")
+      FieldValidationError("fixedPriceAlertId", message)
   }
 
   private def renderPaginatedQueryError(error: PaginatedQueryError)(implicit lang: Lang) = error match {
@@ -148,13 +152,17 @@ class JsonErrorRenderer @Inject() (messagesApi: MessagesApi) {
       FieldValidationError("limit", message)
   }
 
-  private def renderCreateDailyPriceAlertError(error: CreateDailyPriceAlertError)(implicit lang: Lang) = error match {
+  private def renderDailyPriceAlertError(error: DailyPriceAlertError)(implicit lang: Lang) = error match {
     case RepeatedDailyPriceAlertError =>
       val message = messagesApi("error.createDailyPriceAlert.repeated")
       FieldValidationError("exchangeCurrencyId", message)
   }
 
   private def renderExchangeCurrencyError(error: ExchangeCurrencyError)(implicit lang: Lang) = error match {
+    case UnknownExchangeCurrencyIdError =>
+      val message = messagesApi("error.exchangeCurrencyId.unknown")
+      FieldValidationError("exchangeCurrencyId", message)
+
     case RepeatedExchangeCurrencyError =>
       val message = messagesApi("error.exchangeCurrency.repeated")
       FieldValidationError("currency", message)
