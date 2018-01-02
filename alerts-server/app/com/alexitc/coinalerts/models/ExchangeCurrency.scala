@@ -1,7 +1,7 @@
 package com.alexitc.coinalerts.models
 
 import com.alexitc.coinalerts.core.{WrappedInt, WrappedString}
-import play.api.libs.json.{JsPath, Reads}
+import play.api.libs.json.{JsPath, Json, Reads, Writes}
 
 /**
  * [[ExchangeCurrency]] represents a currency that can be traded in
@@ -15,6 +15,9 @@ case class ExchangeCurrency(
     exchange: Exchange,
     market: Market,
     currency: Currency)
+object ExchangeCurrency {
+  implicit val writes: Writes[ExchangeCurrency] = Json.writes[ExchangeCurrency]
+}
 
 case class ExchangeCurrencyId(int: Int) extends AnyVal with WrappedInt
 object ExchangeCurrencyId {
