@@ -28,6 +28,15 @@ class FutureOr[+A](val future: FutureApplicationResult[A]) extends AnyVal {
     val newFuture = future.map { _.map(f) }
     new FutureOr(newFuture)
   }
+
+  def mapWithError[B](f: A => B Or ApplicationErrors)(implicit ec: ExecutionContext): FutureOr[B] = {
+    val newFuture = future.map {
+      case Good(x) => f(x)
+      case Bad(e) => Bad(e)
+    }
+
+    new FutureOr(newFuture)
+  }
 }
 
 object FutureOr {
