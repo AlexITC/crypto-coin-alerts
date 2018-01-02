@@ -14,6 +14,14 @@ object Exchange {
     case BITSO.string => BITSO
   }
 
+  def fromString(string: String): Option[Exchange] = {
+    if (fromStringPF.isDefinedAt(string)) {
+      Some(fromStringPF(string))
+    } else {
+      None
+    }
+  }
+
   def fromDatabaseString(string: String): Exchange = {
     if (fromStringPF.isDefinedAt(string))
       fromStringPF(string)

@@ -1,7 +1,7 @@
 package com.alexitc.coinalerts.commons
 
 import com.alexitc.coinalerts.core.{Limit, Offset, PaginatedQuery}
-import com.alexitc.coinalerts.models.UserVerificationToken
+import com.alexitc.coinalerts.models.{Exchange, ExchangeCurrencyId, Market, UserVerificationToken}
 import play.api.mvc.{PathBindable, QueryStringBindable}
 
 object PlayBinders {
@@ -15,6 +15,47 @@ object PlayBinders {
 
     override def unbind(key: String, token: UserVerificationToken): String = {
       token.string
+    }
+  }
+
+  implicit def exchangePathBinder(implicit binder: PathBindable[String]) = new PathBindable[Exchange] {
+    override def bind(key: String, value: String): Either[String, Exchange] = {
+      val result = for {
+        string <- binder.bind(key, value).right
+      } yield Exchange.fromString(string)
+
+      result.right.flatMap {
+        case Some(exchange) => Right(exchange)
+        case None => Left("error.exchange.unknown")
+      }
+    }
+
+    override def unbind(key: String, value: Exchange): String = {
+      value.string
+    }
+  }
+
+  implicit def marketPathBinder(implicit binder: PathBindable[String]) = new PathBindable[Market] {
+    override def bind(key: String, value: String): Either[String, Market] = {
+      for {
+        string <- binder.bind(key, value).right
+      } yield Market(string)
+    }
+
+    override def unbind(key: String, value: Market): String = {
+      value.string
+    }
+  }
+
+  implicit def exchangeCurrencyIdPathBinder(implicit binder: PathBindable[Int]) = new PathBindable[ExchangeCurrencyId] {
+    override def bind(key: String, value: String): Either[String, ExchangeCurrencyId] = {
+      for {
+        int <- binder.bind(key, value).right
+      } yield ExchangeCurrencyId(int)
+    }
+
+    override def unbind(key: String, value: ExchangeCurrencyId): String = {
+      binder.unbind(key, value.int)
     }
   }
 
