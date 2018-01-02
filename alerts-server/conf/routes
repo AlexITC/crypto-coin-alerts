@@ -13,3 +13,7 @@ GET    /fixed-price-alerts              controllers.FixedPriceAlertsController.g
 
 POST   /daily-price-alerts              controllers.DailyPriceAlertsController.create()
 GET    /daily-price-alerts              controllers.DailyPriceAlertsController.getAlerts(query: com.alexitc.coinalerts.core.PaginatedQuery)
+
+GET    /currencies/:id                                 controllers.ExchangeCurrenciesController.getCurrency(id: com.alexitc.coinalerts.models.ExchangeCurrencyId)
+GET    /exchanges/:exchange/markets                    controllers.ExchangeCurrenciesController.getMarkets(exchange: com.alexitc.coinalerts.models.Exchange)
+GET    /exchanges/:exchange/markets/:market/currencies controllers.ExchangeCurrenciesController.getCurrencies(exchange: com.alexitc.coinalerts.models.Exchange, market: com.alexitc.coinalerts.models.Market)
