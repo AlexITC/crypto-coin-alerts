@@ -2,7 +2,7 @@ package com.alexitc.coinalerts.services.external
 
 import javax.inject.Inject
 
-import com.alexitc.coinalerts.models.Book
+import com.alexitc.coinalerts.models.{BitsoBook, Book}
 import com.alexitc.coinalerts.tasks.models.Ticker
 import com.bitso.{Bitso, BitsoTicker}
 import org.slf4j.LoggerFactory
@@ -15,7 +15,7 @@ class BitsoService @Inject() (bitso: Bitso)(implicit ec: ExecutionContext) {
 
   def availableBooks: Future[List[Book]] = Future {
     bitso.getTicker.toList.flatMap { ticker =>
-      Book.fromString(ticker.getBook)
+      BitsoBook.fromString(ticker.getBook)
           .orElse {
             logger.warn(s"Unable to create book from string = [${ticker.getBook}]")
             None
@@ -30,7 +30,7 @@ class BitsoService @Inject() (bitso: Bitso)(implicit ec: ExecutionContext) {
   }
 
   private def createTicker(bitsoTicker: BitsoTicker): Option[Ticker] = {
-    Book.fromString(bitsoTicker.getBook)
+    BitsoBook.fromString(bitsoTicker.getBook)
         .map { book =>
           Ticker(book, bitsoTicker.getLast)
         }

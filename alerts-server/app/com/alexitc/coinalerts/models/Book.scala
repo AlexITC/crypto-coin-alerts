@@ -1,7 +1,5 @@
 package com.alexitc.coinalerts.models
 
-import play.api.libs.json._
-
 case class Book(market: Market, currency: Currency) {
   val string: String = s"${market.string}_${currency.string}".toUpperCase
 }
@@ -16,12 +14,18 @@ object Book {
           Book(market, currency)
         }
   }
+}
 
-  implicit val reads: Reads[Book] = {
-    JsPath.read[String].collect(JsonValidationError("error.book.invalid")) {
-      case string if fromString(string).isDefined => fromString(string).get
+object BitsoBook {
+
+  /**
+   * BITSO represents a book in the reversed order than us
+   */
+  def fromString(string: String): Option[Book] = {
+    Book.fromString(string).map { reversedBook =>
+      val market = Market(reversedBook.currency.string)
+      val currency = Currency(reversedBook.market.string)
+      Book(market, currency)
     }
   }
-
-  implicit val writes: Writes[Book] = Writes[Book] { book => JsString(book.string) }
 }
