@@ -14,7 +14,7 @@ trait UserInMemoryDataHandler extends UserBlockingDataHandler {
   val verificationTokenList = mutable.ListBuffer[(UserId, UserVerificationToken)]()
   val verifiedUserList = mutable.ListBuffer[User]()
 
-  override def create(email: UserEmail, password: UserHiddenPassword): ApplicationResult[User] = {
+  override def create(email: UserEmail, password: UserHiddenPassword): ApplicationResult[User] = userList.synchronized {
     if (userList.exists(_.email.string.equalsIgnoreCase(email.string))) {
       Bad(EmailAlreadyExists).accumulating
     } else {
@@ -25,13 +25,13 @@ trait UserInMemoryDataHandler extends UserBlockingDataHandler {
     }
   }
 
-  override def createVerificationToken(userId: UserId): ApplicationResult[UserVerificationToken] = {
+  override def createVerificationToken(userId: UserId): ApplicationResult[UserVerificationToken] = userList.synchronized {
     val token = UserVerificationToken.create(userId)
     verificationTokenList += userId -> token
     Good(token)
   }
 
-  override def verifyEmail(token: UserVerificationToken): ApplicationResult[User] = {
+  override def verifyEmail(token: UserVerificationToken): ApplicationResult[User] = userList.synchronized {
     val userMaybe = for {
       userId <- verificationTokenList.find(_._2 == token).map(_._1)
       user <- userList.find(_.id == userId)
@@ -43,25 +43,25 @@ trait UserInMemoryDataHandler extends UserBlockingDataHandler {
     Or.from(userMaybe, One(UserVerificationTokenNotFound))
   }
 
-  override def getVerifiedUserPassword(email: UserEmail): ApplicationResult[UserHiddenPassword] = {
+  override def getVerifiedUserPassword(email: UserEmail): ApplicationResult[UserHiddenPassword] = userList.synchronized {
     val passwordMaybe = passwords.get(email).filter(_ => verifiedUserList.exists(_.email == email))
 
     Or.from(passwordMaybe, One(VerifiedUserNotFound))
   }
 
-  override def getVerifiedUserByEmail(email: UserEmail): ApplicationResult[User] = {
+  override def getVerifiedUserByEmail(email: UserEmail): ApplicationResult[User] = userList.synchronized {
     val userMaybe = verifiedUserList.find(_.email == email)
 
     Or.from(userMaybe, One(VerifiedUserNotFound))
   }
 
-  override def getVerifiedUserById(userId: UserId): ApplicationResult[User] = {
+  override def getVerifiedUserById(userId: UserId): ApplicationResult[User] = userList.synchronized {
     val userMaybe = verifiedUserList.find(_.id == userId)
 
     Or.from(userMaybe, One(VerifiedUserNotFound))
   }
 
-  override def getUserPreferences(userId: UserId): ApplicationResult[UserPreferences] = {
+  override def getUserPreferences(userId: UserId): ApplicationResult[UserPreferences] = userList.synchronized {
     Good(UserPreferences.default(userId))
   }
 }
