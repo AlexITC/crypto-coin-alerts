@@ -151,7 +151,7 @@ class JsonErrorRenderer @Inject() (messagesApi: MessagesApi) {
   private def renderCreateDailyPriceAlertError(error: CreateDailyPriceAlertError)(implicit lang: Lang) = error match {
     case RepeatedDailyPriceAlertError =>
       val message = messagesApi("error.createDailyPriceAlert.repeated")
-      FieldValidationError("book", message)
+      FieldValidationError("exchangeCurrencyId", message)
   }
 
   private def renderExchangeCurrencyError(error: ExchangeCurrencyError)(implicit lang: Lang) = error match {

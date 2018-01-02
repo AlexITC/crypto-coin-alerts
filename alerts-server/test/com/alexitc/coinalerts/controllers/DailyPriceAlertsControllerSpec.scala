@@ -87,7 +87,7 @@ class DailyPriceAlertsControllerSpec extends PlayAPISpec {
 
       val error = (contentAsJson(response) \ "errors").as[List[JsValue]].head
       (error \ "type").as[String] mustEqual "field-validation-error"
-      (error \ "field").as[String] mustEqual "book"
+      (error \ "field").as[String] mustEqual "exchangeCurrencyId"
       (error \ "message").as[String].nonEmpty mustEqual true
     }
   }
