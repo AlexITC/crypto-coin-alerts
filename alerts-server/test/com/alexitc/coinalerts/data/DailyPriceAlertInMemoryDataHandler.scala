@@ -13,7 +13,7 @@ class DailyPriceAlertInMemoryDataHandler extends DailyPriceAlertBlockingDataHand
 
   private val alertList = mutable.ListBuffer[DailyPriceAlert]()
 
-  override def create(userId: UserId, createDailyPriceAlert: CreateDailyPriceAlertModel): ApplicationResult[DailyPriceAlert] = {
+  override def create(userId: UserId, createDailyPriceAlert: CreateDailyPriceAlertModel): ApplicationResult[DailyPriceAlert] = alertList.synchronized {
     val alert = DailyPriceAlert(RandomDataGenerator.dailyPriceAlertId, userId, createDailyPriceAlert.exchangeCurrencyId, OffsetDateTime.now())
     val exists = alertList.toList.exists { existingAlert =>
       existingAlert.userId == userId &&
@@ -28,7 +28,7 @@ class DailyPriceAlertInMemoryDataHandler extends DailyPriceAlertBlockingDataHand
     }
   }
 
-  override def getAlerts(userId: UserId, query: PaginatedQuery): ApplicationResult[PaginatedResult[DailyPriceAlert]] = {
+  override def getAlerts(userId: UserId, query: PaginatedQuery): ApplicationResult[PaginatedResult[DailyPriceAlert]] = alertList.synchronized {
     val userAlertList = alertList.toList.filter(_.userId == userId)
 
     val result = PaginatedResult(
