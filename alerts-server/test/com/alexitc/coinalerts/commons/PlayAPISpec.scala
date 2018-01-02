@@ -4,7 +4,7 @@ import java.net.URLEncoder
 
 import com.alexitc.coinalerts.core.{AuthorizationToken, PaginatedQuery}
 import com.alexitc.coinalerts.data._
-import com.alexitc.coinalerts.modules.AlertTaskModule
+import com.alexitc.coinalerts.modules.{AlertTaskModule, ExchangeCurrencySeederTaskModule}
 import com.alexitc.coinalerts.services.{EmailServiceTrait, JWTService}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.PlaySpec
@@ -62,6 +62,7 @@ trait PlayAPISpec extends PlaySpec with ScalaFutures {
   val guiceApplicationBuilder: GuiceApplicationBuilder = GuiceApplicationBuilder(loadConfiguration = loadConfigWithoutEvolutions)
       .in(Mode.Test)
       .disable(classOf[AlertTaskModule])
+      .disable(classOf[ExchangeCurrencySeederTaskModule])
       .overrides(bind[Database].to(dummyDB))
       .overrides(bind[DBApi].to(dummyDBApi))
       .overrides(bind[EmailServiceTrait].to(new FakeEmailService))
