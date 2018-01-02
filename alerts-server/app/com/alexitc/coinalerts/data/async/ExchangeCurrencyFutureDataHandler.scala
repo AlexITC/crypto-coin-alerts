@@ -26,6 +26,14 @@ class ExchangeCurrencyFutureDataHandler @Inject() (
     blockingDataHandler.getBy(exchange, market, currency)
   }
 
+  override def getBy(exchange: Exchange, market: Market): FutureApplicationResult[List[ExchangeCurrency]] = Future {
+    blockingDataHandler.getBy(exchange, market)
+  }
+
+  override def getMarkets(exchange: Exchange): FutureApplicationResult[List[Market]] = Future {
+    blockingDataHandler.getMarkets(exchange)
+  }
+
   override def getAll(): FutureApplicationResult[List[ExchangeCurrency]] = Future {
     blockingDataHandler.getAll()
   }

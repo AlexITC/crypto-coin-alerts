@@ -68,6 +68,36 @@ class ExchangeCurrencyPostgresDAO {
     ).as(parseExchangeCurrency.singleOpt)
   }
 
+  def getBy(
+      exchange: Exchange,
+      market: Market)(
+      implicit conn: Connection): List[ExchangeCurrency] = {
+
+    SQL(
+      """
+        |SELECT currency_id, exchange, market, currency
+        |FROM currencies
+        |WHERE exchange = {exchange} AND
+        |      market = {market}
+      """.stripMargin
+    ).on(
+      "exchange" -> exchange.string,
+      "market" -> market.string,
+    ).as(parseExchangeCurrency.*)
+  }
+
+  def getMarkets(exchange: Exchange)(implicit conn: Connection): List[Market] = {
+    SQL(
+      """
+        |SELECT market
+        |FROM currencies
+        |WHERE exchange = {exchange}
+      """.stripMargin
+    ).on(
+      "exchange" -> exchange.string
+    ).as(parseMarket.*)
+  }
+
   /**
    * The total amount of currencies should not be too big to retrieve
    * them all at once, in case the number gets too big, we can get

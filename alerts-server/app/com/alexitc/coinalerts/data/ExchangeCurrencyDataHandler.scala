@@ -13,6 +13,10 @@ trait ExchangeCurrencyDataHandler[F[_]] {
 
   def getBy(exchange: Exchange, market: Market, currency: Currency): F[Option[ExchangeCurrency]]
 
+  def getBy(exchange: Exchange, market: Market): F[List[ExchangeCurrency]]
+
+  def getMarkets(exchange: Exchange): F[List[Market]]
+
   def getAll(): F[List[ExchangeCurrency]]
 }
 

@@ -40,6 +40,21 @@ class ExchangeCurrencyPostgresDataHandler @Inject() (
     Good(exchangeCurrencyMaybe)
   }
 
+  override def getBy(
+      exchange: Exchange,
+      market: Market): ApplicationResult[List[ExchangeCurrency]] = withConnection { implicit conn =>
+
+    val result = exchangeCurrencyDAO.getBy(exchange, market)
+    Good(result)
+  }
+
+  override def getMarkets(
+      exchange: Exchange): ApplicationResult[List[Market]] = withConnection { implicit conn =>
+
+    val result = exchangeCurrencyDAO.getMarkets(exchange)
+    Good(result)
+  }
+
   override def getAll(): ApplicationResult[List[ExchangeCurrency]] = withConnection { implicit conn =>
     Good(exchangeCurrencyDAO.getAll)
   }

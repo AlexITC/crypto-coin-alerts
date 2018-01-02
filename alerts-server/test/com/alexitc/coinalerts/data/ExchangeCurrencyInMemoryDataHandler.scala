@@ -47,6 +47,22 @@ trait ExchangeCurrencyInMemoryDataHandler extends ExchangeCurrencyBlockingDataHa
     Good(result)
   }
 
+  override def getBy(exchange: Exchange, market: Market): ApplicationResult[List[ExchangeCurrency]] = currencyList.synchronized {
+    val result = currencyList.toList.filter { c =>
+      c.exchange == exchange && c.market == market
+    }
+
+    Good(result)
+  }
+
+  override def getMarkets(exchange: Exchange): ApplicationResult[List[Market]] = currencyList.synchronized {
+    val result = currencyList.toList
+        .filter(_.exchange == exchange)
+        .map(_.market)
+
+    Good(result)
+  }
+
   override def getAll(): ApplicationResult[List[ExchangeCurrency]] = currencyList.synchronized {
     Good(currencyList.toList)
   }
