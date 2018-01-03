@@ -89,7 +89,7 @@ class ExchangeCurrencyPostgresDAO {
   def getMarkets(exchange: Exchange)(implicit conn: Connection): List[Market] = {
     SQL(
       """
-        |SELECT market
+        |SELECT DISTINCT market
         |FROM currencies
         |WHERE exchange = {exchange}
       """.stripMargin

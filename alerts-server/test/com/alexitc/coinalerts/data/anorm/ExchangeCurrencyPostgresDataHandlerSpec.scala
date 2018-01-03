@@ -102,9 +102,17 @@ class ExchangeCurrencyPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
   }
 
   "Retrieving the markets by exchange" should {
-    "retrieve the markets" in {
-      val result = exchangeCurrencyDataHandler.getMarkets(Exchange.BITSO)
-      result.isGood mustEqual true
+    "retrieve unique the markets" in {
+      val exchange = Exchange.BITTREX
+      val market = Market("USD")
+      val currencies = "BTC ETH ADA XRP".split(" ").map(Currency.apply)
+      currencies.foreach { currency =>
+        exchangeCurrencyDataHandler.create(exchange, market, currency)
+      }
+
+      val result = exchangeCurrencyDataHandler.getMarkets(exchange).get
+      val expected = result.distinct
+      result.length mustEqual expected.length
     }
   }
 }
