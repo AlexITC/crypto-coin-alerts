@@ -1,7 +1,7 @@
 
 <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate role="form" class="form-horizontal">
 
-  <legend>Create account</legend>
+  <legend class="col-sm-offset-1">Create account</legend>
 
   <div [ngClass]="{ 'has-error': errorService.hasWrongValue(form, 'email'), 'has-success': errorService.hasCorrectValue(form, 'email') }"
        class="form-group">
@@ -35,6 +35,13 @@
     <div [hidden]="!errorService.hasWrongValue(form, 'repeatPassword')" class="col-xs-4 col-sm-4 col-md-3 col-md-3">
       <span class="help-block">{{ errorService.getFieldError(form, 'repeatPassword') | translate }}</span>
     </div>
+  </div>
+
+  <div class="form-group">
+    <div class="g-recaptcha col-sm-offset-1"
+         data-sitekey="6Lesrz8UAAAAAEJT7iYUhWJfq04v8uTB-lFgFyOY"
+         data-callback="onCaptchaResolved"
+         data-expired-callback="onCaptchaExpired"></div>
   </div>
 
   <input type="submit" [disabled]="!form.valid" value="{{ 'action.createAccount' | translate }}" class="btn btn-primary col-sm-offset-3">

@@ -7,5 +7,8 @@ export const environment = {
   production: false,
   api: {
     url: 'http://localhost:9000'
+  },
+  recaptcha: {
+    siteKey: '6Lesrz8UAAAAAEJT7iYUhWJfq04v8uTB-lFgFyOY'
   }
 };

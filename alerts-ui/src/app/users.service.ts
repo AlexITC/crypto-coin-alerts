@@ -17,8 +17,12 @@ export class UsersService {
 
   constructor(private http: HttpClient) { }
 
-  create(email: string, password: string): Observable<User> {
-    const body = { email: email, password: password };
+  create(email: string, password: string, reCaptchaResponse: string): Observable<User> {
+    const body = {
+      email: email,
+      password: password,
+      reCaptchaResponse: reCaptchaResponse
+    };
     return this.http.post<User>(this.baseUrl, body, httpOptions);
   }
 

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+
 import { UsersService } from '../users.service';
 import { ErrorService } from '../error.service';
 
@@ -12,12 +13,25 @@ export class NewAccountComponent implements OnInit {
 
   form: FormGroup;
 
+  private reCaptchaResponse: string;
+
+  onCaptchaResolved(response: string) {
+    this.reCaptchaResponse = response;
+  }
+
+  onCaptchaExpired() {
+    this.reCaptchaResponse = null;
+  }
+
   constructor(
       private formBuilder: FormBuilder,
       private usersService: UsersService,
       public errorService: ErrorService) {
 
     this.createForm();
+    // required to get the reCAPTCHA response
+    window['onCaptchaResolved'] = this.onCaptchaResolved.bind(this);
+    window['onCaptchaExpired'] = this.onCaptchaExpired.bind(this);
   }
 
   matchingPasswords(passwordKey: string, repeatPasswordKey: string) {
@@ -47,28 +61,40 @@ export class NewAccountComponent implements OnInit {
         Validators.minLength(6),
         Validators.maxLength(50)
       ])],
-      repeatPassword: ['', Validators.compose([
-        Validators.required,
-        Validators.minLength(6),
-        Validators.maxLength(50)
-      ])],
+      repeatPassword: ['', Validators.required]
     }, { validator: this.matchingPasswords('password', 'repeatPassword') });
   }
 
   ngOnInit() {}
 
   onSubmit() {
-    // TODO: Disable submit button to avoid sending the same request twice
+    if (this.reCaptchaResponse == null) {
+      // TODO: i18n
+      this.errorService.renderError('Resolve the CAPTCHA');
+      return;
+    }
+
     this.usersService
-      .create(this.form.get('email').value, this.form.get('password').value)
+      .create(
+        this.form.get('email').value,
+        this.form.get('password').value,
+        this.reCaptchaResponse)
       .subscribe(
         response => this.onSubmitSuccess(response),
-        response => this.errorService.renderServerErrors(this.form, response)
+        response => this.onSubmitError(response)
       );
   }
 
   protected onSubmitSuccess(response) {
     // TODO: do something useful
     console.log('user created: ' + JSON.stringify(response));
+  }
+
+  protected onSubmitError(response) {
+    if (grecaptcha != null) {
+      grecaptcha.reset();
+    }
+
+    this.errorService.renderServerErrors(this.form, response);
   }
 }
