@@ -30,15 +30,11 @@ class AlertTaskRunner @Inject() (
 
   // TODO: Add shutdown hook?
   def start() = {
-    if (config.enabled) {
-      logger.info("Starting alert task runner...")
+    logger.info("Starting alert task runner...")
 
-      val _ = actorSystem.scheduler.schedule(
-        initialDelay = config.initialDelay,
-        interval = config.interval) { runTask() }
-    } else {
-      logger.info("Alert task is disabled")
-    }
+    val _ = actorSystem.scheduler.schedule(
+      initialDelay = config.initialDelay,
+      interval = config.interval) { runTask() }
   }
 
   def runTask(): Unit = {
