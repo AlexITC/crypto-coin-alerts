@@ -9,13 +9,12 @@ export class ErrorService {
   constructor(private toastrService: ToastrService) { }
 
   renderServerErrors(form: FormGroup, response: any) {
-    console.log('error: ' + JSON.stringify(response));
     response.error.errors.forEach((element: any) => {
       // field errors are handled here, different errors should be handled globally
       if (element.type === 'field-validation-error') {
         const fieldName = element.field;
         const message = element.message;
-        if (form == null) {
+        if (form == null || !this.hasFieldName(form, fieldName)) {
           this.addToastrError(`${fieldName}: ${message}`);
         } else {
           this.setFieldError(form, fieldName, message);
@@ -25,6 +24,10 @@ export class ErrorService {
         this.addToastrError(message);
       }
     });
+  }
+
+  renderError(message: string) {
+    this.addToastrError(message);
   }
 
   private addToastrError(message: string) {
@@ -70,6 +73,11 @@ export class ErrorService {
         const params = control.errors[error];
         return error;
       });
+  }
+
+  private hasFieldName(form: FormGroup, fieldName: string): boolean {
+    const control = this.findFieldControl(form, fieldName);
+    return control != null;
   }
 
   private setFieldError(form: FormGroup, fieldName: string, message: string) {
