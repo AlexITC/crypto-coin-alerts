@@ -3,7 +3,7 @@ package com.alexitc.coinalerts.data.anorm
 import javax.inject.Inject
 
 import com.alexitc.coinalerts.commons.ApplicationResult
-import com.alexitc.coinalerts.core.{PaginatedQuery, PaginatedResult}
+import com.alexitc.coinalerts.core.{Count, PaginatedQuery, PaginatedResult}
 import com.alexitc.coinalerts.data.FixedPriceAlertBlockingDataHandler
 import com.alexitc.coinalerts.data.anorm.dao.FixedPriceAlertPostgresDAO
 import com.alexitc.coinalerts.errors._
@@ -52,8 +52,13 @@ class FixedPriceAlertPostgresDataHandler @Inject() (
 
   override def getAlerts(userId: UserId, query: PaginatedQuery): ApplicationResult[PaginatedResult[FixedPriceAlert]] = withConnection { implicit conn =>
     val alerts = alertPostgresDAO.getAlerts(userId, query)
-    val total = alertPostgresDAO.countAlerts(userId)
+    val total = alertPostgresDAO.countBy(userId)
     val result = PaginatedResult(query.offset, query.limit, total, alerts)
+    Good(result)
+  }
+
+  override def countBy(userId: UserId): ApplicationResult[Count] = withConnection { implicit conn =>
+    val result = alertPostgresDAO.countBy(userId)
     Good(result)
   }
 }

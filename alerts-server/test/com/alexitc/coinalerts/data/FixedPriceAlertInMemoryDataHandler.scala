@@ -60,6 +60,11 @@ trait FixedPriceAlertInMemoryDataHandler extends FixedPriceAlertBlockingDataHand
     Good(result)
   }
 
+  override def countBy(userId: UserId): ApplicationResult[Count] = alertList.synchronized {
+    val result = Count(alertList.toList.count(_.userId == userId))
+    Good(result)
+  }
+
   private def pendingAlertList = {
     alertList.toList.filter { alert => !triggeredAlertList.contains(alert.id) }
   }

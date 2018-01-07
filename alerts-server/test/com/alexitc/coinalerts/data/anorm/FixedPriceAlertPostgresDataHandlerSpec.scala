@@ -13,7 +13,6 @@ class FixedPriceAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
   lazy val alertPostgresDataHandler = new FixedPriceAlertPostgresDataHandler(database, new FixedPriceAlertPostgresDAO)
   lazy val verifiedUser = createVerifiedUser()
 
-
   lazy val currencies = exchangeCurrencyDataHandler.getAll().get
   lazy val createDefaultAlertModel = CreateFixedPriceAlertModel(RandomDataGenerator.item(currencies).id, true, BigDecimal("5000.00"), None)
   lazy val createBasePriceAlertModel = createDefaultAlertModel.copy(basePrice = Some(BigDecimal("4000.00")))
@@ -176,6 +175,20 @@ class FixedPriceAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
       val page2Result = alertPostgresDataHandler.getAlerts(user.id, page2Query).get
 
       page1Result.data.head.id mustNot be(page2Result.data.head.id)
+    }
+  }
+
+  "counting user alerts" should {
+    "return the number of alerts for a user" in {
+      val user1 = createUnverifiedUser()
+      alertPostgresDataHandler.create(createDefaultAlertModel, user1.id)
+      alertPostgresDataHandler.create(createDefaultAlertModel, user1.id)
+
+      val user2 = createUnverifiedUser()
+      alertPostgresDataHandler.create(createDefaultAlertModel, user2.id)
+
+      val result = alertPostgresDataHandler.countBy(user1.id).get
+      result mustEqual Count(2)
     }
   }
 }

@@ -78,7 +78,7 @@ class FixedPriceAlertPostgresDAO {
     ).as(parseFixedPriceAlert.*)
   }
 
-  def countAlerts(userId: UserId)(implicit conn: Connection): Count = {
+  def countBy(userId: UserId)(implicit conn: Connection): Count = {
     val result = SQL(
       """
         |SELECT COUNT(*)
