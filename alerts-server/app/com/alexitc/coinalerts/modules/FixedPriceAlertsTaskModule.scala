@@ -11,14 +11,14 @@ import play.api.inject.{SimpleModule, _}
 import scala.concurrent.ExecutionContext
 import scala.util.control.NonFatal
 
-class AlertTaskModule
-    extends SimpleModule(bind[AlertTaskRunner].toSelf.eagerly())
+class FixedPriceAlertsTaskModule
+    extends SimpleModule(bind[FixedPriceAlertsTaskRunner].toSelf.eagerly())
 
 /**
- * Runs the alert task frequently.
+ * Runs the fixed price alerts task frequently.
  */
 @Singleton
-class AlertTaskRunner @Inject() (
+class FixedPriceAlertsTaskRunner @Inject() (
     actorSystem: ActorSystem,
     config: AlertTaskConfig,
     alertsTask: FixedPriceAlertsTask)(
