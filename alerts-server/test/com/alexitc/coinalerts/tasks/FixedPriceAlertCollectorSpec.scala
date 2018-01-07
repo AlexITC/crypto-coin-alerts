@@ -1,8 +1,7 @@
 package com.alexitc.coinalerts.tasks
 
-import akka.actor.ActorSystem
 import com.alexitc.coinalerts.commons.DataHelper
-import com.alexitc.coinalerts.config.{DatabaseExecutionContext, TaskExecutionContext}
+import com.alexitc.coinalerts.commons.ExecutionContexts._
 import com.alexitc.coinalerts.data._
 import com.alexitc.coinalerts.data.async.{ExchangeCurrencyFutureDataHandler, FixedPriceAlertFutureDataHandler}
 import com.alexitc.coinalerts.models._
@@ -91,13 +90,10 @@ class FixedPriceAlertCollectorSpec extends WordSpec with MustMatchers with Scala
     }
   }
 
-  private val actorSystem = ActorSystem()
-
   private def createAlertCollector(
       exchangeCurrencyDataHandler: ExchangeCurrencyBlockingDataHandler,
       fixedPriceAlertBlockingDataHandler: FixedPriceAlertBlockingDataHandler) = {
 
-    implicit val databaseEC: DatabaseExecutionContext = new DatabaseExecutionContext(actorSystem)
     val exchangeCurrencyFutureDataHandler = new ExchangeCurrencyFutureDataHandler(
       exchangeCurrencyDataHandler)
 
@@ -106,8 +102,7 @@ class FixedPriceAlertCollectorSpec extends WordSpec with MustMatchers with Scala
 
     new FixedPriceAlertCollector(
       fixedPriceAlertFutureDataHandler,
-      exchangeCurrencyFutureDataHandler)(
-      new TaskExecutionContext(actorSystem))
+      exchangeCurrencyFutureDataHandler)
   }
 }
 

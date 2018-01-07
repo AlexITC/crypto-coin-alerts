@@ -1,7 +1,6 @@
 package com.alexitc.coinalerts.tasks
 
-import akka.actor.ActorSystem
-import com.alexitc.coinalerts.config.TaskExecutionContext
+import com.alexitc.coinalerts.commons.ExecutionContexts._
 import com.alexitc.coinalerts.data.ExchangeCurrencyInMemoryDataHandler
 import com.alexitc.coinalerts.models.{Book, Currency, Exchange, Market}
 import com.alexitc.coinalerts.services.external.{BitsoService, BittrexService}
@@ -11,9 +10,6 @@ import org.scalatest.{MustMatchers, WordSpec}
 import scala.concurrent.Future
 
 class ExchangeCurrencySeederTaskSpec extends WordSpec with MustMatchers with ScalaFutures {
-
-  private val actorSystem = ActorSystem(this.getClass.getSimpleName)
-  private implicit val taskEC = new TaskExecutionContext(actorSystem)
 
   "Currency seeder task" should {
     "be able to seed new currencies" in {

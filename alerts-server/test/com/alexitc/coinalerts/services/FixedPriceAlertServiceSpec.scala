@@ -1,8 +1,8 @@
 package com.alexitc.coinalerts.services
 
-import akka.actor.ActorSystem
+import com.alexitc.coinalerts.commons.ExecutionContexts._
 import com.alexitc.coinalerts.commons.RandomDataGenerator
-import com.alexitc.coinalerts.config.{DatabaseExecutionContext, FixedPriceAlertConfig}
+import com.alexitc.coinalerts.config.FixedPriceAlertConfig
 import com.alexitc.coinalerts.core.Count
 import com.alexitc.coinalerts.data.async.FixedPriceAlertFutureDataHandler
 import com.alexitc.coinalerts.data.{FixedPriceAlertBlockingDataHandler, FixedPriceAlertInMemoryDataHandler}
@@ -53,10 +53,10 @@ class FixedPriceAlertServiceSpec extends WordSpec with MustMatchers with ScalaFu
     }
   }
 
-  private val actorSystem = ActorSystem(getClass.getSimpleName)
   private def defaultBlockingDataHandler: FixedPriceAlertBlockingDataHandler = {
     new FixedPriceAlertInMemoryDataHandler {}
   }
+
   private def fixedPriceAlertService(
       maxNumberOfAlerts: Int,
       dataHandler: FixedPriceAlertBlockingDataHandler = defaultBlockingDataHandler): FixedPriceAlertService = {
@@ -68,9 +68,7 @@ class FixedPriceAlertServiceSpec extends WordSpec with MustMatchers with ScalaFu
       override def maximumNumberOfAlertsPerUser: Count = Count(maxNumberOfAlerts)
     }
 
-    implicit val databaseEC: DatabaseExecutionContext = new DatabaseExecutionContext(actorSystem)
-
     val futureDataHandler = new FixedPriceAlertFutureDataHandler(dataHandler)
-    new FixedPriceAlertService(validator, paginatedQueryValidator, config, futureDataHandler)
+    new FixedPriceAlertService(validator, paginatedQueryValidator, config, futureDataHandler)(globalEC)
   }
 }
