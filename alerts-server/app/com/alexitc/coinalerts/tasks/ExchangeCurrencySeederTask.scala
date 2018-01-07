@@ -35,6 +35,10 @@ class ExchangeCurrencySeederTask @Inject() (
         Future.unit
     }
 
+    result.foreach { _ =>
+      logger.info("Task completed")
+    }
+
     result
   }
 
