@@ -15,6 +15,8 @@ error.password.incorrect=The given password is not correct
 error.header.missing=The header {0} is required
 error.jwt.invalid=The given authorization token is incorrect or is expired
 
+error.recaptcha=reCAPTCHA validation failed
+
 error.exchange.unknown=The given exchange is unknown
 error.price.invalid=The price should be greater than 0
 error.basePrice.invalid=The basePrice should be greater than 0

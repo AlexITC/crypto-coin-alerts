@@ -71,3 +71,6 @@ sealed trait ExchangeCurrencyError extends ApplicationError
 case object UnknownExchangeCurrencyIdError extends ExchangeCurrencyError with InputValidationError
 case object RepeatedExchangeCurrencyError extends ExchangeCurrencyError with InputValidationError
 case object ExchangeCurrencyNotFoundError extends ExchangeCurrencyError with NotFoundError
+
+sealed trait ReCaptchaError extends ApplicationError
+case object ReCaptchaValidationError extends ReCaptchaError with InputValidationError

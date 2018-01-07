@@ -4,7 +4,8 @@ import java.net.URLEncoder
 
 import com.alexitc.coinalerts.core.{AuthorizationToken, PaginatedQuery}
 import com.alexitc.coinalerts.data._
-import com.alexitc.coinalerts.modules.{FixedPriceAlertsTaskModule, ExchangeCurrencySeederTaskModule}
+import com.alexitc.coinalerts.modules.{ExchangeCurrencySeederTaskModule, FixedPriceAlertsTaskModule}
+import com.alexitc.coinalerts.services.external.ReCaptchaService
 import com.alexitc.coinalerts.services.{EmailServiceTrait, JWTService}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.PlaySpec
@@ -66,6 +67,7 @@ trait PlayAPISpec extends PlaySpec with ScalaFutures {
       .overrides(bind[Database].to(dummyDB))
       .overrides(bind[DBApi].to(dummyDBApi))
       .overrides(bind[EmailServiceTrait].to(new FakeEmailService))
+      .overrides(bind[ReCaptchaService].to(new FakeReCaptchaService))
       .overrides(bind[UserBlockingDataHandler].to(userDataHandler))
       .overrides(bind[ExchangeCurrencyBlockingDataHandler].to(exchangeCurrencyDataHandler))
 

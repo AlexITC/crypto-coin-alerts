@@ -53,6 +53,9 @@ class JsonErrorRenderer @Inject() (messagesApi: MessagesApi) {
     case error: MailgunError =>
       renderMailgunError(error)
 
+    case error: ReCaptchaError =>
+      List(renderReCaptchaError(error))
+
     case JsonFieldValidationError(path, errors) =>
       val field = path.path.map(_.toJsonString.replace(".", "")).mkString(".")
       errors.map { messageKey =>
@@ -93,6 +96,12 @@ class JsonErrorRenderer @Inject() (messagesApi: MessagesApi) {
     case MailgunSendEmailError =>
       // this error should not happen
       List.empty[PublicError]
+  }
+
+  private def renderReCaptchaError(error: ReCaptchaError)(implicit lang: Lang) = error match {
+    case ReCaptchaValidationError =>
+      val message = messagesApi("error.recaptcha")
+      GenericPublicError(message)
   }
 
   private def renderUserError(error: UserError)(implicit lang: Lang) = error match {

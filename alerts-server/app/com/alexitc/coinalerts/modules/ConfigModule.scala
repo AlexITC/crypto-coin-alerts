@@ -12,5 +12,6 @@ class ConfigModule extends AbstractModule {
     bind(classOf[AppConfig]).to(classOf[PlayAppConfig])
     bind(classOf[JWTConfig]).to(classOf[PlayJWTConfig])
     bind(classOf[MailgunConfig]).to(classOf[PlayMailgunConfig])
+    bind(classOf[ReCaptchaConfig]).to(classOf[PlayReCaptchaSecretKey])
   }
 }
