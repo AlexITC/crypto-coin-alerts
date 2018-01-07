@@ -16,7 +16,7 @@ import play.api.i18n.{Lang, MessagesApi}
 import scala.concurrent.Future
 import scala.util.control.NonFatal
 
-class AlertsTask @Inject() (
+class FixedPriceAlertsTask @Inject() (
     alertCollector: FixedPriceAlertCollector,
     bitsoTickerCollector: BitsoTickerCollector,
     bittrexAlertCollector: BittrexTickerCollector,
