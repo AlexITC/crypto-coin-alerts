@@ -1,5 +1,7 @@
 <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate role="form" class="form-horizontal">
 
+  <legend>Login</legend>
+
   <div [ngClass]="{ 'has-success': errorService.hasCorrectValue(form, 'email'), 'has-error': errorService.hasWrongValue(form, 'email') }" class="form-group">
     <label for="email" class="col-xs-3 col-sm-3 col-md-2 col-lg-2 control-label">{{ 'field.email' | translate }}</label>
     <div class="col-xs-3 col-sm-3 col-md-2 col-lg-2">
