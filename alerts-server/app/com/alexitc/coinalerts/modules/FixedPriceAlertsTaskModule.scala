@@ -3,7 +3,7 @@ package com.alexitc.coinalerts.modules
 import javax.inject.{Inject, Singleton}
 
 import akka.actor.ActorSystem
-import com.alexitc.coinalerts.config.AlertTaskConfig
+import com.alexitc.coinalerts.config.FixedPriceAlertsTaskConfig
 import com.alexitc.coinalerts.tasks.FixedPriceAlertsTask
 import org.slf4j.LoggerFactory
 import play.api.inject.{SimpleModule, _}
@@ -20,7 +20,7 @@ class FixedPriceAlertsTaskModule
 @Singleton
 class FixedPriceAlertsTaskRunner @Inject() (
     actorSystem: ActorSystem,
-    config: AlertTaskConfig,
+    config: FixedPriceAlertsTaskConfig,
     alertsTask: FixedPriceAlertsTask)(
     implicit executionContext: ExecutionContext) {
 
