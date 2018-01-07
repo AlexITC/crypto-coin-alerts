@@ -1,6 +1,6 @@
 package com.alexitc.coinalerts.errors
 
-import com.alexitc.coinalerts.core.MessageKey
+import com.alexitc.coinalerts.core.{Count, MessageKey}
 import org.postgresql.util.PSQLException
 import play.api.libs.json.JsPath
 
@@ -56,6 +56,7 @@ sealed trait FixedPriceAlertError extends ApplicationError
 case object InvalidPriceError extends FixedPriceAlertError with InputValidationError
 case object InvalidBasePriceError extends FixedPriceAlertError with InputValidationError
 case object FixedPriceAlertNotFoundError extends FixedPriceAlertError with NotFoundError
+case class TooManyFixedPriceAlertsError(reachedLimit: Count) extends FixedPriceAlertError with ConflictError
 
 // Paginated query
 sealed trait PaginatedQueryError extends ApplicationError

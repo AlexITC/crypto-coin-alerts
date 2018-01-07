@@ -14,7 +14,7 @@ class FixedPriceAlertsControllerSpec extends PlayAPISpec {
   import PlayAPISpec._
 
   implicit val alertDataHandler: FixedPriceAlertBlockingDataHandler = new FixedPriceAlertInMemoryDataHandler {
-    override def exchangeCurrencyBlocingDataHandler = exchangeCurrencyDataHandler
+    override def exchangeCurrencyBlocingDataHandler = Some(exchangeCurrencyDataHandler)
   }
 
   val application: Application = guiceApplicationBuilder

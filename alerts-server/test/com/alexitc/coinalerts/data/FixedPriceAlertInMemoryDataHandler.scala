@@ -10,13 +10,14 @@ import scala.collection.mutable
 
 trait FixedPriceAlertInMemoryDataHandler extends FixedPriceAlertBlockingDataHandler {
 
-  def exchangeCurrencyBlocingDataHandler: ExchangeCurrencyBlockingDataHandler
+  // override this to check existing currencies
+  def exchangeCurrencyBlocingDataHandler: Option[ExchangeCurrencyBlockingDataHandler] = None
 
   private val alertList = mutable.ListBuffer[FixedPriceAlert]()
   private val triggeredAlertList = mutable.ListBuffer[FixedPriceAlertId]()
 
   override def create(createAlertModel: CreateFixedPriceAlertModel, userId: UserId): ApplicationResult[FixedPriceAlert] = alertList.synchronized {
-    if (exchangeCurrencyBlocingDataHandler.getBy(createAlertModel.exchangeCurrencyId).get.isDefined) {
+    if (allowCurrency(createAlertModel.exchangeCurrencyId)) {
       val alert = FixedPriceAlert(
         RandomDataGenerator.alertId,
         userId,
@@ -30,6 +31,12 @@ trait FixedPriceAlertInMemoryDataHandler extends FixedPriceAlertBlockingDataHand
       Good(alert)
     } else {
       Bad(UnknownExchangeCurrencyIdError).accumulating
+    }
+  }
+
+  private def allowCurrency(exchangeCurrencyId: ExchangeCurrencyId): Boolean = {
+    exchangeCurrencyBlocingDataHandler.forall {
+      _.getBy(exchangeCurrencyId).get.isDefined
     }
   }
 

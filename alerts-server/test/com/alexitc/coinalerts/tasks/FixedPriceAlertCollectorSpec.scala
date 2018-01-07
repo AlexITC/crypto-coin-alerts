@@ -21,9 +21,7 @@ class FixedPriceAlertCollectorSpec extends WordSpec with MustMatchers with Scala
     "collect all alerts matching the price criteria" in {
       val exchangeCurrencyDataHandler = new ExchangeCurrencyInMemoryDataHandler {}
 
-      val fixedPriceAlertBlockingDataHandler = new FixedPriceAlertInMemoryDataHandler {
-        override def exchangeCurrencyBlocingDataHandler = exchangeCurrencyDataHandler
-      }
+      val fixedPriceAlertBlockingDataHandler = new FixedPriceAlertInMemoryDataHandler {}
 
       val alertCollector = createAlertCollector(exchangeCurrencyDataHandler, fixedPriceAlertBlockingDataHandler)
 
