@@ -12,7 +12,8 @@ const routes: Routes = [
   { path: 'new-account', component: NewAccountComponent },
   { path: 'login', component: LoginComponent },
   { path: 'verify-email/:token', component: VerifyEmailComponent },
-  { path: 'new-fixed-price-alert', component: NewFixedPriceAlertComponent }
+  { path: 'new-fixed-price-alert', component: NewFixedPriceAlertComponent },
+  { path: '**', redirectTo: '' }
 ];
 
 @NgModule({
