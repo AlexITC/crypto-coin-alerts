@@ -20,6 +20,7 @@ import { VerifyEmailComponent } from './verify-email/verify-email.component';
 import { UsersService } from './users.service';
 import { ErrorService } from './error.service';
 import { AuthService } from './auth.service';
+import { ReCaptchaService } from './re-captcha.service';
 
 import { AppRoutingModule } from './app-routing.module';
 import { JWTInterceptor } from './jwt.interceptor';
@@ -55,6 +56,7 @@ import { FooterComponent } from './footer/footer.component';
     UsersService,
     AuthService,
     ErrorService,
+    ReCaptchaService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: JWTInterceptor,

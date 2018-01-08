@@ -5,6 +5,7 @@ import { AuthService } from '../auth.service';
 import { UsersService } from '../users.service';
 import { AuthorizationToken } from '../authorization-token';
 import { ErrorService } from '../error.service';
+import { ReCaptchaService } from '../re-captcha.service';
 
 @Component({
   selector: 'app-login',
@@ -29,7 +30,8 @@ export class LoginComponent implements OnInit {
     private formBuilder: FormBuilder,
     private usersService: UsersService,
     private authService: AuthService,
-    public errorService: ErrorService) {
+    public errorService: ErrorService,
+    public reCaptchaService: ReCaptchaService) {
 
     this.createForm();
 

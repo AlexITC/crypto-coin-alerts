@@ -3,6 +3,7 @@ import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/fo
 
 import { UsersService } from '../users.service';
 import { ErrorService } from '../error.service';
+import { ReCaptchaService } from '../re-captcha.service';
 
 @Component({
   selector: 'app-new-account',
@@ -26,7 +27,8 @@ export class NewAccountComponent implements OnInit {
   constructor(
       private formBuilder: FormBuilder,
       private usersService: UsersService,
-      public errorService: ErrorService) {
+      public errorService: ErrorService,
+      public reCaptchaService: ReCaptchaService) {
 
     this.createForm();
     // required to get the reCAPTCHA response
