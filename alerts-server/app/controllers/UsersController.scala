@@ -27,10 +27,14 @@ class UsersController @Inject() (
     userService.verifyEmail(token)
   }
 
-  // TODO: use reCAPTCHA
   def loginByEmail() = publicWithInput { context: PublicCtxModel[LoginByEmailModel] =>
     val loginModel = context.model
-    userService.loginByEmail(loginModel.email, loginModel.password)
+    val result = for {
+      _ <- reCaptchaService.verify(context.model.reCaptchaResponse).toFutureOr
+      token <- userService.loginByEmail(loginModel.email, loginModel.password).toFutureOr
+    } yield token
+
+    result.toFuture
   }
 
   def whoAmI() = authenticatedNoInput { context: AuthCtx =>

@@ -80,7 +80,7 @@ class UsersControllerSpec extends PlayAPISpec {
 
       val json =
         s"""
-          |{ "email": "${email.string}", "password": "${password.string}" }
+          |{ "email": "${email.string}", "password": "${password.string}", "reCaptchaResponse": "none" }
         """.stripMargin
 
       val response = POST(LoginUrl, Some(json))
@@ -94,7 +94,7 @@ class UsersControllerSpec extends PlayAPISpec {
 
       val json =
         s"""
-           |{ "email": "${email.string}", "password": "${password.string}" }
+           |{ "email": "${email.string}", "password": "${password.string}", "reCaptchaResponse": "none" }
         """.stripMargin
       val response = POST(LoginUrl, Some(json))
       status(response) mustEqual BAD_REQUEST
@@ -103,7 +103,7 @@ class UsersControllerSpec extends PlayAPISpec {
     "Fail to login with incorrect password" in {
       val json =
         s"""
-           |{ "email": "who@none.com", "password": "hmmm" }
+           |{ "email": "who@none.com", "password": "hmmm", "reCaptchaResponse": "none" }
         """.stripMargin
 
       val response = POST(LoginUrl, Some(json))

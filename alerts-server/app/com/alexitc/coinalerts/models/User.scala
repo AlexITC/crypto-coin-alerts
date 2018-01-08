@@ -53,7 +53,10 @@ object CreateUserModel {
   implicit val reads: Reads[CreateUserModel] = Json.reads[CreateUserModel]
 }
 
-case class LoginByEmailModel(email: UserEmail, password: UserPassword)
+case class LoginByEmailModel(
+    email: UserEmail,
+    password: UserPassword,
+    reCaptchaResponse: ReCaptchaResponse)
 object LoginByEmailModel {
   implicit val reads: Reads[LoginByEmailModel] = Json.reads[LoginByEmailModel]
 }
