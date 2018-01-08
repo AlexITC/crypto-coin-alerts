@@ -26,6 +26,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { JWTInterceptor } from './jwt.interceptor';
 import { NewFixedPriceAlertComponent } from './new-fixed-price-alert/new-fixed-price-alert.component';
 import { FooterComponent } from './footer/footer.component';
+import { HomeComponent } from './home/home.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { FooterComponent } from './footer/footer.component';
     LoginComponent,
     VerifyEmailComponent,
     NewFixedPriceAlertComponent,
-    FooterComponent
+    FooterComponent,
+    HomeComponent
   ],
   imports: [
     AppRoutingModule,
