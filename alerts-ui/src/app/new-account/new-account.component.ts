@@ -91,10 +91,7 @@ export class NewAccountComponent implements OnInit {
   }
 
   protected onSubmitError(response) {
-    if (grecaptcha != null) {
-      grecaptcha.reset();
-    }
-
     this.errorService.renderServerErrors(this.form, response);
+    (<any>window).grecaptcha.reset();
   }
 }
