@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Location } from '@angular/common';
+
 import { AuthService } from '../auth.service';
 
 @Component({
@@ -8,9 +11,23 @@ import { AuthService } from '../auth.service';
 })
 export class AppNavbarComponent implements OnInit {
 
-  constructor(private authService: AuthService) { }
+  public tabs = [
+    { label: 'Fixed price alerts', path: 'fixed-price-alerts' }
+  ];
+
+  constructor(
+    private authService: AuthService,
+    private location: Location) { }
 
   ngOnInit() {
+  }
+
+  isSelected(path: string): boolean {
+    if (!path.startsWith('/')) {
+      path = '/' + path;
+    }
+
+    return this.location.isCurrentPathEqualTo(path);
   }
 
   isAuthenticated(): boolean {

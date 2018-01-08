@@ -5,17 +5,13 @@
         <!-- TODO: Use custom logo -->
         <img src="https://files.coinmarketcap.com/static/img/coins/32x32/bitcoin.png" class="logo">
       </a>
-      <span class="navbar-brand">Crypto Coin Alerts</span>
+      <a routerLink="/">
+        <span class="navbar-brand">Crypto Coin Alerts</span>
+      </a>
     </div>
     <ul class="nav navbar-nav">
-      <li class="active">
-        <a href="#">
-          Link 1
-          <span class="sr-only">(current)</span>
-        </a>
-      </li>
-      <li>
-        <a href="#">Link 2</a>
+      <li *ngFor="let tab of tabs" [ngClass]="{ 'active': isSelected(tab.path) }">
+        <a routerLink="{{tab.path}}">{{tab.label}}</a>
       </li>
     </ul>
     <ul [hidden]="isAuthenticated()" class="nav navbar-nav navbar-right">
