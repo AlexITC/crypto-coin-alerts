@@ -21,6 +21,7 @@ import { VerifyEmailComponent } from './verify-email/verify-email.component';
 
 import { UsersService } from './users.service';
 import { FixedPriceAlertsService } from './fixed-price-alerts.service';
+import { ExchangeCurrencyService } from './exchange-currency.service';
 import { ErrorService } from './error.service';
 import { AuthService } from './auth.service';
 import { ReCaptchaService } from './re-captcha.service';
@@ -63,6 +64,7 @@ import { FixedPriceAlertsComponent } from './fixed-price-alerts/fixed-price-aler
   providers: [
     UsersService,
     FixedPriceAlertsService,
+    ExchangeCurrencyService,
     AuthService,
     ErrorService,
     ReCaptchaService,
