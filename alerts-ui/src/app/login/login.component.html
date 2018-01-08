@@ -1,6 +1,6 @@
 <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate role="form" class="form-horizontal">
 
-  <legend>Login</legend>
+  <legend class="col-sm-offset-1">Login</legend>
 
   <div [ngClass]="{ 'has-success': errorService.hasCorrectValue(form, 'email'), 'has-error': errorService.hasWrongValue(form, 'email') }" class="form-group">
     <label for="email" class="col-xs-3 col-sm-3 col-md-2 col-lg-2 control-label">{{ 'field.email' | translate }}</label>
@@ -21,6 +21,13 @@
     <div [hidden]="!errorService.hasWrongValue(form, 'password')" class="col-xs-4 col-sm-4 col-md-3 col-md-3">
       <span class="help-block">{{ errorService.getFieldError(form, 'password') | translate }}</span>
     </div>
+  </div>
+
+  <div class="form-group">
+    <div class="g-recaptcha col-sm-offset-1"
+         data-sitekey="6Lesrz8UAAAAAEJT7iYUhWJfq04v8uTB-lFgFyOY"
+         data-callback="onCaptchaResolved"
+         data-expired-callback="onCaptchaExpired"></div>
   </div>
 
   <input type="submit" [disabled]="!form.valid" value="{{ 'action.login' | translate }}" class="btn btn-primary col-sm-offset-3">

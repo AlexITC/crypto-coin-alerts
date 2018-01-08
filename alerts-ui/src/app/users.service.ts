@@ -26,8 +26,13 @@ export class UsersService {
     return this.http.post<User>(this.baseUrl, body, httpOptions);
   }
 
-  login(email: string, password: string): Observable<AuthorizationToken> {
-    const body = { email: email, password: password };
+  login(email: string, password: string, reCaptchaResponse: string): Observable<AuthorizationToken> {
+    const body = {
+      email: email,
+      password: password,
+      reCaptchaResponse: reCaptchaResponse
+    };
+
     const url = this.baseUrl + '/login';
     return this.http.post<AuthorizationToken>(url, body, httpOptions);
   }
