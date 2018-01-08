@@ -13,7 +13,7 @@ class UsersControllerSpec extends PlayAPISpec {
   "POST /users" should {
 
     def createUserJson(email: String, password: String = "stupidpwd") = {
-      s"""{ "email": "$email", "password": "$password"}"""
+      s"""{ "email": "$email", "password": "$password", "reCaptchaResponse": "none"}"""
     }
 
     def callCreateUser(json: String) = {

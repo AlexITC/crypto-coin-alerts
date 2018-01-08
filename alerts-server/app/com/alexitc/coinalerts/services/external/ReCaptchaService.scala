@@ -5,6 +5,7 @@ import javax.inject.Inject
 import com.alexitc.coinalerts.commons.FutureApplicationResult
 import com.alexitc.coinalerts.config.ReCaptchaConfig
 import com.alexitc.coinalerts.errors.ReCaptchaValidationError
+import com.alexitc.coinalerts.models.ReCaptchaResponse
 import org.scalactic.{Bad, Good}
 import play.api.libs.ws.WSClient
 
@@ -28,6 +29,7 @@ class GoogleReCaptchaService @Inject() (
       "response" -> recaptchaResponse.string
     ).mapValues(List(_))
 
+    // TODO: log invalid key response
     ws.url(url).post(data).map { response =>
       (response.json \ "success")
           .asOpt[Boolean]
@@ -39,5 +41,3 @@ class GoogleReCaptchaService @Inject() (
     }
   }
 }
-
-class ReCaptchaResponse(val string: String) extends AnyVal

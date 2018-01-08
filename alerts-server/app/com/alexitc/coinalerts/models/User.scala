@@ -45,7 +45,10 @@ object UserHiddenPassword {
   }
 }
 
-case class CreateUserModel(email: UserEmail, password: UserPassword)
+case class CreateUserModel(
+    email: UserEmail,
+    password: UserPassword,
+    reCaptchaResponse: ReCaptchaResponse)
 object CreateUserModel {
   implicit val reads: Reads[CreateUserModel] = Json.reads[CreateUserModel]
 }

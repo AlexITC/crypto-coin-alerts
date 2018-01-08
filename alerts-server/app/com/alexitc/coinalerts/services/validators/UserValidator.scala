@@ -12,9 +12,9 @@ class UserValidator {
   def validateCreateUserModel(createUserModel: CreateUserModel): ApplicationResult[CreateUserModel] = {
     withGood(
       validateEmailFormat(createUserModel.email),
-      validatePasswordFormat(createUserModel.password)) {
+      validatePasswordFormat(createUserModel.password)) { (_, _) =>
 
-      CreateUserModel.apply
+      createUserModel
     }
   }
 

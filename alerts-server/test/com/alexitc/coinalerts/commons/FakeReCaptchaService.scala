@@ -1,6 +1,7 @@
 package com.alexitc.coinalerts.commons
 
-import com.alexitc.coinalerts.services.external.{ReCaptchaResponse, ReCaptchaService}
+import com.alexitc.coinalerts.models.ReCaptchaResponse
+import com.alexitc.coinalerts.services.external.ReCaptchaService
 import org.scalactic.Good
 
 import scala.concurrent.Future
