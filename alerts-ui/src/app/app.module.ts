@@ -24,6 +24,7 @@ import { AuthService } from './auth.service';
 import { AppRoutingModule } from './app-routing.module';
 import { JWTInterceptor } from './jwt.interceptor';
 import { NewFixedPriceAlertComponent } from './new-fixed-price-alert/new-fixed-price-alert.component';
+import { FooterComponent } from './footer/footer.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { NewFixedPriceAlertComponent } from './new-fixed-price-alert/new-fixed-p
     NewAccountComponent,
     LoginComponent,
     VerifyEmailComponent,
-    NewFixedPriceAlertComponent
+    NewFixedPriceAlertComponent,
+    FooterComponent
   ],
   imports: [
     AppRoutingModule,
