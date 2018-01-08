@@ -1,3 +1,30 @@
-<p class="col-sm-offset-1">
-  Add alert list here
-</p>
+<div class="col-sm-offset-1">
+  <legend>Your alerts</legend>
+  <!-- TODO: Add new button -->
+
+  <table class="table table-condensed table-bordered table-striped table-hover">
+    <thead>
+      <tr>
+        <th>Currency</th> <!-- TODO: Display currency details -->
+        <th>Is greater than</th>
+        <th>Price</th>
+        <th>Base price</th>
+        <th></th>
+      </tr>
+    </thead>
+  
+    <tbody>
+      <tr *ngFor="let item of asyncItems | async | paginate: { id: 'fixedPriceAlerts', itemsPerPage: pageSize, currentPage: currentPage, totalItems: total }">
+        <td>{{item.exchangeCurrencyId}}</td>
+        <td>{{item.isGreaterThan}}</td>
+        <td>{{item.price}}</td>
+        <td>{{item.basePrice}}</td>
+        <td></td> <!-- TODO: Delete button-->
+      </tr>
+    </tbody>
+  </table>
+  
+  <div class="has-text-centered">
+    <pagination-controls (pageChange)="getPage($event)" id="fixedPriceAlerts"></pagination-controls>
+  </div>
+</div>

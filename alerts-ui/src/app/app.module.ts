@@ -11,6 +11,8 @@ import { ToastrModule } from 'ngx-toastr';
 
 import { NgHttpLoaderModule } from 'ng-http-loader/ng-http-loader.module'
 
+import { NgxPaginationModule } from 'ngx-pagination';
+
 import { AppComponent } from './app.component';
 import { AppNavbarComponent } from './app-navbar/app-navbar.component';
 import { NewAccountComponent } from './new-account/new-account.component';
@@ -18,6 +20,7 @@ import { LoginComponent } from './login/login.component';
 import { VerifyEmailComponent } from './verify-email/verify-email.component';
 
 import { UsersService } from './users.service';
+import { FixedPriceAlertsService } from './fixed-price-alerts.service';
 import { ErrorService } from './error.service';
 import { AuthService } from './auth.service';
 import { ReCaptchaService } from './re-captcha.service';
@@ -54,10 +57,12 @@ import { FixedPriceAlertsComponent } from './fixed-price-alerts/fixed-price-aler
     ReactiveFormsModule,
     HttpClientModule,
     NgHttpLoaderModule,
-    TranslateModule.forRoot()
+    TranslateModule.forRoot(),
+    NgxPaginationModule
   ],
   providers: [
     UsersService,
+    FixedPriceAlertsService,
     AuthService,
     ErrorService,
     ReCaptchaService,
