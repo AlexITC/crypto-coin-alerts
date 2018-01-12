@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { ErrorService } from '../error.service';
+import { ExchangeCurrencyService } from '../exchange-currency.service';
+import { Observable } from 'rxjs/Observable';
+import { ExchangeCurrency } from '../exchange-currency';
 
 @Component({
   selector: 'app-new-fixed-price-alert',
@@ -12,21 +15,14 @@ export class NewFixedPriceAlertComponent implements OnInit {
 
   form: FormGroup;
 
-  // TODO: load it from the server
+  // TODO: load them from the server?
   availableExchanges = ['BITSO', 'BITTREX'];
-
-  // TODO: load it from the server
-  private exchangeMarkets = {
-    'BITSO': ['BTC', 'ETH', 'XRP', 'BCH', 'LTC'],
-    'BITTREX': ['BTC', 'ETH', 'USDT']
-  };
-
-  availableMarkets(exchange: string) {
-    return this.exchangeMarkets[exchange] || [];
-  }
+  availableMarkets: Observable<string[]>;
+  availableCurrencies: Observable<ExchangeCurrency[]>;
 
   constructor(
     private formBuilder: FormBuilder,
+    private exchangeCurrencyService: ExchangeCurrencyService,
     public errorService: ErrorService) {
 
     this.createForm();
@@ -39,20 +35,48 @@ export class NewFixedPriceAlertComponent implements OnInit {
     const priceValidators = [Validators.min(0.00000001), Validators.max(99999999)];
 
     this.form = this.formBuilder.group({
-      exchange: ['', [
-        Validators.required
-      ]],
-      market: ['', [Validators.required]],
-      currency: ['', [
-        Validators.required // TODO: restrict to known books
-      ]],
-      isGreaterThan: [''],
+      exchange: ['', Validators.required],
+      market: ['', Validators.required],
+      currency: ['', Validators.required],
+      isGreaterThan: [false],
       price: ['', [
         Validators.required,
         ...priceValidators
       ]],
       basePrice: ['', priceValidators]
     });
+
+    this.disableCurrency();
+    this.disableMarket();
+  }
+
+  private disableMarket() {
+    this.form.get('market').disable();
+  }
+
+  private enableMarket() {
+    this.form.get('market').enable();
+  }
+
+  private disableCurrency() {
+    this.form.get('currency').disable();
+  }
+
+  private enableCurrency() {
+    this.form.get('currency').enable();
+  }
+
+  onExchangeSelected(exchange: string) {
+    this.availableCurrencies = null;
+    this.availableMarkets = this.exchangeCurrencyService.getMarkets(exchange);
+    this.disableCurrency();
+    this.enableMarket();
+  }
+
+  onMarketSelected(market: string) {
+    const exchange = this.form.get('exchange').value;
+    this.availableCurrencies = this.exchangeCurrencyService.getCurrencies(exchange, market);
+    this.enableCurrency();
   }
 
   onSubmit() {

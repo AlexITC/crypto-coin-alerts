@@ -1,13 +1,16 @@
 
 <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate role="form" class="form-horizontal">
 
-  <legend>Create a fixed price alert</legend>
+  <legend class="col-sm-offset-1">Create a fixed price alert</legend>
 
+  <!-- TODO: Add help block explaining the alert -->
   <div [ngClass]="{ 'has-success': errorService.hasCorrectValue(form, 'exchange'), 'has-error': errorService.hasWrongValue(form, 'exchange') }"
     class="form-group">
     <label for="exchange" class="col-xs-3 col-sm-3 col-md-2 col-lg-2 control-label">{{ 'field.exchange' | translate }}</label>
     <div class="col-xs-3 col-sm-3 col-md-2 col-lg-2">
-      <select formControlName="exchange" id="exchange" class="form-control">
+      <select formControlName="exchange"
+              (change)="onExchangeSelected($event.target.value)"
+              id="exchange" class="form-control" >
         <option *ngFor="let exchange of availableExchanges" [value]="exchange">{{exchange}}</option>
       </select>
     </div>
@@ -21,8 +24,11 @@
     class="form-group">
     <label for="market" class="col-xs-3 col-sm-3 col-md-2 col-lg-2 control-label">{{ 'field.market' | translate }}</label>
     <div class="col-xs-3 col-sm-3 col-md-2 col-lg-2">
-      <select formControlName="market" id="market" class="form-control">
-        <option *ngFor="let market of availableMarkets(form.getRawValue().exchange)" [value]="market">{{market}}</option>
+      <select formControlName="market"
+              (change)="onMarketSelected($event.target.value)"
+              id="market"
+              class="form-control">
+        <option *ngFor="let market of availableMarkets | async" [value]="market">{{market}}</option>
       </select>
     </div>
   
@@ -31,12 +37,15 @@
     </div>
   </div>
 
-  <!-- TODO: List valid currencies for the given market in a dropdown -->
   <div [ngClass]="{ 'has-success': errorService.hasCorrectValue(form, 'currency'), 'has-error': errorService.hasWrongValue(form, 'currency') }"
     class="form-group">
     <label for="currency" class="col-xs-3 col-sm-3 col-md-2 col-lg-2 control-label">{{ 'field.currency' | translate }}</label>
     <div class="col-xs-3 col-sm-3 col-md-2 col-lg-2">
-      <input formControlName="currency" type="text" id="currency" class="form-control">
+      <select formControlName="currency"
+              id="currency"
+              class="form-control">
+        <option *ngFor="let currency of availableCurrencies | async" [value]="currency.id">{{currency.currency}}</option>
+      </select>
     </div>
 
     <div [hidden]="!errorService.hasWrongValue(form, 'currency')" class="col-xs-4 col-sm-4 col-md-3 col-md-3">
