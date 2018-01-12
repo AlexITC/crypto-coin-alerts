@@ -17,6 +17,20 @@ export class FixedPriceAlertsService {
 
   get(offset: number, limit: number): Observable<any> {
     const url = `${this.baseUrl}?offset=${offset}&limit=${limit}`;
-    return this.http.get<any>(url, httpOptions);
+    return this.http.get<any>(url);
+  }
+
+  create(exchangeCurrencyId: number, price: number, isGreaterThan: boolean, basePrice: number) {
+    const data = {
+      exchangeCurrencyId: +exchangeCurrencyId,
+      price: price,
+      isGreaterThan: isGreaterThan
+    };
+
+    if (basePrice != null) {
+      data['basePrice'] = +basePrice;
+    }
+
+    return this.http.post<any>(this.baseUrl, data, httpOptions);
   }
 }

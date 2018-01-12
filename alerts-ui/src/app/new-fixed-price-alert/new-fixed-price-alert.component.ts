@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Observable } from 'rxjs/Observable';
 
 import { ErrorService } from '../error.service';
 import { ExchangeCurrencyService } from '../exchange-currency.service';
-import { Observable } from 'rxjs/Observable';
 import { ExchangeCurrency } from '../exchange-currency';
+import { FixedPriceAlertsService } from '../fixed-price-alerts.service';
 
 @Component({
   selector: 'app-new-fixed-price-alert',
@@ -23,6 +24,7 @@ export class NewFixedPriceAlertComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private exchangeCurrencyService: ExchangeCurrencyService,
+    private fixedPriceAlertsService: FixedPriceAlertsService,
     public errorService: ErrorService) {
 
     this.createForm();
@@ -36,14 +38,14 @@ export class NewFixedPriceAlertComponent implements OnInit {
 
     this.form = this.formBuilder.group({
       exchange: ['', Validators.required],
-      market: ['', Validators.required],
-      currency: ['', Validators.required],
+      market: [null, Validators.required],
+      currency: [null, Validators.required],
       isGreaterThan: [false],
-      price: ['', [
+      price: [null, [
         Validators.required,
         ...priceValidators
       ]],
-      basePrice: ['', priceValidators]
+      basePrice: [null, priceValidators]
     });
 
     this.disableCurrency();
@@ -81,6 +83,15 @@ export class NewFixedPriceAlertComponent implements OnInit {
 
   onSubmit() {
     console.log('Submitting: ' + JSON.stringify(this.form.getRawValue()));
+    this.fixedPriceAlertsService.create(
+        this.form.get('currency').value,
+        this.form.get('price').value,
+        this.form.get('isGreaterThan').value,
+        this.form.get('basePrice').value)
+      .subscribe(
+        response => this.onSubmitSuccess(response),
+        response => this.errorService.renderServerErrors(this.form, response)
+      );
   }
 
   protected onSubmitSuccess(response: any) {
