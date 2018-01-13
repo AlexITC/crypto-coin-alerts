@@ -43,11 +43,16 @@ class FixedPriceAlertPostgresDAO {
     ).executeUpdate()
   }
 
-  def findPendingAlertsForPrice(currencyId: ExchangeCurrencyId, currentPrice: BigDecimal)(implicit conn: Connection): List[FixedPriceAlert] = {
+  def findPendingAlertsForPrice(
+      currencyId: ExchangeCurrencyId,
+      currentPrice: BigDecimal)(
+      implicit conn: Connection): List[FixedPriceAlertWithCurrency] = {
+
     SQL(
       """
-        |SELECT fixed_price_alert_id, user_id, currency_id, is_greater_than, price, base_price
-        |FROM fixed_price_alerts
+        |SELECT fixed_price_alert_id, user_id, currency_id, is_greater_than, price, base_price,
+        |       exchange, market, currency
+        |FROM fixed_price_alerts INNER JOIN currencies USING (currency_id)
         |WHERE triggered_on IS NULL AND
         |      currency_id = {currency_id} AND
         |      (
@@ -58,14 +63,19 @@ class FixedPriceAlertPostgresDAO {
     ).on(
       "currency_id" -> currencyId.int,
       "current_price" -> currentPrice
-    ).as(parseFixedPriceAlert.*)
+    ).as(parseFixedPriceAlertWithCurrency.*)
   }
 
-  def getAlerts(userId: UserId, query: PaginatedQuery)(implicit conn: Connection): List[FixedPriceAlert] = {
+  def getAlerts(
+      userId: UserId,
+      query: PaginatedQuery)(
+      implicit conn: Connection): List[FixedPriceAlertWithCurrency] = {
+
     SQL(
       s"""
-         |SELECT fixed_price_alert_id, user_id, currency_id, is_greater_than, price, base_price
-         |FROM fixed_price_alerts
+         |SELECT fixed_price_alert_id, user_id, currency_id, is_greater_than, price, base_price,
+         |       exchange, market, currency
+         |FROM fixed_price_alerts INNER JOIN currencies USING (currency_id)
          |WHERE user_id = {user_id}
          |ORDER BY fixed_price_alert_id
          |OFFSET {offset}
@@ -75,7 +85,7 @@ class FixedPriceAlertPostgresDAO {
       "user_id" -> userId.string,
       "offset" -> query.offset.int,
       "limit" -> query.limit.int
-    ).as(parseFixedPriceAlert.*)
+    ).as(parseFixedPriceAlertWithCurrency.*)
   }
 
   def countBy(userId: UserId)(implicit conn: Connection): Count = {

@@ -28,6 +28,7 @@ class FixedPriceAlertCollector @Inject()(
           .sequence {
             tickerList.map { ticker =>
               val result = for {
+                // TODO: the data handler now returns the currency, we could omit this call
                 currencyMaybe <- exchangeCurrencyFutureDataHandler
                     .getBy(tickerCollector.exchange, ticker.book.market, ticker.book.currency)
                     .toFutureOr
@@ -63,7 +64,7 @@ class FixedPriceAlertCollector @Inject()(
         .map {
           case Good(alertList) =>
             alertList.map { alert =>
-              FixedPriceAlertEvent(alert, currency, currentPrice)
+              FixedPriceAlertEvent(alert, currentPrice)
             }
 
           case Bad(errors) =>

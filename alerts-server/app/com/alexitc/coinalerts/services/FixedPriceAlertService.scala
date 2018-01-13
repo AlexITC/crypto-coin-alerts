@@ -21,7 +21,7 @@ class FixedPriceAlertService @Inject() (
     alertFutureDataHandler: FixedPriceAlertFutureDataHandler)(
     implicit ec: ExecutionContext) {
 
-  def create(createAlertModel: CreateFixedPriceAlertModel, userId: UserId): FutureApplicationResult[FixedPriceAlert] = {
+  def create(createAlertModel: CreateFixedPriceAlertModel, userId: UserId): FutureApplicationResult[FixedPriceAlertWithCurrency] = {
     val result = for {
       validatedModel <- alertValidator.validateCreateModel(createAlertModel).toFutureOr
 
@@ -34,7 +34,7 @@ class FixedPriceAlertService @Inject() (
     result.toFuture
   }
 
-  def getAlerts(userId: UserId, query: PaginatedQuery): FuturePaginatedResult[FixedPriceAlert] = {
+  def getAlerts(userId: UserId, query: PaginatedQuery): FuturePaginatedResult[FixedPriceAlertWithCurrency] = {
     val result = for {
       validatedQuery <- paginatedQueryValidator.validate(query).toFutureOr
       paginatedResult <- alertFutureDataHandler.getAlerts(userId, validatedQuery).toFutureOr

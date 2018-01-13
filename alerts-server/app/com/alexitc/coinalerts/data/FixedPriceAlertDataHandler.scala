@@ -8,13 +8,13 @@ import scala.language.higherKinds
 
 trait FixedPriceAlertDataHandler[F[_]] {
 
-  def create(createAlertModel: CreateFixedPriceAlertModel, userId: UserId): F[FixedPriceAlert]
+  def create(createAlertModel: CreateFixedPriceAlertModel, userId: UserId): F[FixedPriceAlertWithCurrency]
 
   def markAsTriggered(alertId: FixedPriceAlertId): F[Unit]
 
-  def findPendingAlertsForPrice(currencyId: ExchangeCurrencyId, currentPrice: BigDecimal): F[List[FixedPriceAlert]]
+  def findPendingAlertsForPrice(currencyId: ExchangeCurrencyId, currentPrice: BigDecimal): F[List[FixedPriceAlertWithCurrency]]
 
-  def getAlerts(userId: UserId, query: PaginatedQuery): F[PaginatedResult[FixedPriceAlert]]
+  def getAlerts(userId: UserId, query: PaginatedQuery): F[PaginatedResult[FixedPriceAlertWithCurrency]]
 
   def countBy(userId: UserId): F[Count]
 }

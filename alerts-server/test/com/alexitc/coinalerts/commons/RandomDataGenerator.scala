@@ -66,10 +66,21 @@ object RandomDataGenerator {
   }
 
   def book = {
-    val marketList = "BTC ETH XRP XMR ADA".split(" ")
-    val currencyList = "MXN USD EUR GBP".split(" ")
+    Book(market, currency)
+  }
 
-    Book(Market(item(marketList)), Currency(item(currencyList)))
+  def market = {
+    val marketList = "BTC ETH XRP MXN USD USDT".split(" ")
+    Market(item(marketList))
+  }
+
+  def currency = {
+    val currencyList = "ADA XMR SC RDD LTC BCH LUN DGB XDN MONA THC VTC".split(" ")
+    Currency(item(currencyList))
+  }
+
+  def exchangeCurrency(id: ExchangeCurrencyId) = {
+    ExchangeCurrency(id, exchange, market, currency)
   }
 
   def createFixedPriceAlertModel(

@@ -3,14 +3,18 @@ package com.alexitc.coinalerts.data.anorm
 import com.alexitc.coinalerts.commons.DataHelper._
 import com.alexitc.coinalerts.commons.{PostgresDataHandlerSpec, RandomDataGenerator}
 import com.alexitc.coinalerts.core.{Count, Limit, Offset, PaginatedQuery}
-import com.alexitc.coinalerts.data.anorm.dao.FixedPriceAlertPostgresDAO
+import com.alexitc.coinalerts.data.anorm.dao.{ExchangeCurrencyPostgresDAO, FixedPriceAlertPostgresDAO}
 import com.alexitc.coinalerts.errors.{FixedPriceAlertNotFoundError, InvalidPriceError, UnknownExchangeCurrencyIdError, VerifiedUserNotFound}
 import com.alexitc.coinalerts.models._
 import org.scalactic.Bad
 
 class FixedPriceAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
 
-  lazy val alertPostgresDataHandler = new FixedPriceAlertPostgresDataHandler(database, new FixedPriceAlertPostgresDAO)
+  lazy val alertPostgresDataHandler = new FixedPriceAlertPostgresDataHandler(
+    database,
+    new ExchangeCurrencyPostgresDAO,
+    new FixedPriceAlertPostgresDAO)
+
   lazy val verifiedUser = createVerifiedUser()
 
   lazy val currencies = exchangeCurrencyDataHandler.getAll().get
@@ -87,6 +91,7 @@ class FixedPriceAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
       result.exists(_.id == alert.id) mustEqual true
     }
 
+    // TODO: Fix non-deterministic test
     "retrieve several pending alerts" in {
       val createAlertModel = CreateFixedPriceAlertModel(RandomDataGenerator.item(currencies).id, true, BigDecimal("5000.00"), None)
       val createAlert1 = createAlertModel

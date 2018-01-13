@@ -15,7 +15,7 @@ class FixedPriceAlertFutureDataHandler @Inject() (
     implicit ec: DatabaseExecutionContext)
     extends FixedPriceAlertDataHandler[FutureApplicationResult] {
 
-  override def create(createAlertModel: CreateFixedPriceAlertModel, userId: UserId): FutureApplicationResult[FixedPriceAlert] = Future {
+  override def create(createAlertModel: CreateFixedPriceAlertModel, userId: UserId): FutureApplicationResult[FixedPriceAlertWithCurrency] = Future {
     blockingDataHandler.create(createAlertModel, userId)
   }
 
@@ -25,12 +25,12 @@ class FixedPriceAlertFutureDataHandler @Inject() (
 
   override def findPendingAlertsForPrice(
       currencyId: ExchangeCurrencyId,
-      currentPrice: BigDecimal): FutureApplicationResult[List[FixedPriceAlert]] = Future {
+      currentPrice: BigDecimal): FutureApplicationResult[List[FixedPriceAlertWithCurrency]] = Future {
 
     blockingDataHandler.findPendingAlertsForPrice(currencyId, currentPrice)
   }
 
-  override def getAlerts(userId: UserId, query: PaginatedQuery): FuturePaginatedResult[FixedPriceAlert] = Future {
+  override def getAlerts(userId: UserId, query: PaginatedQuery): FuturePaginatedResult[FixedPriceAlertWithCurrency] = Future {
     blockingDataHandler.getAlerts(userId, query)
   }
 

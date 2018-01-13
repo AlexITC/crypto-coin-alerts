@@ -1,8 +1,7 @@
 package com.alexitc.coinalerts.tasks.models
 
-import com.alexitc.coinalerts.models.{ExchangeCurrency, FixedPriceAlert}
+import com.alexitc.coinalerts.models.FixedPriceAlertWithCurrency
 
 case class FixedPriceAlertEvent(
-    alert: FixedPriceAlert,
-    exchangeCurrency: ExchangeCurrency,
+    alert: FixedPriceAlertWithCurrency,
     currentPrice: BigDecimal)
