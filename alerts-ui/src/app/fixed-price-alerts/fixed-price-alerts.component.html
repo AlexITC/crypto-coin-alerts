@@ -5,7 +5,8 @@
   <table class="table table-condensed table-bordered table-striped table-hover">
     <thead>
       <tr>
-        <th>Currency</th> <!-- TODO: Display currency details -->
+        <th>Exchange</th>
+        <th>Currency</th>
         <th>Is greater than</th>
         <th>Price</th>
         <th>Base price</th>
@@ -15,10 +16,11 @@
   
     <tbody>
       <tr *ngFor="let item of asyncItems | async | paginate: { id: 'fixedPriceAlerts', itemsPerPage: pageSize, currentPage: currentPage, totalItems: total }">
-        <td>{{item.exchangeCurrencyId}}</td>
+        <td>{{item.exchange}}</td>
+        <td>{{item.currency}}</td>
         <td>{{item.isGreaterThan}}</td>
-        <td>{{item.price}}</td>
-        <td>{{item.basePrice}}</td>
+        <td>{{item.price}} {{item.market}}</td>
+        <td>{{item.basePrice || 0}} {{item.market}}</td>
         <td></td> <!-- TODO: Delete button-->
       </tr>
     </tbody>

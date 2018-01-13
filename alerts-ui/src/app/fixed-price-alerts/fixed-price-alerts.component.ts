@@ -5,6 +5,8 @@ import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/map';
 
 import { FixedPriceAlertsService } from '../fixed-price-alerts.service';
+import { ExchangeCurrencyService } from '../exchange-currency.service';
+import { ExchangeCurrency } from '../exchange-currency';
 
 @Component({
   selector: 'app-fixed-price-alerts',
@@ -18,7 +20,9 @@ export class FixedPriceAlertsComponent implements OnInit {
   pageSize = 10;
   asyncItems: Observable<any>;
 
-  constructor(private fixedPriceAlertsService: FixedPriceAlertsService) { }
+  constructor(
+    private fixedPriceAlertsService: FixedPriceAlertsService,
+    private exchangeCurrencyService: ExchangeCurrencyService) { }
 
   ngOnInit() {
     this.getPage(this.currentPage);
@@ -31,6 +35,7 @@ export class FixedPriceAlertsComponent implements OnInit {
     this.asyncItems = this.fixedPriceAlertsService
       .get(offset, limit)
       .do(response => this.total = response.total)
+      .do(response => this.currentPage = 1 + (response.offset / this.pageSize))
       .map(response => response.data);
   }
 
