@@ -3,6 +3,7 @@ package com.alexitc.coinalerts.data
 import com.alexitc.coinalerts.commons.{ApplicationResult, RandomDataGenerator}
 import com.alexitc.coinalerts.core.{Count, PaginatedQuery, PaginatedResult}
 import com.alexitc.coinalerts.errors.{FixedPriceAlertNotFoundError, UnknownExchangeCurrencyIdError}
+import com.alexitc.coinalerts.models.FixedPriceAlertFilter._
 import com.alexitc.coinalerts.models._
 import org.scalactic.{Bad, Good}
 
@@ -74,24 +75,35 @@ trait FixedPriceAlertInMemoryDataHandler extends FixedPriceAlertBlockingDataHand
     Good(list)
   }
 
-  override def getAlerts(userId: UserId, query: PaginatedQuery): ApplicationResult[PaginatedResult[FixedPriceAlertWithCurrency]] = alertList.synchronized {
-    val userAlerts = alertList.toList.filter(_.userId == userId)
-    val data = userAlerts
+  override def getAlerts(conditions: Conditions, query: PaginatedQuery): ApplicationResult[PaginatedResult[FixedPriceAlertWithCurrency]] = alertList.synchronized {
+    val filteredAlerts = filterBy(conditions)
+    val data = filteredAlerts
         .slice(query.offset.int, query.offset.int + query.limit.int)
         .map { fixedPriceAlert =>
           FixedPriceAlertWithCurrency.from(fixedPriceAlert, getCurrency(fixedPriceAlert.exchangeCurrencyId))
         }
 
-    val result = PaginatedResult(query.offset, query.limit, Count(userAlerts.length), data)
+    val result = PaginatedResult(query.offset, query.limit, Count(filteredAlerts.length), data)
     Good(result)
   }
 
-  override def countBy(userId: UserId): ApplicationResult[Count] = alertList.synchronized {
-    val result = Count(alertList.toList.count(_.userId == userId))
+  override def countBy(conditions: Conditions): ApplicationResult[Count] = alertList.synchronized {
+    val result = Count(filterBy(conditions).length)
     Good(result)
   }
 
   private def pendingAlertList = {
     alertList.toList.filter { alert => !triggeredAlertList.contains(alert.id) }
+  }
+
+  private def filterBy(conditions: Conditions) = {
+    List(conditions.triggered, conditions.user).foldLeft(alertList.toList) { (list, condition) =>
+      condition match {
+        case JustThisUserCondition(userId) => list.filter(_.userId == userId)
+        case HasBeenTriggeredCondition => list.filter(triggeredAlertList contains _.id)
+        case HasNotBeenTriggeredCondition => list.filterNot(triggeredAlertList contains _.id)
+        case _ => list
+      }
+    }
   }
 }

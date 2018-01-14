@@ -30,11 +30,11 @@ class FixedPriceAlertFutureDataHandler @Inject() (
     blockingDataHandler.findPendingAlertsForPrice(currencyId, currentPrice)
   }
 
-  override def getAlerts(userId: UserId, query: PaginatedQuery): FuturePaginatedResult[FixedPriceAlertWithCurrency] = Future {
-    blockingDataHandler.getAlerts(userId, query)
+  override def getAlerts(conditions: FixedPriceAlertFilter.Conditions, query: PaginatedQuery): FuturePaginatedResult[FixedPriceAlertWithCurrency] = Future {
+    blockingDataHandler.getAlerts(conditions, query)
   }
 
-  override def countBy(userId: UserId): FutureApplicationResult[Count] = Future {
-    blockingDataHandler.countBy(userId)
+  override def countBy(conditions: FixedPriceAlertFilter.Conditions): FutureApplicationResult[Count] = Future {
+    blockingDataHandler.countBy(conditions)
   }
 }

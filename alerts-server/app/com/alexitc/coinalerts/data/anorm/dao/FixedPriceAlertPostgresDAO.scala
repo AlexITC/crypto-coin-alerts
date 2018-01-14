@@ -1,13 +1,15 @@
 package com.alexitc.coinalerts.data.anorm.dao
 
 import java.sql.Connection
+import javax.inject.Inject
 
 import anorm._
 import com.alexitc.coinalerts.core.{Count, PaginatedQuery}
+import com.alexitc.coinalerts.data.anorm.interpreters.FixedPriceAlertFilterSQLInterpreter
 import com.alexitc.coinalerts.data.anorm.parsers.FixedPriceAlertParsers
 import com.alexitc.coinalerts.models._
 
-class FixedPriceAlertPostgresDAO {
+class FixedPriceAlertPostgresDAO @Inject() (sqlFilterInterpreter: FixedPriceAlertFilterSQLInterpreter) {
 
   import FixedPriceAlertParsers._
 
@@ -67,36 +69,45 @@ class FixedPriceAlertPostgresDAO {
   }
 
   def getAlerts(
-      userId: UserId,
+      conditions: FixedPriceAlertFilter.Conditions,
       query: PaginatedQuery)(
       implicit conn: Connection): List[FixedPriceAlertWithCurrency] = {
+
+    val whereClause = sqlFilterInterpreter.toWhere(conditions)
+    val namedParams = NamedParameter.string("offset" -> query.offset.int) ::
+        NamedParameter.string("limit" -> query.limit.int) ::
+        whereClause.params.map(param => NamedParameter.string(param))
 
     SQL(
       s"""
          |SELECT fixed_price_alert_id, user_id, currency_id, is_greater_than, price, base_price,
          |       exchange, market, currency
          |FROM fixed_price_alerts INNER JOIN currencies USING (currency_id)
-         |WHERE user_id = {user_id}
+         |${whereClause.sql}
          |ORDER BY fixed_price_alert_id
          |OFFSET {offset}
          |LIMIT {limit}
        """.stripMargin
     ).on(
-      "user_id" -> userId.string,
-      "offset" -> query.offset.int,
-      "limit" -> query.limit.int
+      namedParams: _*
     ).as(parseFixedPriceAlertWithCurrency.*)
   }
 
-  def countBy(userId: UserId)(implicit conn: Connection): Count = {
+  def countBy(conditions: FixedPriceAlertFilter.Conditions)(implicit conn: Connection): Count = {
+
+    val whereClause = sqlFilterInterpreter.toWhere(conditions)
+    val namedParams = whereClause.params.map { param =>
+      NamedParameter.string(param)
+    }
+
     val result = SQL(
-      """
+      s"""
         |SELECT COUNT(*)
         |FROM fixed_price_alerts
-        |WHERE user_id = {user_id}
+        |${whereClause.sql}
       """.stripMargin
     ).on(
-      "user_id" -> userId.string
+      namedParams: _*
     ).as(SqlParser.scalar[Int].single)
 
     Count(result)

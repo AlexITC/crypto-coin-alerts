@@ -56,15 +56,19 @@ class FixedPriceAlertPostgresDataHandler @Inject() (
     }
   }
 
-  override def getAlerts(userId: UserId, query: PaginatedQuery): ApplicationResult[PaginatedResult[FixedPriceAlertWithCurrency]] = withConnection { implicit conn =>
-    val alerts = alertPostgresDAO.getAlerts(userId, query)
-    val total = alertPostgresDAO.countBy(userId)
+  override def getAlerts(
+      conditions: FixedPriceAlertFilter.Conditions,
+      query: PaginatedQuery): ApplicationResult[PaginatedResult[FixedPriceAlertWithCurrency]] = withConnection { implicit conn =>
+
+    val alerts = alertPostgresDAO.getAlerts(conditions, query)
+    val total = alertPostgresDAO.countBy(conditions)
     val result = PaginatedResult(query.offset, query.limit, total, alerts)
+
     Good(result)
   }
 
-  override def countBy(userId: UserId): ApplicationResult[Count] = withConnection { implicit conn =>
-    val result = alertPostgresDAO.countBy(userId)
+  override def countBy(conditions: FixedPriceAlertFilter.Conditions): ApplicationResult[Count] = withConnection { implicit conn =>
+    val result = alertPostgresDAO.countBy(conditions)
     Good(result)
   }
 }

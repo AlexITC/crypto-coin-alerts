@@ -4,7 +4,9 @@ import com.alexitc.coinalerts.commons.DataHelper._
 import com.alexitc.coinalerts.commons.{PostgresDataHandlerSpec, RandomDataGenerator}
 import com.alexitc.coinalerts.core.{Count, Limit, Offset, PaginatedQuery}
 import com.alexitc.coinalerts.data.anorm.dao.{ExchangeCurrencyPostgresDAO, FixedPriceAlertPostgresDAO}
+import com.alexitc.coinalerts.data.anorm.interpreters.FixedPriceAlertFilterSQLInterpreter
 import com.alexitc.coinalerts.errors.{FixedPriceAlertNotFoundError, InvalidPriceError, UnknownExchangeCurrencyIdError, VerifiedUserNotFound}
+import com.alexitc.coinalerts.models.FixedPriceAlertFilter._
 import com.alexitc.coinalerts.models._
 import org.scalactic.Bad
 
@@ -13,13 +15,17 @@ class FixedPriceAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
   lazy val alertPostgresDataHandler = new FixedPriceAlertPostgresDataHandler(
     database,
     new ExchangeCurrencyPostgresDAO,
-    new FixedPriceAlertPostgresDAO)
+    new FixedPriceAlertPostgresDAO(new FixedPriceAlertFilterSQLInterpreter))
 
   lazy val verifiedUser = createVerifiedUser()
 
   lazy val currencies = exchangeCurrencyDataHandler.getAll().get
   lazy val createDefaultAlertModel = CreateFixedPriceAlertModel(RandomDataGenerator.item(currencies).id, true, BigDecimal("5000.00"), None)
   lazy val createBasePriceAlertModel = createDefaultAlertModel.copy(basePrice = Some(BigDecimal("4000.00")))
+
+  def justThisUserCondition(userId: UserId) = {
+    Conditions(AnyTriggeredCondition, JustThisUserCondition(userId))
+  }
 
   "Creating an alert" should {
 
@@ -136,11 +142,11 @@ class FixedPriceAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
     }
   }
 
-  "retrieving user alerts" should {
+  "retrieving and filtering alerts" should {
     "return empty result for non-existent user" in {
       val userId = UserId.create
       val query = PaginatedQuery(Offset(0), Limit(10))
-      val result = alertPostgresDataHandler.getAlerts(userId, query).get
+      val result = alertPostgresDataHandler.getAlerts(justThisUserCondition(userId), query).get
       result.data.isEmpty mustEqual true
       result.total mustEqual Count(0)
     }
@@ -150,7 +156,7 @@ class FixedPriceAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
       alertPostgresDataHandler.create(createDefaultAlertModel, user.id)
 
       val query = PaginatedQuery(Offset(1), Limit(1))
-      val result = alertPostgresDataHandler.getAlerts(user.id, query).get
+      val result = alertPostgresDataHandler.getAlerts(justThisUserCondition(user.id), query).get
       result.data.isEmpty mustEqual true
       result.total mustEqual Count(1)
     }
@@ -161,7 +167,7 @@ class FixedPriceAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
       alertPostgresDataHandler.create(createDefaultAlertModel, user.id)
 
       val query = PaginatedQuery(Offset(0), Limit(1))
-      val result = alertPostgresDataHandler.getAlerts(user.id, query).get
+      val result = alertPostgresDataHandler.getAlerts(justThisUserCondition(user.id), query).get
       result.offset mustEqual query.offset
       result.limit mustEqual query.limit
       result.total mustEqual Count(2)
@@ -174,12 +180,42 @@ class FixedPriceAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
       alertPostgresDataHandler.create(createDefaultAlertModel, user.id)
 
       val page1Query = PaginatedQuery(Offset(0), Limit(1))
-      val page1Result = alertPostgresDataHandler.getAlerts(user.id, page1Query).get
+      val page1Result = alertPostgresDataHandler.getAlerts(justThisUserCondition(user.id), page1Query).get
 
       val page2Query = PaginatedQuery(Offset(1), Limit(1))
-      val page2Result = alertPostgresDataHandler.getAlerts(user.id, page2Query).get
+      val page2Result = alertPostgresDataHandler.getAlerts(justThisUserCondition(user.id), page2Query).get
 
       page1Result.data.head.id mustNot be(page2Result.data.head.id)
+    }
+
+    "return non-triggered alerts only" in {
+      val user = createUnverifiedUser()
+      val nonTriggeredAlert = alertPostgresDataHandler.create(createDefaultAlertModel, user.id).get
+      val triggeredAlert = alertPostgresDataHandler.create(createDefaultAlertModel, user.id).get
+      alertPostgresDataHandler.markAsTriggered(triggeredAlert.id)
+
+      val conditions = Conditions(HasNotBeenTriggeredCondition, JustThisUserCondition(user.id))
+      val query = PaginatedQuery(Offset(0), Limit(10))
+      val result = alertPostgresDataHandler.getAlerts(conditions, query).get
+
+      result.data.length mustEqual 1
+      result.data.head.id mustEqual nonTriggeredAlert.id
+      result.total mustEqual Count(1)
+    }
+
+    "return triggered alerts only" in {
+      val user = createUnverifiedUser()
+      val nonTriggeredAlert = alertPostgresDataHandler.create(createDefaultAlertModel, user.id).get
+      val triggeredAlert = alertPostgresDataHandler.create(createDefaultAlertModel, user.id).get
+      alertPostgresDataHandler.markAsTriggered(triggeredAlert.id)
+
+      val conditions = Conditions(HasBeenTriggeredCondition, JustThisUserCondition(user.id))
+      val query = PaginatedQuery(Offset(0), Limit(10))
+      val result = alertPostgresDataHandler.getAlerts(conditions, query).get
+
+      result.data.length mustEqual 1
+      result.data.head.id mustEqual triggeredAlert.id
+      result.total mustEqual Count(1)
     }
   }
 
@@ -192,7 +228,7 @@ class FixedPriceAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
       val user2 = createUnverifiedUser()
       alertPostgresDataHandler.create(createDefaultAlertModel, user2.id)
 
-      val result = alertPostgresDataHandler.countBy(user1.id).get
+      val result = alertPostgresDataHandler.countBy(justThisUserCondition(user1.id)).get
       result mustEqual Count(2)
     }
   }

@@ -2,6 +2,7 @@ package com.alexitc.coinalerts.data
 
 import com.alexitc.coinalerts.commons.ApplicationResult
 import com.alexitc.coinalerts.core.{Count, PaginatedQuery, PaginatedResult}
+import com.alexitc.coinalerts.models.FixedPriceAlertFilter.Conditions
 import com.alexitc.coinalerts.models._
 
 import scala.language.higherKinds
@@ -14,9 +15,9 @@ trait FixedPriceAlertDataHandler[F[_]] {
 
   def findPendingAlertsForPrice(currencyId: ExchangeCurrencyId, currentPrice: BigDecimal): F[List[FixedPriceAlertWithCurrency]]
 
-  def getAlerts(userId: UserId, query: PaginatedQuery): F[PaginatedResult[FixedPriceAlertWithCurrency]]
+  def getAlerts(conditions: Conditions, query: PaginatedQuery): F[PaginatedResult[FixedPriceAlertWithCurrency]]
 
-  def countBy(userId: UserId): F[Count]
+  def countBy(conditions: Conditions): F[Count]
 }
 
 trait FixedPriceAlertBlockingDataHandler extends FixedPriceAlertDataHandler[ApplicationResult]
