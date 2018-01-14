@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 
 import { UsersService } from '../users.service';
 import { ErrorService } from '../error.service';
 import { ReCaptchaService } from '../re-captcha.service';
 import { NotificationService } from '../notification.service';
+import { NavigatorService } from '../navigator.service';
 
 @Component({
   selector: 'app-new-account',
@@ -29,8 +29,8 @@ export class NewAccountComponent implements OnInit {
   }
 
   constructor(
-      private router: Router,
       private formBuilder: FormBuilder,
+      private navigatorService: NavigatorService,
       private usersService: UsersService,
       private notificationService: NotificationService,
       private translate: TranslateService,
@@ -99,7 +99,7 @@ export class NewAccountComponent implements OnInit {
     this.translate.get('message.verifyEmail')
       .subscribe(msg => this.notificationService.info(msg));
 
-    this.router.navigate(['/']);
+    this.navigatorService.home();
   }
 
   protected onSubmitError(response) {
