@@ -25,6 +25,7 @@ import { ExchangeCurrencyService } from './exchange-currency.service';
 import { ErrorService } from './error.service';
 import { AuthService } from './auth.service';
 import { ReCaptchaService } from './re-captcha.service';
+import { NotificationService } from './notification.service';
 
 import { AppRoutingModule } from './app-routing.module';
 import { JWTInterceptor } from './jwt.interceptor';
@@ -68,6 +69,7 @@ import { FixedPriceAlertsComponent } from './fixed-price-alerts/fixed-price-aler
     AuthService,
     ErrorService,
     ReCaptchaService,
+    NotificationService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: JWTInterceptor,
