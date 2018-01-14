@@ -39,7 +39,8 @@ export class AppComponent {
       'field.above': 'Above',
       'field.below': 'Below',
       'field.price': 'Price',
-      'field.basePrice': 'The price when you bought / sold (optional)',
+      'field.basePrice': 'The price when you bought / sold',
+      'field.optional': 'optional',
       // actions
       'action.createAccount': 'Create account',
       'action.login': 'Log in',
