@@ -15,7 +15,6 @@ export class ExchangeCurrencyService {
   // these data doesn't change frequently
   private exchangeMarketsCache = {};
   private marketCurrenciesCache = {};
-  private exchangeCurrencyCache = {};
 
   constructor(private http: HttpClient) { }
 
@@ -39,14 +38,6 @@ export class ExchangeCurrencyService {
     }
 
     this.marketCurrenciesCache[exchange][market] = currencies;
-  }
-
-  private hasExchangeCurrency(id: number): boolean {
-    return this.exchangeCurrencyCache[id] != null;
-  }
-
-  private cacheExchangeCurrency(id: number, exchangeCurrency: ExchangeCurrency) {
-    this.exchangeCurrencyCache[id] = exchangeCurrency;
   }
 
   /* actual methods */
@@ -76,15 +67,5 @@ export class ExchangeCurrencyService {
     const url = `${this.baseUrl}/${exchange}/markets/${market}/currencies`;
     return this.http.get<ExchangeCurrency[]>(url)
              .do(currencies => this.cacheMarketCurrencies(exchange, market, currencies));
-  }
-
-  getExchangeCurrency(id: number): Observable<ExchangeCurrency> {
-    if (this.hasExchangeCurrency(id)) {
-      return Observable.of(this.exchangeCurrencyCache[id]);
-    }
-
-    const url = `${this.baseUrl}/currencies/${id}`;
-    return this.http.get<ExchangeCurrency>(url)
-             .do(c => this.cacheExchangeCurrency(id, c));
   }
 }
