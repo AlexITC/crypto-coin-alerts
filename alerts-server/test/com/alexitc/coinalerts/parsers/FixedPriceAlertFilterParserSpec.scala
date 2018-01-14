@@ -1,5 +1,6 @@
 package com.alexitc.coinalerts.parsers
 
+import com.alexitc.coinalerts.core.FilterQuery
 import com.alexitc.coinalerts.errors.InvalidFilterError
 import com.alexitc.coinalerts.models.FixedPriceAlertFilter.{AnyTriggeredCondition, HasBeenTriggeredCondition, HasNotBeenTriggeredCondition, JustThisUserCondition}
 import com.alexitc.coinalerts.models.UserId
@@ -13,7 +14,7 @@ class FixedPriceAlertFilterParserSpec extends WordSpec with MustMatchers {
 
   "parsing a string" should {
     "allow an empty string" in {
-      val filter = ""
+      val filter = FilterQuery("")
       val result = parser.from(filter, userId).get
 
       result.triggered mustEqual AnyTriggeredCondition
@@ -21,7 +22,7 @@ class FixedPriceAlertFilterParserSpec extends WordSpec with MustMatchers {
     }
 
     "allow triggered=true" in {
-      val filter = "triggered=true"
+      val filter = FilterQuery("triggered=true")
       val result = parser.from(filter, userId).get
 
       result.triggered mustEqual HasBeenTriggeredCondition
@@ -29,7 +30,7 @@ class FixedPriceAlertFilterParserSpec extends WordSpec with MustMatchers {
     }
 
     "allow triggered=false" in {
-      val filter = "triggered=false"
+      val filter = FilterQuery("triggered=false")
       val result = parser.from(filter, userId).get
 
       result.triggered mustEqual HasNotBeenTriggeredCondition
@@ -37,7 +38,7 @@ class FixedPriceAlertFilterParserSpec extends WordSpec with MustMatchers {
     }
 
     "allow triggered=*" in {
-      val filter = "triggered=*"
+      val filter = FilterQuery("triggered=*")
       val result = parser.from(filter, userId).get
 
       result.triggered mustEqual AnyTriggeredCondition
@@ -45,21 +46,21 @@ class FixedPriceAlertFilterParserSpec extends WordSpec with MustMatchers {
     }
 
     "fail on unknown filter" in {
-      val filter = "user=*"
+      val filter = FilterQuery("user=*")
       val result = parser.from(filter, userId)
 
       result mustEqual Bad(InvalidFilterError).accumulating
     }
 
     "fail on valid key with no value" in {
-      val filter = "triggered="
+      val filter = FilterQuery("triggered=")
       val result = parser.from(filter, userId)
 
       result mustEqual Bad(InvalidFilterError).accumulating
     }
 
     "fail on invalid format" in {
-      val filter = "triggered,"
+      val filter = FilterQuery("triggered,")
       val result = parser.from(filter, userId)
 
       result mustEqual Bad(InvalidFilterError).accumulating

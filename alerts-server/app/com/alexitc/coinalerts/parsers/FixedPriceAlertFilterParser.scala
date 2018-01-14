@@ -1,6 +1,7 @@
 package com.alexitc.coinalerts.parsers
 
 import com.alexitc.coinalerts.commons.ApplicationResult
+import com.alexitc.coinalerts.core.FilterQuery
 import com.alexitc.coinalerts.errors.InvalidFilterError
 import com.alexitc.coinalerts.models.{FixedPriceAlertFilter, UserId}
 import org.scalactic.{Bad, Good}
@@ -13,8 +14,8 @@ class FixedPriceAlertFilterParser {
    *
    * empty string is also accepted.
    */
-  def from(string: String, userId: UserId): ApplicationResult[FixedPriceAlertFilter.Conditions] = {
-    val filters = Option(string)
+  def from(filterQuery: FilterQuery, userId: UserId): ApplicationResult[FixedPriceAlertFilter.Conditions] = {
+    val filters = Option(filterQuery.string)
         .filter(_.nonEmpty)
         .map(_.split(","))
         .map { dirtyFilters =>
