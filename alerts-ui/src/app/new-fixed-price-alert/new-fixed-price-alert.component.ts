@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 
 import { ErrorService } from '../error.service';
 import { ExchangeCurrencyService } from '../exchange-currency.service';
 import { ExchangeCurrency } from '../exchange-currency';
 import { FixedPriceAlertsService } from '../fixed-price-alerts.service';
+import { NavigatorService } from '../navigator.service';
 
 @Component({
   selector: 'app-new-fixed-price-alert',
@@ -24,9 +24,9 @@ export class NewFixedPriceAlertComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
+    private navigatorService: NavigatorService,
     private exchangeCurrencyService: ExchangeCurrencyService,
     private fixedPriceAlertsService: FixedPriceAlertsService,
-    private router: Router,
     public errorService: ErrorService) {
 
     this.createForm();
@@ -129,6 +129,6 @@ export class NewFixedPriceAlertComponent implements OnInit {
 
   protected onSubmitSuccess(response: any) {
     // TODO: add success message
-    this.router.navigate(['/fixed-price-alerts']);
+    this.navigatorService.fixedPriceAlerts();
   }
 }

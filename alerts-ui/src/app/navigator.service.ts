@@ -15,4 +15,7 @@ export class NavigatorService {
     this.go('/');
   }
 
+  fixedPriceAlerts() {
+    this.go('/fixed-price-alerts');
+  }
 }
