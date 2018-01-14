@@ -42,6 +42,7 @@ export class AppComponent {
       'action.createAccount': 'Create account',
       'action.login': 'Log in',
       'action.createAlert': 'Create alert',
+      'action.newAlert': 'New alert',
       // custom validations
       'validation.passwordMismatch': 'the password does not match'
     };
