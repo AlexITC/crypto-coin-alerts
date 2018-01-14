@@ -15,6 +15,10 @@ export class NavigatorService {
     this.go('/');
   }
 
+  login() {
+    this.go('/login');
+  }
+
   fixedPriceAlerts() {
     this.go('/fixed-price-alerts');
   }

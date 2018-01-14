@@ -36,6 +36,7 @@ export class AppComponent {
       'label.fixedPriceAlerts': 'Fixed price alerts',
       // messages
       'message.welcome': 'Welcome',
+      'message.authError': 'You are not authorized, please log in',
       'message.verifyEmail': 'An email has been sent to you inbox, please click on the link to verify your email',
       'message.emailVerified': 'Thanks for verifying your email',
       'message.resolveCaptcha': 'Resolve the reCAPTCHA',
