@@ -64,7 +64,7 @@ case class Filter(key: String, value: String) {
 }
 object Filter {
   def from(string: String): Option[Filter] = {
-    Option(string.split("="))
+    Option(string.split(":"))
         .filter(_.length == 2)
         .map { case Array(key, value) =>
           Filter(key, value)

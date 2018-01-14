@@ -238,7 +238,7 @@ class FixedPriceAlertsControllerSpec extends PlayAPISpec {
 
       alertDataHandler.markAsTriggered(triggeredAlert.id)
 
-      val response = GET(url.withQueryParams("filter" -> "triggered=false"), token.toHeader)
+      val response = GET(url.withQueryParams("filter" -> "triggered:false"), token.toHeader)
       status(response) mustEqual OK
 
       val json = contentAsJson(response)
@@ -257,7 +257,7 @@ class FixedPriceAlertsControllerSpec extends PlayAPISpec {
 
       alertDataHandler.markAsTriggered(triggeredAlert.id)
 
-      val response = GET(url.withQueryParams("filter" -> "triggered=true"), token.toHeader)
+      val response = GET(url.withQueryParams("filter" -> "triggered:true"), token.toHeader)
       status(response) mustEqual OK
 
       val json = contentAsJson(response)
@@ -271,7 +271,7 @@ class FixedPriceAlertsControllerSpec extends PlayAPISpec {
       val user = createVerifiedUser()
       val token = jwtService.createToken(user)
 
-      val response = GET(url.withQueryParams("filter" -> "triggered=*,user=*"), token.toHeader)
+      val response = GET(url.withQueryParams("filter" -> "triggered:*,user:*"), token.toHeader)
       status(response) mustEqual BAD_REQUEST
 
       val json = contentAsJson(response)

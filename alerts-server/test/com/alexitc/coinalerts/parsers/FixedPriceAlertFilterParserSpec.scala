@@ -22,7 +22,7 @@ class FixedPriceAlertFilterParserSpec extends WordSpec with MustMatchers {
     }
 
     "allow triggered=true" in {
-      val filter = FilterQuery("triggered=true")
+      val filter = FilterQuery("triggered:true")
       val result = parser.from(filter, userId).get
 
       result.triggered mustEqual HasBeenTriggeredCondition
@@ -30,7 +30,7 @@ class FixedPriceAlertFilterParserSpec extends WordSpec with MustMatchers {
     }
 
     "allow triggered=false" in {
-      val filter = FilterQuery("triggered=false")
+      val filter = FilterQuery("triggered:false")
       val result = parser.from(filter, userId).get
 
       result.triggered mustEqual HasNotBeenTriggeredCondition
@@ -38,7 +38,7 @@ class FixedPriceAlertFilterParserSpec extends WordSpec with MustMatchers {
     }
 
     "allow triggered=*" in {
-      val filter = FilterQuery("triggered=*")
+      val filter = FilterQuery("triggered:*")
       val result = parser.from(filter, userId).get
 
       result.triggered mustEqual AnyTriggeredCondition
@@ -46,14 +46,14 @@ class FixedPriceAlertFilterParserSpec extends WordSpec with MustMatchers {
     }
 
     "fail on unknown filter" in {
-      val filter = FilterQuery("user=*")
+      val filter = FilterQuery("user:*")
       val result = parser.from(filter, userId)
 
       result mustEqual Bad(InvalidFilterError).accumulating
     }
 
     "fail on valid key with no value" in {
-      val filter = FilterQuery("triggered=")
+      val filter = FilterQuery("triggered:")
       val result = parser.from(filter, userId)
 
       result mustEqual Bad(InvalidFilterError).accumulating
