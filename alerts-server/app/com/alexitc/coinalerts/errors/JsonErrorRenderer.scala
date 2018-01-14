@@ -153,6 +153,11 @@ class JsonErrorRenderer @Inject() (messagesApi: MessagesApi) {
     case TooManyFixedPriceAlertsError(reachedLimit) =>
       val message = messagesApi("error.fixedPriceAlert.limitReached", reachedLimit.int)
       GenericPublicError(message)
+
+    case InvalidFilterError =>
+      val message = messagesApi("error.fixedPriceAlert.invalidFilters")
+      FieldValidationError("filter", message)
+
   }
 
   private def renderPaginatedQueryError(error: PaginatedQueryError)(implicit lang: Lang) = error match {

@@ -228,5 +228,60 @@ class FixedPriceAlertsControllerSpec extends PlayAPISpec {
         (jsonError \ "message").as[String].nonEmpty mustEqual true
       }
     }
+
+    "Allow to get non-triggered alerts" in {
+      val user = createVerifiedUser()
+      val token = jwtService.createToken(user)
+      val currencies = exchangeCurrencyDataHandler.getAll().get
+      val triggeredAlert = createFixedPriceAlert(user.id, RandomDataGenerator.item(currencies).id).get
+      val nonTriggeredAlert = createFixedPriceAlert(user.id, RandomDataGenerator.item(currencies).id).get
+
+      alertDataHandler.markAsTriggered(triggeredAlert.id)
+
+      val response = GET(url.withQueryParams("filter" -> "triggered=false"), token.toHeader)
+      status(response) mustEqual OK
+
+      val json = contentAsJson(response)
+      val alertJsonList = (json \ "data").as[List[JsValue]]
+
+      alertJsonList.length mustEqual 1
+      (alertJsonList.head \ "id").as[Long] mustEqual nonTriggeredAlert.id.long
+    }
+
+    "Allow to get triggered alerts" in {
+      val user = createVerifiedUser()
+      val token = jwtService.createToken(user)
+      val currencies = exchangeCurrencyDataHandler.getAll().get
+      val triggeredAlert = createFixedPriceAlert(user.id, RandomDataGenerator.item(currencies).id).get
+      val nonTriggeredAlert = createFixedPriceAlert(user.id, RandomDataGenerator.item(currencies).id).get
+
+      alertDataHandler.markAsTriggered(triggeredAlert.id)
+
+      val response = GET(url.withQueryParams("filter" -> "triggered=true"), token.toHeader)
+      status(response) mustEqual OK
+
+      val json = contentAsJson(response)
+      val alertJsonList = (json \ "data").as[List[JsValue]]
+
+      alertJsonList.length mustEqual 1
+      (alertJsonList.head \ "id").as[Long] mustEqual triggeredAlert.id.long
+    }
+
+    "Fail when the filter contains invalid keys" in {
+      val user = createVerifiedUser()
+      val token = jwtService.createToken(user)
+
+      val response = GET(url.withQueryParams("filter" -> "triggered=*,user=*"), token.toHeader)
+      status(response) mustEqual BAD_REQUEST
+
+      val json = contentAsJson(response)
+      val errorList = (json \ "errors").as[List[JsValue]]
+      errorList.nonEmpty mustEqual true
+
+      val jsonError = errorList.head
+      (jsonError \ "type").as[String] mustEqual "field-validation-error"
+      (jsonError \ "field").as[String] mustEqual "filter"
+      (jsonError \ "message").as[String].nonEmpty mustEqual true
+    }
   }
 }

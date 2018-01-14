@@ -9,7 +9,7 @@ POST   /users/login                     controllers.UsersController.loginByEmail
 GET    /users/me                        controllers.UsersController.whoAmI()
 
 POST   /fixed-price-alerts              controllers.FixedPriceAlertsController.create()
-GET    /fixed-price-alerts              controllers.FixedPriceAlertsController.getAlerts(query: com.alexitc.coinalerts.core.PaginatedQuery)
+GET    /fixed-price-alerts              controllers.FixedPriceAlertsController.getAlerts(query: com.alexitc.coinalerts.core.PaginatedQuery, filterQuery: com.alexitc.coinalerts.core.FilterQuery)
 
 POST   /daily-price-alerts              controllers.DailyPriceAlertsController.create()
 GET    /daily-price-alerts              controllers.DailyPriceAlertsController.getAlerts(query: com.alexitc.coinalerts.core.PaginatedQuery)

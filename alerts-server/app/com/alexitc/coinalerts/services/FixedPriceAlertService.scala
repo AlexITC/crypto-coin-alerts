@@ -5,11 +5,12 @@ import javax.inject.Inject
 import com.alexitc.coinalerts.commons.FutureApplicationResult
 import com.alexitc.coinalerts.commons.FutureOr.Implicits.{FutureOps, OrOps}
 import com.alexitc.coinalerts.config.FixedPriceAlertConfig
-import com.alexitc.coinalerts.core.{Count, FuturePaginatedResult, PaginatedQuery}
+import com.alexitc.coinalerts.core.{Count, FilterQuery, FuturePaginatedResult, PaginatedQuery}
 import com.alexitc.coinalerts.data.async.FixedPriceAlertFutureDataHandler
 import com.alexitc.coinalerts.errors.TooManyFixedPriceAlertsError
-import com.alexitc.coinalerts.models.FixedPriceAlertFilter.{AnyTriggeredCondition, HasNotBeenTriggeredCondition, JustThisUserCondition}
+import com.alexitc.coinalerts.models.FixedPriceAlertFilter.{HasNotBeenTriggeredCondition, JustThisUserCondition}
 import com.alexitc.coinalerts.models._
+import com.alexitc.coinalerts.parsers.FixedPriceAlertFilterParser
 import com.alexitc.coinalerts.services.validators.{FixedPriceAlertValidator, PaginatedQueryValidator}
 import org.scalactic.{Bad, Good}
 
@@ -19,6 +20,7 @@ class FixedPriceAlertService @Inject() (
     alertValidator: FixedPriceAlertValidator,
     paginatedQueryValidator: PaginatedQueryValidator,
     config: FixedPriceAlertConfig,
+    alertFilterParser: FixedPriceAlertFilterParser,
     alertFutureDataHandler: FixedPriceAlertFutureDataHandler)(
     implicit ec: ExecutionContext) {
 
@@ -35,13 +37,10 @@ class FixedPriceAlertService @Inject() (
     result.toFuture
   }
 
-  def getAlerts(userId: UserId, query: PaginatedQuery): FuturePaginatedResult[FixedPriceAlertWithCurrency] = {
-    val conditions = FixedPriceAlertFilter.Conditions(
-      triggered = AnyTriggeredCondition,
-      user = JustThisUserCondition(userId))
-
+  def getAlerts(userId: UserId, query: PaginatedQuery, filterQuery: FilterQuery): FuturePaginatedResult[FixedPriceAlertWithCurrency] = {
     val result = for {
       validatedQuery <- paginatedQueryValidator.validate(query).toFutureOr
+      conditions <- alertFilterParser.from(filterQuery, userId).toFutureOr
       paginatedResult <- alertFutureDataHandler.getAlerts(conditions, validatedQuery).toFutureOr
     } yield paginatedResult
 
