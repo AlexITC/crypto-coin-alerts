@@ -26,6 +26,7 @@ import { ErrorService } from './error.service';
 import { AuthService } from './auth.service';
 import { ReCaptchaService } from './re-captcha.service';
 import { NotificationService } from './notification.service';
+import { NavigatorService } from './navigator.service';
 
 import { AppRoutingModule } from './app-routing.module';
 import { JWTInterceptor } from './jwt.interceptor';
@@ -70,6 +71,7 @@ import { FixedPriceAlertsComponent } from './fixed-price-alerts/fixed-price-aler
     ErrorService,
     ReCaptchaService,
     NotificationService,
+    NavigatorService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: JWTInterceptor,
