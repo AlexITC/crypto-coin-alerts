@@ -35,6 +35,7 @@ export class AppComponent {
       'message.verifyEmail': 'An email has been sent to you inbox, please click on the link to verify your email',
       'message.emailVerified': 'Thanks for verifying your email',
       'message.resolveCaptcha': 'Resolve the reCAPTCHA',
+      'message.alertCreated': 'Your alert was created',
       // field names
       'field.email': 'Email',
       'field.password': 'Password',

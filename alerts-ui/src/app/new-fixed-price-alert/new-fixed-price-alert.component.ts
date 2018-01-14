@@ -2,11 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 
+import { TranslateService } from '@ngx-translate/core';
+
 import { ErrorService } from '../error.service';
 import { ExchangeCurrencyService } from '../exchange-currency.service';
 import { ExchangeCurrency } from '../exchange-currency';
 import { FixedPriceAlertsService } from '../fixed-price-alerts.service';
 import { NavigatorService } from '../navigator.service';
+import { NotificationService } from '../notification.service';
 
 @Component({
   selector: 'app-new-fixed-price-alert',
@@ -24,7 +27,9 @@ export class NewFixedPriceAlertComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
+    private translate: TranslateService,
     private navigatorService: NavigatorService,
+    private notificationService: NotificationService,
     private exchangeCurrencyService: ExchangeCurrencyService,
     private fixedPriceAlertsService: FixedPriceAlertsService,
     public errorService: ErrorService) {
@@ -128,7 +133,9 @@ export class NewFixedPriceAlertComponent implements OnInit {
   }
 
   protected onSubmitSuccess(response: any) {
-    // TODO: add success message
+    this.translate.get('message.alertCreated')
+      .subscribe(msg => this.notificationService.info(msg));
+
     this.navigatorService.fixedPriceAlerts();
   }
 }
