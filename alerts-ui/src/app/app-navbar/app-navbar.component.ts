@@ -2,7 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 
+import { TranslateService } from '@ngx-translate/core';
+
 import { AuthService } from '../auth.service';
+import { NavigatorService } from '../navigator.service';
+import { NotificationService } from '../notification.service';
 
 @Component({
   selector: 'app-navbar',
@@ -17,6 +21,9 @@ export class AppNavbarComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
+    private navigatorService: NavigatorService,
+    private notificationService: NotificationService,
+    private translate: TranslateService,
     private location: Location) { }
 
   ngOnInit() {
@@ -51,7 +58,12 @@ export class AppNavbarComponent implements OnInit {
   }
 
   logout() {
+    const email = this.getAuthenticatedUser();
+    this.translate.get('message.bye')
+      .subscribe(msg => this.notificationService.info(`${msg} ${email}`));
+
     // TODO: invalidate token on the server
     this.authService.setToken(null);
+    this.navigatorService.home();
   }
 }
