@@ -42,7 +42,7 @@ export class NewFixedPriceAlertComponent implements OnInit {
       exchange: ['', Validators.required],
       market: [null, Validators.required],
       currency: [null, Validators.required],
-      isGreaterThan: [false],
+      condition: [null, Validators.required],
       price: [null, [
         Validators.required,
         ...priceValidators
@@ -70,16 +70,48 @@ export class NewFixedPriceAlertComponent implements OnInit {
     this.form.get('currency').enable();
   }
 
+  // TODO: reusable function
+  private sortStrings(array: string[]): string[] {
+    return array.sort((a, b) => {
+      if (a < b) {
+        return -1;
+      } else if (a > b) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
+  }
+
+  // TODO: reusable function
+  private sortCurrencies(array: ExchangeCurrency[]): ExchangeCurrency[] {
+    return array.sort((a, b) => {
+      if (a.currency < b.currency) {
+        return -1;
+      } else if (a.currency > b.currency) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
+  }
+
   onExchangeSelected(exchange: string) {
     this.availableCurrencies = null;
-    this.availableMarkets = this.exchangeCurrencyService.getMarkets(exchange);
+    this.availableMarkets = this.exchangeCurrencyService
+      .getMarkets(exchange)
+      .map(markets => this.sortStrings(markets));
+
     this.disableCurrency();
     this.enableMarket();
   }
 
   onMarketSelected(market: string) {
     const exchange = this.form.get('exchange').value;
-    this.availableCurrencies = this.exchangeCurrencyService.getCurrencies(exchange, market);
+    this.availableCurrencies = this.exchangeCurrencyService
+      .getCurrencies(exchange, market)
+      .map(currencies => this.sortCurrencies(currencies));
+
     this.enableCurrency();
   }
 
@@ -87,7 +119,7 @@ export class NewFixedPriceAlertComponent implements OnInit {
     this.fixedPriceAlertsService.create(
         this.form.get('currency').value,
         this.form.get('price').value,
-        this.form.get('isGreaterThan').value,
+        this.form.get('condition').value === 'above',
         this.form.get('basePrice').value)
       .subscribe(
         response => this.onSubmitSuccess(response),

@@ -35,7 +35,9 @@ export class AppComponent {
       'field.exchange': 'Exchange',
       'field.market': 'Market',
       'field.currency': 'Currency',
-      'field.isGreaterThan': 'Should the new price be greater than?',
+      'field.priceCondition': 'Price condition',
+      'field.above': 'Above',
+      'field.below': 'Below',
       'field.price': 'Price',
       'field.basePrice': 'The price when you bought / sold (optional)',
       // actions

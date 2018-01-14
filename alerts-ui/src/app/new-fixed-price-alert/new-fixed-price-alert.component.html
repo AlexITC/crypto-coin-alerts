@@ -65,15 +65,18 @@
     </div>
   </div>
 
-  <div [ngClass]="{ 'has-success': errorService.hasCorrectValue(form, 'isGreaterThan'), 'has-error': errorService.hasWrongValue(form, 'isGreaterThan') }"
+  <div [ngClass]="{ 'has-success': errorService.hasCorrectValue(form, 'condition'), 'has-error': errorService.hasWrongValue(form, 'condition') }"
     class="form-group">
-    <label for="isGreaterThan" class="col-xs-3 col-sm-3 col-md-2 col-lg-2 control-label">{{ 'field.isGreaterThan' | translate }}</label>
+    <label for="condition" class="col-xs-3 col-sm-3 col-md-2 col-lg-2 control-label">{{ 'field.priceCondition' | translate }}</label>
     <div class="col-xs-3 col-sm-3 col-md-2 col-lg-2">
-      <input formControlName="isGreaterThan" type="checkbox" id="isGreaterThan" class="form-control" value="on">
+      <select formControlName="condition" id="condition" class="form-control">
+        <option value="above">{{'field.above' | translate}}</option>
+        <option value="below">{{'field.below' | translate}}</option>
+      </select>
     </div>
   
-    <div [hidden]="!errorService.hasWrongValue(form, 'isGreaterThan')" class="col-xs-4 col-sm-4 col-md-3 col-md-3">
-      <span class="help-block">{{ errorService.getFieldError(form, 'isGreaterThan') | translate }}</span>
+    <div [hidden]="!errorService.hasWrongValue(form, 'condition')" class="col-xs-4 col-sm-4 col-md-3 col-md-3">
+      <span class="help-block">{{ errorService.getFieldError(form, 'condition') | translate }}</span>
     </div>
   </div>
 
