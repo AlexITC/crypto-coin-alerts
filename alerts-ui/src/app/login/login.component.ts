@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
 
@@ -10,6 +9,7 @@ import { AuthorizationToken } from '../authorization-token';
 import { ErrorService } from '../error.service';
 import { ReCaptchaService } from '../re-captcha.service';
 import { NotificationService } from '../notification.service';
+import { NavigatorService } from '../navigator.service';
 
 @Component({
   selector: 'app-login',
@@ -31,11 +31,11 @@ export class LoginComponent implements OnInit {
   }
 
   constructor(
-    private router: Router,
     private formBuilder: FormBuilder,
     private usersService: UsersService,
     private authService: AuthService,
     private notificationService: NotificationService,
+    private navigatorService: NavigatorService,
     private translate: TranslateService,
     public errorService: ErrorService,
     public reCaptchaService: ReCaptchaService) {
@@ -89,7 +89,7 @@ export class LoginComponent implements OnInit {
     this.translate.get('message.welcome')
       .subscribe(msg => this.notificationService.info(`${msg} ${this.authService.getAuthenticatedUser().email}`));
 
-    this.router.navigate(['/']);
+    this.navigatorService.home();
   }
 
   protected onSubmitError(response) {
