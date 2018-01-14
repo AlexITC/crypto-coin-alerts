@@ -1,7 +1,9 @@
 package com.alexitc.coinalerts.parsers
 
+import com.alexitc.coinalerts.errors.InvalidFilterError
 import com.alexitc.coinalerts.models.FixedPriceAlertFilter.{AnyTriggeredCondition, HasBeenTriggeredCondition, HasNotBeenTriggeredCondition, JustThisUserCondition}
 import com.alexitc.coinalerts.models.UserId
+import org.scalactic.Bad
 import org.scalatest.{MustMatchers, WordSpec}
 
 class FixedPriceAlertFilterParserSpec extends WordSpec with MustMatchers {
@@ -46,21 +48,21 @@ class FixedPriceAlertFilterParserSpec extends WordSpec with MustMatchers {
       val filter = "user=*"
       val result = parser.from(filter, userId)
 
-      result.isDefined mustEqual false
+      result mustEqual Bad(InvalidFilterError).accumulating
     }
 
     "fail on valid key with no value" in {
       val filter = "triggered="
       val result = parser.from(filter, userId)
 
-      result.isDefined mustEqual false
+      result mustEqual Bad(InvalidFilterError).accumulating
     }
 
     "fail on invalid format" in {
       val filter = "triggered,"
       val result = parser.from(filter, userId)
 
-      result.isDefined mustEqual false
+      result mustEqual Bad(InvalidFilterError).accumulating
     }
   }
 }

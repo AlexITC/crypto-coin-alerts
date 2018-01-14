@@ -57,6 +57,7 @@ case object InvalidPriceError extends FixedPriceAlertError with InputValidationE
 case object InvalidBasePriceError extends FixedPriceAlertError with InputValidationError
 case object FixedPriceAlertNotFoundError extends FixedPriceAlertError with NotFoundError
 case class TooManyFixedPriceAlertsError(reachedLimit: Count) extends FixedPriceAlertError with ConflictError
+case object InvalidFilterError extends FixedPriceAlertError with InputValidationError
 
 // Paginated query
 sealed trait PaginatedQueryError extends ApplicationError

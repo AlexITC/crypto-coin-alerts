@@ -1,6 +1,9 @@
 package com.alexitc.coinalerts.parsers
 
+import com.alexitc.coinalerts.commons.ApplicationResult
+import com.alexitc.coinalerts.errors.InvalidFilterError
 import com.alexitc.coinalerts.models.{FixedPriceAlertFilter, UserId}
+import org.scalactic.{Bad, Good}
 
 class FixedPriceAlertFilterParser {
 
@@ -10,18 +13,25 @@ class FixedPriceAlertFilterParser {
    *
    * empty string is also accepted.
    */
-  def from(string: String, userId: UserId): Option[FixedPriceAlertFilter.Conditions] = {
-    val filters = string.split(",").map { dirtyFilter =>
-      Filter.from(dirtyFilter)
-          .flatMap(toCondition)
-    }
+  def from(string: String, userId: UserId): ApplicationResult[FixedPriceAlertFilter.Conditions] = {
+    val filters = Option(string)
+        .filter(_.nonEmpty)
+        .map(_.split(","))
+        .map { dirtyFilters =>
+          dirtyFilters.map {
+            Filter.from(_)
+                .flatMap(toCondition)
+          }
+        }
+        .getOrElse(Array.empty)
 
-    if (string.isEmpty || filters.forall(_.isDefined)) {
+
+    if (filters.forall(_.isDefined)) {
       // TODO: validate that each key is present at most once
       val conditions = from(filters.flatten, userId)
-      Some(conditions)
+      Good(conditions)
     } else {
-      None
+      Bad(InvalidFilterError).accumulating
     }
   }
 
