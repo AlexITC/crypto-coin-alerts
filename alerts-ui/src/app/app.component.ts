@@ -30,6 +30,9 @@ export class AppComponent {
       'max': 'the value is too big',
       // labels
       'label.verifyingEmail': 'Verifying email',
+      // messages
+      'message.welcome': 'Welcome',
+      'message.emailVerified': 'Thanks for verifying your email',
       // field names
       'field.email': 'Email',
       'field.password': 'Password',
