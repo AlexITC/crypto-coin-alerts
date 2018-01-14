@@ -30,6 +30,10 @@ export class AppComponent {
       'max': 'the value is too big',
       // labels
       'label.verifyingEmail': 'Verifying email',
+      'label.login': 'Log in',
+      'label.logout': 'Log out',
+      'label.newAccount': 'New account',
+      'label.fixedPriceAlerts': 'Fixed price alerts',
       // messages
       'message.welcome': 'Welcome',
       'message.verifyEmail': 'An email has been sent to you inbox, please click on the link to verify your email',

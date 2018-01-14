@@ -12,7 +12,7 @@ import { AuthService } from '../auth.service';
 export class AppNavbarComponent implements OnInit {
 
   public tabs = [
-    { label: 'Fixed price alerts', path: 'fixed-price-alerts' }
+    { label: 'label.fixedPriceAlerts', path: '/fixed-price-alerts', authRequired: true }
   ];
 
   constructor(
@@ -30,6 +30,14 @@ export class AppNavbarComponent implements OnInit {
     return this.location.isCurrentPathEqualTo(path);
   }
 
+  isDisplayable(tab: any): boolean {
+    if (tab.authRequired === true) {
+      return this.isAuthenticated();
+    } else {
+      return true;
+    }
+  }
+
   isAuthenticated(): boolean {
     return this.authService.isAuthenticated();
   }
@@ -43,6 +51,7 @@ export class AppNavbarComponent implements OnInit {
   }
 
   logout() {
+    // TODO: invalidate token on the server
     this.authService.setToken(null);
   }
 }

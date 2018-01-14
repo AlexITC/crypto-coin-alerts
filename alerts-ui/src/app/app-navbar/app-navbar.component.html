@@ -11,23 +11,26 @@
     </div>
     <ul class="nav navbar-nav">
       <li *ngFor="let tab of tabs" [ngClass]="{ 'active': isSelected(tab.path) }">
-        <a routerLink="{{tab.path}}">{{tab.label}}</a>
+        <!-- TODO: check why [hidden] attribute is not working -->
+        <a *ngIf="isDisplayable(tab)" routerLink="{{tab.path}}">{{tab.label | translate}}</a>
       </li>
     </ul>
+
     <ul [hidden]="isAuthenticated()" class="nav navbar-nav navbar-right">
       <li>
-        <a routerLink="/new-account">New account</a>
+        <a routerLink="/new-account">{{'label.newAccount' | translate}}</a>
       </li>
       <li>
-        <a routerLink="/login">Log in</a>
+        <a routerLink="/login">{{'label.login' | translate}}</a>
       </li>
     </ul>
+
     <ul div [hidden]="!isAuthenticated()" class="nav navbar-nav navbar-right">
       <li>
         <button type="button" class="btn btn-link">{{getAuthenticatedUser()}}</button>
       </li>
       <li>
-        <button type="button" class="btn btn-link" (click)="logout()">Log out</button>
+        <button type="button" class="btn btn-link" (click)="logout()">{{'label.logout' | translate}}</button>
       </li>
     </ul>
   </div>
