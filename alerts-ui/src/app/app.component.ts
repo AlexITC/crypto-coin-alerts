@@ -28,6 +28,8 @@ export class AppComponent {
       'maxlength': 'too many characters',
       'min': 'the value is too small',
       'max': 'the value is too big',
+      // labels
+      'label.verifyingEmail': 'Verifying email',
       // field names
       'field.email': 'Email',
       'field.password': 'Password',

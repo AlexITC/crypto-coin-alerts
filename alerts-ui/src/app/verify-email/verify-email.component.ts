@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Location } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { UsersService } from '../users.service';
 import { ErrorService } from '../error.service';
-import { ActivatedRoute } from '@angular/router';
+import { AuthService } from '../auth.service';
+import { AuthorizationToken } from '../authorization-token';
 
 @Component({
   selector: 'app-verify-email',
@@ -14,27 +15,27 @@ export class VerifyEmailComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private errorService: ErrorService,
     private usersService: UsersService,
-    private location: Location) { }
+    private authService: AuthService) { }
 
   ngOnInit() {
     const token = this.route.snapshot.paramMap.get('token');
-    console.log('Verifying email for: ' + token);
     this.usersService.verifyEmail(token).subscribe(
       response => this.onEmailVerified(response),
       response => this.onEmailVerifyError(response)
     );
   }
 
-  onEmailVerified(response: any) {
-    console.log('Email verified: ' + response);
-    // TODO: store token and ensure redirect is working
-    this.location.go('/login');
+  onEmailVerified(response: AuthorizationToken) {
+    this.authService.setToken(response);
+    // TODO: add success message
+    this.router.navigate(['/']);
   }
 
   onEmailVerifyError(response: any) {
-    this.errorService.renderServerErrors(null, response)
-    this.location.go('/');
+    this.errorService.renderServerErrors(null, response);
+    this.router.navigate(['/']);
   }
 }
