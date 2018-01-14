@@ -27,12 +27,25 @@ class FixedPriceAlertServiceSpec extends WordSpec with MustMatchers with ScalaFu
       }
     }
 
-    "restrict the maximum number of alerts for a user" in {
+    "count only non-triggered alerts for a user" in {
       val datahandler = defaultBlockingDataHandler
       val service = fixedPriceAlertService(1, datahandler)
 
       val userId = UserId.create
-      datahandler.create(model, userId)
+      val triggeredAlert = datahandler.create(model, userId).get
+      datahandler.markAsTriggered(triggeredAlert.id)
+
+      whenReady(service.create(model, userId)) { result =>
+        result.isGood mustEqual true
+      }
+    }
+
+    "restrict the maximum number of non-triggered alerts for a user" in {
+      val datahandler = defaultBlockingDataHandler
+      val service = fixedPriceAlertService(1, datahandler)
+
+      val userId = UserId.create
+      datahandler.create(model, userId).get
 
       whenReady(service.create(model, userId)) { result =>
         result mustEqual Bad(TooManyFixedPriceAlertsError(Count(1))).accumulating

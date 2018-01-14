@@ -8,7 +8,7 @@ import com.alexitc.coinalerts.config.FixedPriceAlertConfig
 import com.alexitc.coinalerts.core.{Count, FuturePaginatedResult, PaginatedQuery}
 import com.alexitc.coinalerts.data.async.FixedPriceAlertFutureDataHandler
 import com.alexitc.coinalerts.errors.TooManyFixedPriceAlertsError
-import com.alexitc.coinalerts.models.FixedPriceAlertFilter.{AnyTriggeredCondition, JustThisUserCondition}
+import com.alexitc.coinalerts.models.FixedPriceAlertFilter.{AnyTriggeredCondition, HasNotBeenTriggeredCondition, JustThisUserCondition}
 import com.alexitc.coinalerts.models._
 import com.alexitc.coinalerts.services.validators.{FixedPriceAlertValidator, PaginatedQueryValidator}
 import org.scalactic.{Bad, Good}
@@ -48,10 +48,9 @@ class FixedPriceAlertService @Inject() (
     result.toFuture
   }
 
-  // TODO: Check triggered alerts only
   private def enforceMaximunNumberOfAlerts(userId: UserId, maximumNumberOfAlerts: Count): FutureApplicationResult[Unit] = {
     val conditions = FixedPriceAlertFilter.Conditions(
-      triggered = AnyTriggeredCondition,
+      triggered = HasNotBeenTriggeredCondition,
       user = JustThisUserCondition(userId))
 
     val result = for {
