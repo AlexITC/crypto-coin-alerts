@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms/src/model';
 
-import { ToastrService } from 'ngx-toastr';
+import { NotificationService } from './notification.service';
 
 @Injectable()
 export class ErrorService {
 
-  constructor(private toastrService: ToastrService) { }
+  constructor(private notificationService: NotificationService) { }
 
   renderServerErrors(form: FormGroup, response: any) {
     response.error.errors.forEach((element: any) => {
@@ -15,28 +15,15 @@ export class ErrorService {
         const fieldName = element.field;
         const message = element.message;
         if (form == null || !this.hasFieldName(form, fieldName)) {
-          this.addToastrError(`${fieldName}: ${message}`);
+          this.notificationService.error(`${fieldName}: ${message}`);
         } else {
           this.setFieldError(form, fieldName, message);
         }
       } else {
         const message = element.message;
-        this.addToastrError(message);
+        this.notificationService.error(message);
       }
     });
-  }
-
-  renderError(message: string) {
-    this.addToastrError(message);
-  }
-
-  private addToastrError(message: string) {
-    // TODO: set it as default options
-    const options = {
-      tapToDismiss: true,
-      positionClass: 'toast-top-center'
-    };
-    this.toastrService.error(message || 'Internal error', '', options);
   }
 
   hasWrongValue(form: FormGroup, fieldName: string): boolean {

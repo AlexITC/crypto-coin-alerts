@@ -1,11 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
+import { TranslateService } from '@ngx-translate/core';
+
 import { AuthService } from '../auth.service';
 import { UsersService } from '../users.service';
 import { AuthorizationToken } from '../authorization-token';
 import { ErrorService } from '../error.service';
 import { ReCaptchaService } from '../re-captcha.service';
+import { NotificationService } from '../notification.service';
 
 @Component({
   selector: 'app-login',
@@ -30,6 +33,8 @@ export class LoginComponent implements OnInit {
     private formBuilder: FormBuilder,
     private usersService: UsersService,
     private authService: AuthService,
+    private notificationService: NotificationService,
+    private translate: TranslateService,
     public errorService: ErrorService,
     public reCaptchaService: ReCaptchaService) {
 
@@ -60,8 +65,9 @@ export class LoginComponent implements OnInit {
 
   onSubmit() {
     if (this.reCaptchaResponse == null) {
-      // TODO: i18n
-      this.errorService.renderError('Resolve the CAPTCHA');
+      this.translate.get('message.resolveCaptcha')
+        .subscribe(msg => this.notificationService.error(msg));
+
       return;
     }
 

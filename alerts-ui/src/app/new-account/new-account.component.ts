@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
+import { TranslateService } from '@ngx-translate/core';
+
 import { UsersService } from '../users.service';
 import { ErrorService } from '../error.service';
 import { ReCaptchaService } from '../re-captcha.service';
+import { NotificationService } from '../notification.service';
 
 @Component({
   selector: 'app-new-account',
@@ -27,6 +30,8 @@ export class NewAccountComponent implements OnInit {
   constructor(
       private formBuilder: FormBuilder,
       private usersService: UsersService,
+      private notificationService: NotificationService,
+      private translate: TranslateService,
       public errorService: ErrorService,
       public reCaptchaService: ReCaptchaService) {
 
@@ -71,8 +76,9 @@ export class NewAccountComponent implements OnInit {
 
   onSubmit() {
     if (this.reCaptchaResponse == null) {
-      // TODO: i18n
-      this.errorService.renderError('Resolve the CAPTCHA');
+      this.translate.get('message.resolveCaptcha')
+        .subscribe(msg => this.notificationService.error(msg));
+
       return;
     }
 

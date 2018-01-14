@@ -33,6 +33,7 @@ export class AppComponent {
       // messages
       'message.welcome': 'Welcome',
       'message.emailVerified': 'Thanks for verifying your email',
+      'message.resolveCaptcha': 'Resolve the reCAPTCHA',
       // field names
       'field.email': 'Email',
       'field.password': 'Password',
