@@ -44,5 +44,9 @@
          data-expired-callback="onCaptchaExpired"></div>
   </div>
 
-  <input type="submit" [disabled]="!form.valid" value="{{ 'action.createAccount' | translate }}" class="btn btn-primary col-sm-offset-3">
+  <div class="text-left col-sm-offset-2">
+    <a routerLink="/" class="btn btn-danger">{{'action.cancel' | translate}}</a>
+    <input type="submit" [disabled]="!form.valid" value="{{ 'action.createAccount' | translate }}" class="btn btn-primary">
+  </div>
+  
 </form>
