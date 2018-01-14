@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
+import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 
 import { UsersService } from '../users.service';
@@ -28,6 +29,7 @@ export class NewAccountComponent implements OnInit {
   }
 
   constructor(
+      private router: Router,
       private formBuilder: FormBuilder,
       private usersService: UsersService,
       private notificationService: NotificationService,
@@ -94,8 +96,10 @@ export class NewAccountComponent implements OnInit {
   }
 
   protected onSubmitSuccess(response) {
-    // TODO: do something useful
-    console.log('user created: ' + JSON.stringify(response));
+    this.translate.get('message.verifyEmail')
+      .subscribe(msg => this.notificationService.info(msg));
+
+    this.router.navigate(['/']);
   }
 
   protected onSubmitError(response) {
