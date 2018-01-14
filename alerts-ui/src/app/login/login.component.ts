@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
 
@@ -30,6 +31,7 @@ export class LoginComponent implements OnInit {
   }
 
   constructor(
+    private router: Router,
     private formBuilder: FormBuilder,
     private usersService: UsersService,
     private authService: AuthService,
@@ -83,9 +85,11 @@ export class LoginComponent implements OnInit {
   }
 
   protected onSubmitSuccess(response: AuthorizationToken) {
-    // TODO: do something useful
-    console.log('Logged in: ' + JSON.stringify(response));
     this.authService.setToken(response);
+    this.translate.get('message.welcome')
+      .subscribe(msg => this.notificationService.info(`${msg} ${this.authService.getAuthenticatedUser().email}`));
+
+    this.router.navigate(['/']);
   }
 
   protected onSubmitError(response) {
