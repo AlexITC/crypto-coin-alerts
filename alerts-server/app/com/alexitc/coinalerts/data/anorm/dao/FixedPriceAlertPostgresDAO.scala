@@ -118,7 +118,8 @@ class FixedPriceAlertPostgresDAO @Inject() (sqlFilterInterpreter: FixedPriceAler
       """
         |DELETE FROM fixed_price_alerts
         |WHERE fixed_price_alert_id = {id} AND
-        |      user_id = {user_id}
+        |      user_id = {user_id} AND
+        |      triggered_on IS NULL
         |RETURNING fixed_price_alert_id, user_id, currency_id, is_greater_than, price, base_price
       """.stripMargin
     ).on(

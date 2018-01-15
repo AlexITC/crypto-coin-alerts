@@ -261,5 +261,14 @@ class FixedPriceAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
       val result = alertPostgresDataHandler.delete(alert.id, user2.id)
       result mustEqual Bad(FixedPriceAlertNotFoundError).accumulating
     }
+
+    "fail to delete an already triggered alert" in {
+      val user = createVerifiedUser()
+      val alert = alertPostgresDataHandler.create(createDefaultAlertModel, user.id).get
+      alertPostgresDataHandler.markAsTriggered(alert.id)
+
+      val result = alertPostgresDataHandler.delete(alert.id, user.id)
+      result mustEqual Bad(FixedPriceAlertNotFoundError).accumulating
+    }
   }
 }
