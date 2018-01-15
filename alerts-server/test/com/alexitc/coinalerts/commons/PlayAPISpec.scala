@@ -111,6 +111,17 @@ trait PlayAPISpec extends PlaySpec with ScalaFutures {
     logRequestResponse(request, response)
     response
   }
+
+  def DELETE(url: String, extraHeaders: (String, String)*): Future[Result] = {
+    val headers = JsonHeader :: extraHeaders.toList
+    val request = FakeRequest("DELETE", url)
+        .withHeaders(headers: _*)
+
+    val response = route(application, request).get
+    logRequestResponse(request, response)
+
+    response
+  }
 }
 
 object PlayAPISpec {

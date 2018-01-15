@@ -47,6 +47,10 @@ class FixedPriceAlertService @Inject() (
     result.toFuture
   }
 
+  def delete(id: FixedPriceAlertId, userId: UserId): FutureApplicationResult[FixedPriceAlertWithCurrency] = {
+    alertFutureDataHandler.delete(id, userId)
+  }
+
   private def enforceMaximunNumberOfAlerts(userId: UserId, maximumNumberOfAlerts: Count): FutureApplicationResult[Unit] = {
     val conditions = FixedPriceAlertFilter.Conditions(
       triggered = HasNotBeenTriggeredCondition,

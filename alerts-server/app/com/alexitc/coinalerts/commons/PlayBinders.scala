@@ -1,7 +1,7 @@
 package com.alexitc.coinalerts.commons
 
 import com.alexitc.coinalerts.core.{FilterQuery, Limit, Offset, PaginatedQuery}
-import com.alexitc.coinalerts.models.{Exchange, ExchangeCurrencyId, Market, UserVerificationToken}
+import com.alexitc.coinalerts.models._
 import play.api.mvc.{PathBindable, QueryStringBindable}
 
 object PlayBinders {
@@ -15,6 +15,18 @@ object PlayBinders {
 
     override def unbind(key: String, token: UserVerificationToken): String = {
       token.string
+    }
+  }
+
+  implicit def fixedPriceAlertIdPathBinder(implicit binder: PathBindable[Long]) = new PathBindable[FixedPriceAlertId] {
+    override def bind(key: String, value: String): Either[String, FixedPriceAlertId] = {
+      for {
+        long <- binder.bind(key, value).right
+      } yield FixedPriceAlertId(long)
+    }
+
+    override def unbind(key: String, value: FixedPriceAlertId): String = {
+      value.long.toString
     }
   }
 

@@ -4,6 +4,7 @@ import com.alexitc.coinalerts.commons.DataHelper._
 import com.alexitc.coinalerts.commons.{PlayAPISpec, RandomDataGenerator}
 import com.alexitc.coinalerts.core.{Limit, Offset, PaginatedQuery}
 import com.alexitc.coinalerts.data.{FixedPriceAlertBlockingDataHandler, FixedPriceAlertInMemoryDataHandler}
+import com.alexitc.coinalerts.models.FixedPriceAlertId
 import play.api.Application
 import play.api.inject.bind
 import play.api.libs.json.JsValue
@@ -281,6 +282,44 @@ class FixedPriceAlertsControllerSpec extends PlayAPISpec {
       val jsonError = errorList.head
       (jsonError \ "type").as[String] mustEqual "field-validation-error"
       (jsonError \ "field").as[String] mustEqual "filter"
+      (jsonError \ "message").as[String].nonEmpty mustEqual true
+    }
+  }
+
+  "DELETE /fixed-price-alerts/:id" should {
+    def url(id: FixedPriceAlertId) = s"/fixed-price-alerts/${id.long}"
+
+    "delete an alert" in {
+      val user = createVerifiedUser()
+      val token = jwtService.createToken(user)
+      val currencies = exchangeCurrencyDataHandler.getAll().get
+      val alert = createFixedPriceAlert(user.id, RandomDataGenerator.item(currencies).id).get
+
+      val response = DELETE(url(alert.id), token.toHeader)
+      val json = contentAsJson(response)
+      status(response) mustEqual OK
+
+      (json \ "id").as[Long] mustEqual alert.id.long
+      (json \ "exchangeCurrencyId").as[Int] mustEqual alert.exchangeCurrencyId.int
+      (json \ "isGreaterThan").as[Boolean] mustEqual alert.isGreaterThan
+      (json \ "price").as[BigDecimal] mustEqual alert.price
+      (json \ "basePrice").asOpt[BigDecimal] mustEqual alert.basePrice
+    }
+
+    "fail to delete a non existent alert for the current user" in {
+      val user = createVerifiedUser()
+      val token = jwtService.createToken(user)
+
+      val response = DELETE(url(FixedPriceAlertId(0)), token.toHeader)
+      val json = contentAsJson(response)
+      status(response) mustEqual NOT_FOUND
+
+      val errorList = (json \ "errors").as[List[JsValue]]
+      errorList.length mustEqual 1
+
+      val jsonError = errorList.head
+      (jsonError \ "type").as[String] mustEqual "field-validation-error"
+      (jsonError \ "field").as[String] mustEqual "fixedPriceAlertId"
       (jsonError \ "message").as[String].nonEmpty mustEqual true
     }
   }
