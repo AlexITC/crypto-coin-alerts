@@ -4,9 +4,13 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/map';
 
+import { TranslateService } from '@ngx-translate/core';
+
 import { FixedPriceAlertsService } from '../fixed-price-alerts.service';
 import { ExchangeCurrencyService } from '../exchange-currency.service';
 import { ExchangeCurrency } from '../exchange-currency';
+import { NotificationService } from '../notification.service';
+import { ErrorService } from '../error.service';
 
 @Component({
   selector: 'app-fixed-price-alerts',
@@ -21,6 +25,9 @@ export class FixedPriceAlertsComponent implements OnInit {
   asyncItems: Observable<any>;
 
   constructor(
+    private translate: TranslateService,
+    private notificationService: NotificationService,
+    private errorService: ErrorService,
     private fixedPriceAlertsService: FixedPriceAlertsService,
     private exchangeCurrencyService: ExchangeCurrencyService) { }
 
@@ -39,4 +46,30 @@ export class FixedPriceAlertsComponent implements OnInit {
       .map(response => response.data);
   }
 
+  delete(alert: any) {
+    this.translate.get('message.confirmDeleteAlert')
+      .subscribe(msg => {
+        // TODO: use our own modal
+        if (confirm(msg)) {
+          this.fixedPriceAlertsService.delete(alert.id).subscribe(
+            response => this.onAlertDeleted(),
+            response => this.onAlertNotDeleted(response)
+          );
+        }
+      });
+  }
+
+  private onAlertDeleted() {
+    this.translate.get('message.alertDeleted')
+      .subscribe(msg => this.notificationService.info(msg));
+
+    this.getPage(this.currentPage);
+  }
+
+  private onAlertNotDeleted(response: any) {
+    this.errorService.renderServerErrors(null, response);
+
+    // one reason could be that the alert has been triggered, reloading data could help
+    this.getPage(this.currentPage);
+  }
 }

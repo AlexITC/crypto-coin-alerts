@@ -33,4 +33,10 @@ export class FixedPriceAlertsService {
 
     return this.http.post<any>(this.baseUrl, data, httpOptions);
   }
+
+  delete(id: number): Observable<any> {
+    const url = `${this.baseUrl}/${id}`;
+
+    return this.http.delete(url);
+  }
 }

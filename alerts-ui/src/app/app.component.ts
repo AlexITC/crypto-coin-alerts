@@ -42,6 +42,7 @@ export class AppComponent {
       'message.emailVerified': 'Thanks for verifying your email',
       'message.resolveCaptcha': 'Resolve the reCAPTCHA',
       'message.alertCreated': 'Your alert was created',
+      'message.confirmDeleteAlert': 'The alert is going to be deleted, continue?',
       // field names
       'field.email': 'Email',
       'field.password': 'Password',
@@ -61,6 +62,7 @@ export class AppComponent {
       'action.createAlert': 'Create alert',
       'action.newAlert': 'New alert',
       'action.cancel': 'Cancel',
+      'action.delete': 'Delete',
       // custom validations
       'validation.passwordMismatch': 'the password does not match'
     };

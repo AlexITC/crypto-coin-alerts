@@ -24,7 +24,9 @@
         <td [hidden]="!item.isGreaterThan">{{'field.above' | translate}} {{item.price}} {{item.market}}</td>
         <td [hidden]="!item.basePrice">{{item.basePrice}} {{item.market}}</td>
         <td [hidden]="item.basePrice"></td>
-        <td></td> <!-- TODO: Delete button-->
+        <td>
+          <input (click)="delete(item)" type="button" class="btn btn-danger" value="{{'action.delete' | translate}}"/>
+        </td>
       </tr>
     </tbody>
   </table>
