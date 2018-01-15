@@ -43,6 +43,8 @@ export class AppComponent {
       'message.resolveCaptcha': 'Resolve the reCAPTCHA',
       'message.alertCreated': 'Your alert was created',
       'message.confirmDeleteAlert': 'The alert is going to be deleted, continue?',
+      'message.yourAboveFixedPriceAlert': 'You will be notified when {{currency}} is above {{price}} {{market}} on {{exchange}}',
+      'message.yourBelowFixedPriceAlert': 'You will be notified when {{currency}} is below {{price}} {{market}} on {{exchange}}',
       // field names
       'field.email': 'Email',
       'field.password': 'Password',

@@ -20,6 +20,9 @@ export class NewFixedPriceAlertComponent implements OnInit {
 
   form: FormGroup;
 
+  // TODO: find a way to not require this field
+  selectedCurrency: ExchangeCurrency;
+
   // TODO: load them from the server?
   availableExchanges = ['BITSO', 'BITTREX'];
   availableMarkets: Observable<string[]>;
@@ -44,7 +47,7 @@ export class NewFixedPriceAlertComponent implements OnInit {
     const priceValidators = [Validators.min(0.00000001), Validators.max(99999999)];
 
     this.form = this.formBuilder.group({
-      exchange: ['', Validators.required],
+      exchange: [null, Validators.required],
       market: [null, Validators.required],
       currency: [null, Validators.required],
       condition: [null, Validators.required],
@@ -122,7 +125,7 @@ export class NewFixedPriceAlertComponent implements OnInit {
 
   onSubmit() {
     this.fixedPriceAlertsService.create(
-        this.form.get('currency').value,
+        this.selectedCurrency.id,
         this.form.get('price').value,
         this.form.get('condition').value === 'above',
         this.form.get('basePrice').value)
@@ -137,5 +140,32 @@ export class NewFixedPriceAlertComponent implements OnInit {
       .subscribe(msg => this.notificationService.info(msg));
 
     this.navigatorService.fixedPriceAlerts();
+  }
+
+  /* Help block with the summary of the alert */
+  displayMessage(): boolean {
+    return this.form.get('condition').value != null &&
+      this.form.get('exchange').value != null &&
+      this.form.get('market').value != null &&
+      this.selectedCurrency != null;
+  }
+
+  messageKey() {
+    if (this.form.get('condition').value === 'above') {
+      return 'message.yourAboveFixedPriceAlert';
+    } else {
+      return 'message.yourBelowFixedPriceAlert';
+    }
+  }
+
+  messageParams() {
+    const params = {
+      exchange: this.form.get('exchange').value,
+      market: this.form.get('market').value,
+      currency: this.selectedCurrency.currency,
+      price: this.form.get('price').value
+    };
+
+    return params;
   }
 }

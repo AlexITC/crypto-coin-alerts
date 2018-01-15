@@ -42,9 +42,10 @@
     <label for="currency" class="col-xs-3 col-sm-3 col-md-2 col-lg-2 control-label">{{ 'field.currency' | translate }}</label>
     <div class="col-xs-3 col-sm-3 col-md-2 col-lg-2">
       <select formControlName="currency"
+              [(ngModel)]="selectedCurrency"
               id="currency"
               class="form-control">
-        <option *ngFor="let currency of availableCurrencies | async" [value]="currency.id">{{currency.currency}}</option>
+        <option *ngFor="let currency of availableCurrencies | async" [ngValue]="currency">{{currency.currency}}</option>
       </select>
     </div>
 
@@ -90,6 +91,13 @@
     <div [hidden]="!errorService.hasWrongValue(form, 'basePrice')" class="col-xs-4 col-sm-4 col-md-3 col-md-3">
       <span class="help-block">{{ errorService.getFieldError(form, 'basePrice') | translate }}</span>
     </div>
+  </div>
+
+  <div *ngIf="displayMessage()" class="col-sm-offset-1">
+    <h4>
+      <div [translate]="messageKey()" [translateParams]="messageParams()"></div>
+    </h4>
+    <hr />
   </div>
 
   <div class="text-left col-sm-offset-2">
