@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+
+import { ReCaptchaComponent } from 'angular2-recaptcha';
 
 import { TranslateService } from '@ngx-translate/core';
 
@@ -16,6 +18,7 @@ import { NavigatorService } from '../navigator.service';
 })
 export class NewAccountComponent implements OnInit {
 
+  @ViewChild(ReCaptchaComponent) captcha: ReCaptchaComponent;
   form: FormGroup;
 
   private reCaptchaResponse: string;
@@ -38,9 +41,6 @@ export class NewAccountComponent implements OnInit {
       public reCaptchaService: ReCaptchaService) {
 
     this.createForm();
-    // required to get the reCAPTCHA response
-    window['onCaptchaResolved'] = this.onCaptchaResolved.bind(this);
-    window['onCaptchaExpired'] = this.onCaptchaExpired.bind(this);
   }
 
   matchingPasswords(passwordKey: string, repeatPasswordKey: string) {
@@ -104,6 +104,7 @@ export class NewAccountComponent implements OnInit {
 
   protected onSubmitError(response) {
     this.errorService.renderServerErrors(this.form, response);
-    (<any>window).grecaptcha.reset();
+    this.captcha.reset();
+    this.reCaptchaResponse = null;
   }
 }

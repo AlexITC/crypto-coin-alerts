@@ -38,10 +38,9 @@
   </div>
 
   <div class="form-group">
-    <div class="g-recaptcha col-sm-offset-1"
-         attr.data-sitekey="{{reCaptchaService.siteKey}}"
-         data-callback="onCaptchaResolved"
-         data-expired-callback="onCaptchaExpired"></div>
+    <re-captcha site_key="{{reCaptchaService.siteKey}}"
+                (captchaResponse)="onCaptchaResolved($event)"
+                (captchaExpired)="onCaptchaExpired()"></re-captcha>
   </div>
 
   <div class="text-left col-sm-offset-2">

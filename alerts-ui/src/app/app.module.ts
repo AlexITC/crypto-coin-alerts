@@ -13,6 +13,8 @@ import { NgHttpLoaderModule } from 'ng-http-loader/ng-http-loader.module'
 
 import { NgxPaginationModule } from 'ngx-pagination';
 
+import { ReCaptchaModule } from 'angular2-recaptcha';
+
 import { AppComponent } from './app.component';
 import { AppNavbarComponent } from './app-navbar/app-navbar.component';
 import { NewAccountComponent } from './new-account/new-account.component';
@@ -61,7 +63,8 @@ import { FixedPriceAlertsComponent } from './fixed-price-alerts/fixed-price-aler
     HttpClientModule,
     NgHttpLoaderModule,
     TranslateModule.forRoot(),
-    NgxPaginationModule
+    NgxPaginationModule,
+    ReCaptchaModule
   ],
   providers: [
     UsersService,
