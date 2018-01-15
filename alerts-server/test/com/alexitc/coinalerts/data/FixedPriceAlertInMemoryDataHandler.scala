@@ -5,7 +5,7 @@ import com.alexitc.coinalerts.core.{Count, PaginatedQuery, PaginatedResult}
 import com.alexitc.coinalerts.errors.{FixedPriceAlertNotFoundError, UnknownExchangeCurrencyIdError}
 import com.alexitc.coinalerts.models.FixedPriceAlertFilter._
 import com.alexitc.coinalerts.models._
-import org.scalactic.{Bad, Good}
+import org.scalactic.{Bad, Good, One, Or}
 
 import scala.collection.mutable
 
@@ -90,6 +90,22 @@ trait FixedPriceAlertInMemoryDataHandler extends FixedPriceAlertBlockingDataHand
   override def countBy(conditions: Conditions): ApplicationResult[Count] = alertList.synchronized {
     val result = Count(filterBy(conditions).length)
     Good(result)
+  }
+
+  override def delete(id: FixedPriceAlertId, userId: UserId): ApplicationResult[FixedPriceAlertWithCurrency] = alertList.synchronized {
+    val index = alertList.indexWhere { alert =>
+      alert.id == id && alert.userId == userId
+    }
+
+    val alertMaybe = Option(index)
+        .filter(_ != -1)
+        .map(idx => alertList.remove(idx))
+        .map { alert =>
+          val currency = getCurrency(alert.exchangeCurrencyId)
+          FixedPriceAlertWithCurrency.from(alert, currency)
+        }
+
+    Or.from(alertMaybe, One(FixedPriceAlertNotFoundError))
   }
 
   private def pendingAlertList = {

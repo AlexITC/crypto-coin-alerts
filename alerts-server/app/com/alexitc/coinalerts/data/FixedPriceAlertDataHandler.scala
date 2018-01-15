@@ -18,6 +18,8 @@ trait FixedPriceAlertDataHandler[F[_]] {
   def getAlerts(conditions: Conditions, query: PaginatedQuery): F[PaginatedResult[FixedPriceAlertWithCurrency]]
 
   def countBy(conditions: Conditions): F[Count]
+
+  def delete(id: FixedPriceAlertId, userId: UserId): F[FixedPriceAlertWithCurrency]
 }
 
 trait FixedPriceAlertBlockingDataHandler extends FixedPriceAlertDataHandler[ApplicationResult]

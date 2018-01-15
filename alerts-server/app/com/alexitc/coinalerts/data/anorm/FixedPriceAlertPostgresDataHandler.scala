@@ -8,7 +8,7 @@ import com.alexitc.coinalerts.data.FixedPriceAlertBlockingDataHandler
 import com.alexitc.coinalerts.data.anorm.dao.{ExchangeCurrencyPostgresDAO, FixedPriceAlertPostgresDAO}
 import com.alexitc.coinalerts.errors._
 import com.alexitc.coinalerts.models._
-import org.scalactic.{Bad, Good}
+import org.scalactic.{Bad, Good, One, Or}
 import play.api.db.Database
 
 class FixedPriceAlertPostgresDataHandler @Inject() (
@@ -70,5 +70,15 @@ class FixedPriceAlertPostgresDataHandler @Inject() (
   override def countBy(conditions: FixedPriceAlertFilter.Conditions): ApplicationResult[Count] = withConnection { implicit conn =>
     val result = alertPostgresDAO.countBy(conditions)
     Good(result)
+  }
+
+  override def delete(id: FixedPriceAlertId, userId: UserId): ApplicationResult[FixedPriceAlertWithCurrency] = withConnection { implicit conn =>
+    val deletedAlertMaybe = alertPostgresDAO.delete(id, userId).map { alert =>
+      // the alert has a FK to the currency, hence it must exist
+      val exchangeCurrency = exchangeCurrencyPostgresDAO.getBy(alert.exchangeCurrencyId).get
+      FixedPriceAlertWithCurrency.from(alert, exchangeCurrency)
+    }
+
+    Or.from(deletedAlertMaybe, One(FixedPriceAlertNotFoundError))
   }
 }

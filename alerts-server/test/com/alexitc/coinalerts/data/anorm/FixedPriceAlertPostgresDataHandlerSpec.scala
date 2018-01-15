@@ -8,7 +8,7 @@ import com.alexitc.coinalerts.data.anorm.interpreters.FixedPriceAlertFilterSQLIn
 import com.alexitc.coinalerts.errors.{FixedPriceAlertNotFoundError, InvalidPriceError, UnknownExchangeCurrencyIdError, VerifiedUserNotFound}
 import com.alexitc.coinalerts.models.FixedPriceAlertFilter._
 import com.alexitc.coinalerts.models._
-import org.scalactic.Bad
+import org.scalactic.{Bad, Good}
 
 class FixedPriceAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
 
@@ -230,6 +230,36 @@ class FixedPriceAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
 
       val result = alertPostgresDataHandler.countBy(justThisUserCondition(user1.id)).get
       result mustEqual Count(2)
+    }
+  }
+
+  "deleting an alert" should {
+    "delete it" in {
+      val user = createVerifiedUser()
+      val alert = alertPostgresDataHandler.create(createDefaultAlertModel, user.id).get
+
+      val result = alertPostgresDataHandler.delete(alert.id, user.id)
+      result mustEqual Good(alert)
+    }
+
+    "fail when the alert doesn't exists" in {
+      val user = createVerifiedUser()
+      val allAlertsCondition = Conditions(AnyTriggeredCondition, AnyUserCondition)
+      val query = PaginatedQuery(Offset(0), Limit(1000000))
+      val allAlerts = alertPostgresDataHandler.getAlerts(allAlertsCondition, query).get.data
+      val nonExistentId = FixedPriceAlertId(allAlerts.map(_.id.long).max + 1)
+
+      val result = alertPostgresDataHandler.delete(nonExistentId, user.id)
+      result mustEqual Bad(FixedPriceAlertNotFoundError).accumulating
+    }
+
+    "fail when the alert doesn't belongs to the user" in {
+      val user1 = createVerifiedUser()
+      val user2 = createVerifiedUser()
+      val alert = alertPostgresDataHandler.create(createDefaultAlertModel, user1.id).get
+
+      val result = alertPostgresDataHandler.delete(alert.id, user2.id)
+      result mustEqual Bad(FixedPriceAlertNotFoundError).accumulating
     }
   }
 }

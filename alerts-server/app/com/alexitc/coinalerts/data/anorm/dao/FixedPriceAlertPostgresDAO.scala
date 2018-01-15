@@ -112,4 +112,18 @@ class FixedPriceAlertPostgresDAO @Inject() (sqlFilterInterpreter: FixedPriceAler
 
     Count(result)
   }
+
+  def delete(id: FixedPriceAlertId, userId: UserId)(implicit conn: Connection): Option[FixedPriceAlert] = {
+    SQL(
+      """
+        |DELETE FROM fixed_price_alerts
+        |WHERE fixed_price_alert_id = {id} AND
+        |      user_id = {user_id}
+        |RETURNING fixed_price_alert_id, user_id, currency_id, is_greater_than, price, base_price
+      """.stripMargin
+    ).on(
+      "id" -> id.long,
+      "user_id" -> userId.string,
+    ).as(parseFixedPriceAlert.singleOpt)
+  }
 }

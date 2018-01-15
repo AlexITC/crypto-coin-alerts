@@ -37,4 +37,8 @@ class FixedPriceAlertFutureDataHandler @Inject() (
   override def countBy(conditions: FixedPriceAlertFilter.Conditions): FutureApplicationResult[Count] = Future {
     blockingDataHandler.countBy(conditions)
   }
+
+  override def delete(id: FixedPriceAlertId, userId: UserId): FutureApplicationResult[FixedPriceAlertWithCurrency] = Future {
+    blockingDataHandler.delete(id, userId)
+  }
 }
