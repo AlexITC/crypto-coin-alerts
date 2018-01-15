@@ -1,5 +1,5 @@
 # Crypto Coin Alerts
-Crypto coin alerts is a web application that let you set alerts for the prices of several crypto currencies.
+Crypto coin alerts (https://cryptocoinalerts.net) is a web application that let you set alerts for the prices of several crypto currencies.
 
 ## Components
 The project is composed of several sub projects, you can navigate to each folder to see the sub project documentation:
@@ -7,7 +7,7 @@ The project is composed of several sub projects, you can navigate to each folder
 - [alerts-ui](alerts-ui) is the user interface that consumes the RESTful API.
 
 ## Status
-The project is in development and it will be released when it gets to a usable state.
+While the project is already online, there are several pending things to improve, go to https://cryptocoinalerts.net to give it a try.
 
 ## Development
 You are more than welcome to improve the project, specificaly the UI.
