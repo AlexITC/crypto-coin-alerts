@@ -1,0 +1,26 @@
+# systemd service to run alerts-server app
+#
+# Instructions:
+# - create the play user: sudo adduser --system play
+# - place the application on /home/play/alerts-server
+# - place the environment config file on /home/play/alerts-server/.env
+# - ensure play user has permissions on the app folder: sudo chown -R play:no-group /play/alerts-server
+# - place the file on /etc/init/alerts-server.conf
+# - reload systemd daemon: sudo systemctl daemon-reload
+# - run the app on system startup: sudo systemctl enable alerts-server
+# - start the app: sudo service alerts-server start
+[Unit]
+Description=Crypto Coin Alerts Server
+
+[Service]
+Type=simple
+WorkingDirectory=/home/play/alerts-server
+StandardOutput=tty
+StandardError=tty
+EnvironmentFile=/home/play/alerts-server/.env
+User=play
+ExecStart=/home/play/alerts-server/crypto-coin-alerts-0.1-SNAPSHOT/bin/crypto-coin-alerts -Dhttp.port=9000 -Dpidfile.path=/dev/null
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
