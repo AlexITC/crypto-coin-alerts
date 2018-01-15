@@ -54,12 +54,12 @@ export class LoginComponent implements OnInit {
         Validators.required,
         Validators.email,
         Validators.minLength(6),
-        Validators.maxLength(50)
+        Validators.maxLength(64)
       ])],
       password: ['', Validators.compose([
         Validators.required,
-        Validators.minLength(6),
-        Validators.maxLength(50)
+        Validators.minLength(8),
+        Validators.maxLength(30)
       ])]
     });
   }
