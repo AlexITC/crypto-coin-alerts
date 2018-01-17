@@ -1,15 +1,24 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
+
+import 'rxjs/add/operator/distinctUntilChanged';
+
 import { TranslateService } from '@ngx-translate/core';
+
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'Crypto Coin Alerts';
 
-  constructor(translate: TranslateService) {
+  constructor(
+      translate: TranslateService,
+      private router: Router) {
+
     translate.setDefaultLang('en');
 
     // TODO: choose lang based on the user preferences
@@ -17,6 +26,20 @@ export class AppComponent {
 
     // define langs
     translate.setTranslation('en', this.englishLang());
+  }
+
+  ngOnInit() {
+    // integrate google analytics via gtag - based on https://stackoverflow.com/a/47658214/3211175
+    this.router.events.distinctUntilChanged((previous: any, current: any) => {
+      // Subscribe to any `NavigationEnd` events where the url has changed
+      if (current instanceof NavigationEnd) {
+        return previous.url === current.url;
+      }
+
+      return true;
+    }).subscribe((x: any) => {
+      (<any>window).gtag('config', environment.gtag.id, { 'page_path': x.url });
+    });
   }
 
   englishLang(): Object {

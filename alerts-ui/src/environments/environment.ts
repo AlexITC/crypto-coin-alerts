@@ -10,5 +10,9 @@ export const environment = {
   },
   recaptcha: {
     siteKey: '6Lesrz8UAAAAAEJT7iYUhWJfq04v8uTB-lFgFyOY'
+  },
+  gtag: {
+    // don't track events on dev
+    id: 'UA-XXXXXXXXX-X'
   }
 };
