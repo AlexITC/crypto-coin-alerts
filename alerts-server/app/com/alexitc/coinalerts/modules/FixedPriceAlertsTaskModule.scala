@@ -4,12 +4,11 @@ import javax.inject.{Inject, Singleton}
 
 import akka.actor.ActorSystem
 import com.alexitc.coinalerts.config.FixedPriceAlertsTaskConfig
-import com.alexitc.coinalerts.tasks.FixedPriceAlertsTask
-import org.slf4j.LoggerFactory
+import com.alexitc.coinalerts.core.ShutdownHandler
+import com.alexitc.coinalerts.tasks.{FixedPriceAlertsTask, ShutdownableTaskRunner}
 import play.api.inject.{SimpleModule, _}
 
-import scala.concurrent.ExecutionContext
-import scala.util.control.NonFatal
+import scala.concurrent.duration.FiniteDuration
 
 class FixedPriceAlertsTaskModule
     extends SimpleModule(bind[FixedPriceAlertsTaskRunner].toSelf.eagerly())
@@ -19,30 +18,20 @@ class FixedPriceAlertsTaskModule
  */
 @Singleton
 class FixedPriceAlertsTaskRunner @Inject() (
-    actorSystem: ActorSystem,
+    protected val shutdownHandler: ShutdownHandler,
+    protected val actorSystem: ActorSystem,
     config: FixedPriceAlertsTaskConfig,
-    alertsTask: FixedPriceAlertsTask)(
-    implicit executionContext: ExecutionContext) {
+    alertsTask: FixedPriceAlertsTask)
+    extends ShutdownableTaskRunner{
 
-  private val logger = LoggerFactory.getLogger(this.getClass)
+  override protected def initialDelay: FiniteDuration = config.initialDelay
 
-  start()
+  override protected def interval: FiniteDuration = config.interval
 
-  // TODO: Add shutdown hook?
-  def start() = {
-    logger.info("Starting fixed price alert task runner...")
-
-    val _ = actorSystem.scheduler.schedule(
-      initialDelay = config.initialDelay,
-      interval = config.interval) { runTask() }
+  override protected def run() = {
+    alertsTask.execute()
   }
 
-  def runTask(): Unit = {
-    logger.info("Running fixed price alert task...")
-    val _ = alertsTask.execute()
-        .recover {
-          case NonFatal(ex) =>
-            logger.error("Unexpected error while running FixedPriceAlertsTask", ex)
-        }
-  }
+  register()
+
 }
