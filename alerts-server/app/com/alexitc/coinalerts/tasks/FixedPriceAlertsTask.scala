@@ -89,7 +89,7 @@ class FixedPriceAlertsTask @Inject() (
         }
         .mkString("\n\n\n")
 
-    new EmailText(text)
+    emailMessagesProvider.yourFixedPriceAlertsText(text)
   }
 
   private def createText(event: FixedPriceAlertEvent)(implicit lang: Lang): String = {

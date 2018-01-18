@@ -25,6 +25,14 @@ class EmailMessagesProvider @Inject() (messagesApi: MessagesApi, appConfig: AppC
     val string = messagesApi("email.yourAlerts.subject")
     new EmailSubject(string)
   }
+
+  def yourFixedPriceAlertsText(body: String)(implicit lang: Lang): EmailText = {
+    val suffixURL = "/new-fixed-price-alert"
+    val url = appConfig.url.concat(suffixURL)
+    val footer = messagesApi("email.fixedPriceAlerts.footer", url.string)
+
+    new EmailText(s"$body\n\n\n\n$footer")
+  }
 }
 
 class EmailSubject(val string: String) extends AnyVal
