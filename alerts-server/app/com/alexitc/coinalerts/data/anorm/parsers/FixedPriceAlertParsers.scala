@@ -6,6 +6,7 @@ import com.alexitc.coinalerts.models.{FixedPriceAlert, FixedPriceAlertId, FixedP
 
 object FixedPriceAlertParsers {
 
+  import CommonParsers._
   import ExchangeCurrencyParsers._
   import UserParsers._
 
@@ -14,9 +15,17 @@ object FixedPriceAlertParsers {
   val parsePrice = get[BigDecimal]("price")
   val parseBasePrice = get[BigDecimal]("base_price")
 
-  val parseFixedPriceAlert = (parseFixedPriceAlertId ~ parseUserId ~ parseCurrencyId ~ parseisGreaterThan ~ parsePrice ~ parseBasePrice.?).map {
-    case alertId ~ userId ~ currencyId ~ isGreaterThan ~ price ~ basePrice =>
-      FixedPriceAlert(alertId, userId, currencyId, isGreaterThan, price, basePrice)
+  val parseFixedPriceAlert = (
+      parseFixedPriceAlertId ~
+          parseUserId ~
+          parseCurrencyId ~
+          parseisGreaterThan ~
+          parsePrice ~
+          parseBasePrice.? ~
+          parseCreatedOn).map {
+
+    case alertId ~ userId ~ currencyId ~ isGreaterThan ~ price ~ basePrice ~ createdOn =>
+      FixedPriceAlert(alertId, userId, currencyId, isGreaterThan, price, basePrice, createdOn)
   }
 
   val parseFixedPriceAlertWithCurrency = (
@@ -28,9 +37,10 @@ object FixedPriceAlertParsers {
           parseCurrency ~
           parseisGreaterThan ~
           parsePrice ~
-          parseBasePrice.?).map {
+          parseBasePrice.? ~
+          parseCreatedOn).map {
 
-    case alertId ~ userId ~ exchangeCurrencyId ~ exchange ~ market ~ currency ~ isGreaterThan ~ price ~ basePrice =>
-      FixedPriceAlertWithCurrency(alertId, userId, exchangeCurrencyId, exchange, market, currency, isGreaterThan, price, basePrice)
+    case alertId ~ userId ~ exchangeCurrencyId ~ exchange ~ market ~ currency ~ isGreaterThan ~ price ~ basePrice ~ createdOn =>
+      FixedPriceAlertWithCurrency(alertId, userId, exchangeCurrencyId, exchange, market, currency, isGreaterThan, price, basePrice, createdOn)
   }
 }

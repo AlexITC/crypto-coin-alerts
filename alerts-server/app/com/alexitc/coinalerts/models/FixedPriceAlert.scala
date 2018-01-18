@@ -1,5 +1,7 @@
 package com.alexitc.coinalerts.models
 
+import java.time.OffsetDateTime
+
 import com.alexitc.coinalerts.core.WrappedLong
 import play.api.libs.json._
 
@@ -9,7 +11,8 @@ case class FixedPriceAlert(
     exchangeCurrencyId: ExchangeCurrencyId,
     isGreaterThan: Boolean,
     price: BigDecimal,
-    basePrice: Option[BigDecimal] = None
+    basePrice: Option[BigDecimal] = None,
+    createdOn: OffsetDateTime
 )
 
 /**
@@ -27,7 +30,8 @@ case class FixedPriceAlertWithCurrency(
     currency: Currency,
     isGreaterThan: Boolean,
     price: BigDecimal,
-    basePrice: Option[BigDecimal] = None
+    basePrice: Option[BigDecimal] = None,
+    createdOn: OffsetDateTime
 )
 object FixedPriceAlertWithCurrency {
 
@@ -41,7 +45,8 @@ object FixedPriceAlertWithCurrency {
       exchangeCurrency.currency,
       fixedPriceAlert.isGreaterThan,
       fixedPriceAlert.price,
-      fixedPriceAlert.basePrice
+      fixedPriceAlert.basePrice,
+      fixedPriceAlert.createdOn
     )
   }
 

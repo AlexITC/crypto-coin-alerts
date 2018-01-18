@@ -1,5 +1,7 @@
 package com.alexitc.coinalerts.controllers
 
+import java.time.OffsetDateTime
+
 import com.alexitc.coinalerts.commons.DataHelper._
 import com.alexitc.coinalerts.commons.{PlayAPISpec, RandomDataGenerator}
 import com.alexitc.coinalerts.core.{Limit, Offset, PaginatedQuery}
@@ -48,6 +50,7 @@ class FixedPriceAlertsControllerSpec extends PlayAPISpec {
       (json \ "isGreaterThan").as[Boolean] mustEqual false
       (json \ "price").asOpt[BigDecimal].isDefined mustEqual true
       (json \ "basePrice").asOpt[BigDecimal].isDefined mustEqual false
+      (json \ "createdOn").asOpt[OffsetDateTime].isDefined mustEqual true
     }
 
     "Create an alert with basePrice" in {

@@ -1,5 +1,7 @@
 package com.alexitc.coinalerts.data
 
+import java.time.OffsetDateTime
+
 import com.alexitc.coinalerts.commons.{ApplicationResult, RandomDataGenerator}
 import com.alexitc.coinalerts.core.{Count, PaginatedQuery, PaginatedResult}
 import com.alexitc.coinalerts.errors.{FixedPriceAlertNotFoundError, UnknownExchangeCurrencyIdError}
@@ -25,7 +27,8 @@ trait FixedPriceAlertInMemoryDataHandler extends FixedPriceAlertBlockingDataHand
         createAlertModel.exchangeCurrencyId,
         createAlertModel.isGreaterThan,
         createAlertModel.price,
-        createAlertModel.basePrice)
+        createAlertModel.basePrice,
+        OffsetDateTime.now)
 
       alertList += fixedPriceAlert
 

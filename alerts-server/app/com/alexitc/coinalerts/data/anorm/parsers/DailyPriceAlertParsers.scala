@@ -6,6 +6,7 @@ import com.alexitc.coinalerts.models.{DailyPriceAlert, DailyPriceAlertId}
 
 object DailyPriceAlertParsers {
 
+  import CommonParsers._
   import ExchangeCurrencyParsers._
   import UserParsers._
 
