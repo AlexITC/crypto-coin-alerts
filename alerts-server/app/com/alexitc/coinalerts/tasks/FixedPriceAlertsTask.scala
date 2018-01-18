@@ -96,8 +96,8 @@ class FixedPriceAlertsTask @Inject() (
     val alert = event.alert
 
     val percentageDifferenceMaybe = alert.basePrice.map { basePrice =>
-      val percentage = 100 * (1 - (basePrice max event.currentPrice) / (basePrice min event.currentPrice))
-      percentage
+      val percentage = 100 * (1 - basePrice / event.currentPrice)
+      percentage.abs
     }
 
     val messageKey = if (alert.isGreaterThan) {
