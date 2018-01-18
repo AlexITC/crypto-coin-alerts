@@ -1,5 +1,6 @@
 package com.alexitc.coinalerts.tasks
 
+import java.math.MathContext
 import javax.inject.Inject
 
 import com.alexitc.coinalerts.commons.FutureOr.Implicits.FutureOps
@@ -113,7 +114,7 @@ class FixedPriceAlertsTask @Inject() (
       event.alert.market.string)
 
     percentageDifferenceMaybe.map { percent =>
-      val readablePercent = percent.toString()
+      val readablePercent = percent.round(new MathContext(4))
       s"$message ($readablePercent %)"
     }.getOrElse {
       message
