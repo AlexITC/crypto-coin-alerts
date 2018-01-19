@@ -84,7 +84,7 @@ class FixedPriceAlertPostgresDAO @Inject() (sqlFilterInterpreter: FixedPriceAler
          |       exchange, market, currency, created_on
          |FROM fixed_price_alerts INNER JOIN currencies USING (currency_id)
          |${whereClause.sql}
-         |ORDER BY fixed_price_alert_id
+         |ORDER BY created_on DESC
          |OFFSET {offset}
          |LIMIT {limit}
        """.stripMargin
