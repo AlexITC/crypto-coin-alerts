@@ -100,14 +100,17 @@ class DailyPriceAlertsControllerSpec extends PlayAPISpec {
       val user = DataHelper.createVerifiedUser()
       val token = jwtService.createToken(user)
       val currencies = exchangeCurrencyDataHandler.getAll().get
-      DataHelper.createDailyPriceAlert(user.id, RandomDataGenerator.item(currencies).id)
-      DataHelper.createDailyPriceAlert(user.id, RandomDataGenerator.item(currencies).id)
+      val size = 2
+      RandomDataGenerator.uniqueItems(currencies, size).foreach { exchangeCurrency =>
+        val r = DataHelper.createDailyPriceAlert(user.id, exchangeCurrency.id)
+        r.isGood mustEqual true
+      }
 
       val response = GET(url.withQueryParams(query), token.toHeader)
       status(response) mustEqual OK
 
       val json = contentAsJson(response)
-      (json \ "total").as[Int] mustEqual 2
+      (json \ "total").as[Int] mustEqual size
       (json \ "offset").as[Int] mustEqual query.offset.int
       (json \ "limit").as[Int] mustEqual query.limit.int
 
