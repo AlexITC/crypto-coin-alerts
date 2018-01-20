@@ -11,6 +11,8 @@ trait NewCurrencyAlertDataHandler[F[_]] {
 
   def get(userId: UserId): F[List[NewCurrencyAlert]]
 
+  def getBy(exchange: Exchange): F[List[NewCurrencyAlert]]
+
   def getAll(): F[List[NewCurrencyAlert]]
 
   def delete(id: NewCurrencyAlertId, userId: UserId): F[NewCurrencyAlert]

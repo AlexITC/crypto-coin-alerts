@@ -33,6 +33,12 @@ class NewCurrencyAlertInMemoryDataHandler extends NewCurrencyAlertBlockingDataHa
     Good(list)
   }
 
+  override def getBy(exchange: Exchange): ApplicationResult[List[NewCurrencyAlert]] = withLock {
+    val list = alerts.toList.filter(_.exchange == exchange)
+
+    Good(list)
+  }
+
   override def getAll(): ApplicationResult[List[NewCurrencyAlert]] = withLock {
     val list = alerts.toList
 

@@ -50,6 +50,20 @@ class NewCurrencyAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
     }
   }
 
+  "getBy exchange" should {
+    "retrieve alerts matching the exchange" in {
+      val user1 = DataHelper.createVerifiedUser()
+      val alert1 = dataHandler.create(user1.id, Exchange.BITTREX).get
+
+      val user2 = DataHelper.createVerifiedUser()
+      val alert2 = dataHandler.create(user2.id, Exchange.BITSO).get
+
+      val result = dataHandler.getBy(Exchange.BITTREX).get
+      result.contains(alert1) mustEqual true
+      result.contains(alert2) mustEqual false
+    }
+  }
+
   "delete" should {
     "delete an alert" in {
       val user = DataHelper.createVerifiedUser()

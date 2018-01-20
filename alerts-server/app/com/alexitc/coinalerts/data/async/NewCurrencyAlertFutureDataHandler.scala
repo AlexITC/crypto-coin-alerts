@@ -22,6 +22,10 @@ class NewCurrencyAlertFutureDataHandler @Inject() (
     blockingDataHandler.get(userId)
   }
 
+  override def getBy(exchange: Exchange): FutureApplicationResult[List[NewCurrencyAlert]] = Future {
+    blockingDataHandler.getBy(exchange)
+  }
+
   override def getAll(): FutureApplicationResult[List[NewCurrencyAlert]] = Future {
     blockingDataHandler.getAll()
   }

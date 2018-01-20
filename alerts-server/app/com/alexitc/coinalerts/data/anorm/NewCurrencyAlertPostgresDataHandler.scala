@@ -37,6 +37,12 @@ class NewCurrencyAlertPostgresDataHandler @Inject() (
     Good(list)
   }
 
+  override def getBy(exchange: Exchange): ApplicationResult[List[NewCurrencyAlert]] = withConnection { implicit conn =>
+    val list = newCurrencyAlertDAO.getBy(exchange)
+
+    Good(list)
+  }
+
   override def getAll(): ApplicationResult[List[NewCurrencyAlert]] = withConnection { implicit conn =>
     val list = newCurrencyAlertDAO.getAll
 

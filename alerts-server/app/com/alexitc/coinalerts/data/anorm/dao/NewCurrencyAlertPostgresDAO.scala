@@ -41,6 +41,18 @@ class NewCurrencyAlertPostgresDAO {
     ).as(parseNewCurrencyAlert.*)
   }
 
+  def getBy(exchange: Exchange)(implicit conn: Connection): List[NewCurrencyAlert] = {
+    SQL(
+      """
+        |SELECT new_currency_alert_id, user_id, exchange
+        |FROM new_currency_alerts
+        |WHERE exchange = {exchange}
+      """.stripMargin
+    ).on(
+      "exchange" -> exchange.string
+    ).as(parseNewCurrencyAlert.*)
+  }
+
   def getAll(implicit conn: Connection): List[NewCurrencyAlert] = {
     SQL(
       """
