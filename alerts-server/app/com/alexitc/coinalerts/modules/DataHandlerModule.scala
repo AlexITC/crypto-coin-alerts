@@ -1,7 +1,7 @@
 package com.alexitc.coinalerts.modules
 
-import com.alexitc.coinalerts.data.anorm.{DailyPriceAlertPostgresDataHandler, ExchangeCurrencyPostgresDataHandler, FixedPriceAlertPostgresDataHandler, UserPostgresDataHandler}
-import com.alexitc.coinalerts.data.{DailyPriceAlertBlockingDataHandler, ExchangeCurrencyBlockingDataHandler, FixedPriceAlertBlockingDataHandler, UserBlockingDataHandler}
+import com.alexitc.coinalerts.data._
+import com.alexitc.coinalerts.data.anorm._
 import com.google.inject.AbstractModule
 
 class DataHandlerModule extends AbstractModule {
@@ -11,5 +11,6 @@ class DataHandlerModule extends AbstractModule {
     bind(classOf[ExchangeCurrencyBlockingDataHandler]).to(classOf[ExchangeCurrencyPostgresDataHandler])
     bind(classOf[FixedPriceAlertBlockingDataHandler]).to(classOf[FixedPriceAlertPostgresDataHandler])
     bind(classOf[DailyPriceAlertBlockingDataHandler]).to(classOf[DailyPriceAlertPostgresDataHandler])
+    bind(classOf[NewCurrencyAlertBlockingDataHandler]).to(classOf[NewCurrencyAlertPostgresDataHandler])
   }
 }
