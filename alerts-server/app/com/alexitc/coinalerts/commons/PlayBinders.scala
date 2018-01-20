@@ -71,6 +71,18 @@ object PlayBinders {
     }
   }
 
+  implicit def newCurrencyAlertIdPathBinder(implicit binder: PathBindable[Int]) = new PathBindable[NewCurrencyAlertId] {
+    override def bind(key: String, value: String): Either[String, NewCurrencyAlertId] = {
+      for {
+        int <- binder.bind(key, value).right
+      } yield NewCurrencyAlertId(int)
+    }
+
+    override def unbind(key: String, value: NewCurrencyAlertId): String = {
+      binder.unbind(key, value.int)
+    }
+  }
+
   private val DefaultOffset = 0
   private val DefaultLimit = 20
 
