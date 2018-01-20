@@ -76,3 +76,7 @@ case object ExchangeCurrencyNotFoundError extends ExchangeCurrencyError with Not
 
 sealed trait ReCaptchaError extends ApplicationError
 case object ReCaptchaValidationError extends ReCaptchaError with InputValidationError
+
+sealed trait NewCurrencyAlertError extends ApplicationError
+case object RepeatedExchangeError extends NewCurrencyAlertError with ConflictError
+case object NewCurrencyAlertNotFoundError extends NewCurrencyAlertError with NotFoundError
