@@ -1,7 +1,9 @@
 package com.alexitc.coinalerts.tasks
 
 import com.alexitc.coinalerts.commons.ExecutionContexts._
-import com.alexitc.coinalerts.data.ExchangeCurrencyInMemoryDataHandler
+import com.alexitc.coinalerts.commons.FakeEmailService
+import com.alexitc.coinalerts.data.async.{NewCurrencyAlertFutureDataHandler, UserFutureDataHandler}
+import com.alexitc.coinalerts.data.{ExchangeCurrencyBlockingDataHandler, ExchangeCurrencyInMemoryDataHandler, NewCurrencyAlertInMemoryDataHandler, UserInMemoryDataHandler}
 import com.alexitc.coinalerts.models.{Book, Currency, Exchange, Market}
 import com.alexitc.coinalerts.services.external.{BitsoService, BittrexService}
 import org.scalatest.concurrent.ScalaFutures
@@ -17,7 +19,7 @@ class ExchangeCurrencySeederTaskSpec extends WordSpec with MustMatchers with Sca
       val bittrexBooks = "ETH_XRP ETH_ADA ETH_XMR".split(" ").flatMap(Book.fromString)
       val currencyDataHandler = new ExchangeCurrencyInMemoryDataHandler {}
 
-      val task = new ExchangeCurrencySeederTask(
+      val task = seederTask(
         bitsoService(bitsoBooks),
         bittrexService(bittrexBooks),
         currencyDataHandler)
@@ -37,7 +39,7 @@ class ExchangeCurrencySeederTaskSpec extends WordSpec with MustMatchers with Sca
       val currencyDataHandler = new ExchangeCurrencyInMemoryDataHandler {}
       currencyDataHandler.create(Exchange.BITSO, Market("BTC"), Currency("LTC"))
 
-      val task = new ExchangeCurrencySeederTask(
+      val task = seederTask(
         bitsoService(bitsoBooks),
         bittrexService(List.empty),
         currencyDataHandler)
@@ -60,5 +62,22 @@ class ExchangeCurrencySeederTaskSpec extends WordSpec with MustMatchers with Sca
     override def availableBooks: Future[List[Book]] = {
       Future.successful(books.toList)
     }
+  }
+
+  private def seederTask(
+      bitsoService: BitsoService,
+      bittrexService: BittrexService,
+      currencyDataHandler: ExchangeCurrencyBlockingDataHandler): ExchangeCurrencySeederTask = {
+
+    val newCurrencyAlertDataHandler = new NewCurrencyAlertFutureDataHandler(new NewCurrencyAlertInMemoryDataHandler)
+    val userFutureDataHandler = new UserFutureDataHandler(new UserInMemoryDataHandler {})
+
+    new ExchangeCurrencySeederTask(
+      bitsoService,
+      bittrexService,
+      currencyDataHandler,
+      newCurrencyAlertDataHandler,
+      userFutureDataHandler,
+      new FakeEmailService, null)
   }
 }

@@ -44,3 +44,7 @@ email.yourAlerts.subject=Your Coin Alerts
 email.fixedPriceAlerts.footer=Do not wait, create your next alert: {0}
 message.alert.priceIncreased={0} has increased to {1} {2}
 message.alert.priceDecreased={0} has decreased to {1} {2}
+
+email.newCurrenciesAlert.subject=There are new currencies on {0}
+email.newCurrenciesAlert.footer=Do not wait, create your next alert: {0}
+message.newCurrenciesAlert.new=Trade {0} on {1} market.

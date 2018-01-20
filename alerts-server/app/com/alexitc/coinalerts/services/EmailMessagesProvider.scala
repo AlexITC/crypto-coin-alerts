@@ -3,7 +3,7 @@ package com.alexitc.coinalerts.services
 import javax.inject.Inject
 
 import com.alexitc.coinalerts.config.AppConfig
-import com.alexitc.coinalerts.models.UserVerificationToken
+import com.alexitc.coinalerts.models.{Book, Exchange, UserVerificationToken}
 import play.api.i18n.{Lang, MessagesApi}
 
 class EmailMessagesProvider @Inject() (messagesApi: MessagesApi, appConfig: AppConfig) {
@@ -30,6 +30,24 @@ class EmailMessagesProvider @Inject() (messagesApi: MessagesApi, appConfig: AppC
     val suffixURL = "/new-fixed-price-alert"
     val url = appConfig.url.concat(suffixURL)
     val footer = messagesApi("email.fixedPriceAlerts.footer", url.string)
+
+    new EmailText(s"$body\n\n\n\n$footer")
+  }
+
+  def newCurrenciesAlertSubject(exchange: Exchange)(implicit lang: Lang): EmailSubject = {
+    val string = messagesApi("email.newCurrenciesAlert.subject", exchange.string)
+
+    new EmailSubject(string)
+  }
+
+  def newCurrenciesAlertText(books: List[Book])(implicit lang: Lang): EmailText = {
+    val body = books.map { book =>
+      messagesApi("message.newCurrenciesAlert.new", book.currency.string, book.market.string)
+    }.mkString("\n")
+
+    val suffixURL = "/new-fixed-price-alert"
+    val url = appConfig.url.concat(suffixURL)
+    val footer = messagesApi("email.newCurrenciesAlert.footer", url.string)
 
     new EmailText(s"$body\n\n\n\n$footer")
   }
