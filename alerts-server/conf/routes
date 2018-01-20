@@ -3,6 +3,7 @@
 # https://www.playframework.com/documentation/latest/ScalaRouting
 # ~~~~
 
+GET    /health                          controllers.HealthController.check()
 POST   /users                           controllers.UsersController.create()
 POST   /users/verify-email/:token       controllers.UsersController.verifyEmail(token: com.alexitc.coinalerts.models.UserVerificationToken)
 POST   /users/login                     controllers.UsersController.loginByEmail()
