@@ -44,6 +44,7 @@ export class AppComponent implements OnInit {
 
   englishLang(): Object {
     return {
+      'home.descripion': 'Crypto Coin Alerts let you be aware of the changes in your crypto currencies',
       // default messages from angular
       'required': 'a value is required',
       'email': 'invalid email',
