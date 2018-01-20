@@ -80,6 +80,9 @@ class JsonErrorRenderer @Inject() (messagesApi: MessagesApi) {
 
     case error: ExchangeCurrencyError =>
       List(renderExchangeCurrencyError(error))
+
+    case error: NewCurrencyAlertError =>
+      List(renderNewCurrencyAlertError(error))
   }
 
   private def renderJWTError(jwtError: JWTError)(implicit lang: Lang) = jwtError match {
@@ -191,5 +194,15 @@ class JsonErrorRenderer @Inject() (messagesApi: MessagesApi) {
     case ExchangeCurrencyNotFoundError =>
       val message = messagesApi("error.exchangeCurrency.notFound")
       FieldValidationError("currency", message)
+  }
+
+  private def renderNewCurrencyAlertError(error: NewCurrencyAlertError)(implicit lang: Lang) = error match {
+    case RepeatedExchangeError =>
+      val message = messagesApi("error.newCurrencyAlert.repeatedExchange")
+      FieldValidationError("exchange", message)
+
+    case NewCurrencyAlertNotFoundError =>
+      val message = messagesApi("error.newCurrencyAlert.notFound")
+      FieldValidationError("id", message)
   }
 }

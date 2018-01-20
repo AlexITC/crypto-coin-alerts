@@ -34,6 +34,9 @@ error.exchangeCurrencyId.unknown=The given exchange currency is unknown
 error.exchangeCurrency.repeated=The currency already exists
 error.exchangeCurrency.notFound=The currency was not found
 
+error.newCurrencyAlert.repeatedExchange=The given alert already exist
+error.newCurrencyAlert.notFound=The given alert was not found
+
 email.verificationToken.subject=Verify your email
 email.verificationToken.text=Someone registered your email in our site, if that was you, please go to this page to verify your email: {0}
 
