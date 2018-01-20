@@ -5,7 +5,6 @@ import java.time.OffsetDateTime
 import com.alexitc.coinalerts.commons.{ApplicationResult, RandomDataGenerator}
 import com.alexitc.coinalerts.core.{Count, PaginatedQuery, PaginatedResult}
 import com.alexitc.coinalerts.errors.{FixedPriceAlertNotFoundError, UnknownExchangeCurrencyIdError}
-import com.alexitc.coinalerts.models.FixedPriceAlertFilter._
 import com.alexitc.coinalerts.models._
 import org.scalactic.{Bad, Good, One, Or}
 
@@ -78,19 +77,25 @@ trait FixedPriceAlertInMemoryDataHandler extends FixedPriceAlertBlockingDataHand
     Good(list)
   }
 
-  override def getAlerts(conditions: Conditions, query: PaginatedQuery): ApplicationResult[PaginatedResult[FixedPriceAlertWithCurrency]] = alertList.synchronized {
-    val filteredAlerts = filterBy(conditions)
-    val data = filteredAlerts
-        .slice(query.offset.int, query.offset.int + query.limit.int)
+  override def getAlerts(
+      filterConditions: FixedPriceAlertFilter.Conditions,
+      orderByConditions: FixedPriceAlertOrderBy.Conditions,
+      query: PaginatedQuery): ApplicationResult[PaginatedResult[FixedPriceAlertWithCurrency]] = alertList.synchronized {
+
+    val filteredAlerts = filterBy(filterConditions)
+    val filteredAlertsWithCurrency = filteredAlerts
         .map { fixedPriceAlert =>
           FixedPriceAlertWithCurrency.from(fixedPriceAlert, getCurrency(fixedPriceAlert.exchangeCurrencyId))
         }
+
+    val data = sortBy(filteredAlertsWithCurrency, orderByConditions)
+        .slice(query.offset.int, query.offset.int + query.limit.int)
 
     val result = PaginatedResult(query.offset, query.limit, Count(filteredAlerts.length), data)
     Good(result)
   }
 
-  override def countBy(conditions: Conditions): ApplicationResult[Count] = alertList.synchronized {
+  override def countBy(conditions: FixedPriceAlertFilter.Conditions): ApplicationResult[Count] = alertList.synchronized {
     val result = Count(filterBy(conditions).length)
     Good(result)
   }
@@ -115,7 +120,10 @@ trait FixedPriceAlertInMemoryDataHandler extends FixedPriceAlertBlockingDataHand
     alertList.toList.filter { alert => !triggeredAlertList.contains(alert.id) }
   }
 
-  private def filterBy(conditions: Conditions) = {
+  private def filterBy(conditions: FixedPriceAlertFilter.Conditions) = {
+
+    import FixedPriceAlertFilter._
+
     List(conditions.triggered, conditions.user).foldLeft(alertList.toList) { (list, condition) =>
       condition match {
         case JustThisUserCondition(userId) => list.filter(_.userId == userId)
@@ -123,6 +131,22 @@ trait FixedPriceAlertInMemoryDataHandler extends FixedPriceAlertBlockingDataHand
         case HasNotBeenTriggeredCondition => list.filterNot(triggeredAlertList contains _.id)
         case _ => list
       }
+    }
+  }
+
+  private def sortBy(alerts: List[FixedPriceAlertWithCurrency], conditions: FixedPriceAlertOrderBy.Conditions) = {
+
+    import FixedPriceAlertOrderBy._
+
+    val sorted = conditions.orderBy match {
+      case OrderByCreatedOn => alerts.sortBy(_.createdOn)
+      case OrderByExchange => alerts.sortBy(_.exchange.string)
+      case OrderByCurrency => alerts.sortBy(_.currency.string)
+    }
+
+    conditions.orderCondition match {
+      case AscendingOrderCondition => sorted
+      case DescendingOrderCondition => sorted.reverse
     }
   }
 }

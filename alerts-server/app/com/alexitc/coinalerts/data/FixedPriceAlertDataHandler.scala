@@ -15,7 +15,10 @@ trait FixedPriceAlertDataHandler[F[_]] {
 
   def findPendingAlertsForPrice(currencyId: ExchangeCurrencyId, currentPrice: BigDecimal): F[List[FixedPriceAlertWithCurrency]]
 
-  def getAlerts(conditions: Conditions, query: PaginatedQuery): F[PaginatedResult[FixedPriceAlertWithCurrency]]
+  def getAlerts(
+      filterConditions: FixedPriceAlertFilter.Conditions,
+      orderByConditions: FixedPriceAlertOrderBy.Conditions,
+      query: PaginatedQuery): F[PaginatedResult[FixedPriceAlertWithCurrency]]
 
   def countBy(conditions: Conditions): F[Count]
 
