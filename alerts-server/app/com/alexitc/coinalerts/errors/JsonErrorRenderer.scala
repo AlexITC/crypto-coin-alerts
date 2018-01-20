@@ -158,6 +158,9 @@ class JsonErrorRenderer @Inject() (messagesApi: MessagesApi) {
       val message = messagesApi("error.fixedPriceAlert.invalidFilters")
       FieldValidationError("filter", message)
 
+    case InvalidOrderError =>
+      val message = messagesApi("error.fixedPriceAlert.invalidOrder")
+      FieldValidationError("orderBy", message)
   }
 
   private def renderPaginatedQueryError(error: PaginatedQueryError)(implicit lang: Lang) = error match {

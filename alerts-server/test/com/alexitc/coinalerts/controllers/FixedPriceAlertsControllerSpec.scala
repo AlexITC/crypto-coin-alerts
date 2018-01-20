@@ -287,6 +287,30 @@ class FixedPriceAlertsControllerSpec extends PlayAPISpec {
       (jsonError \ "field").as[String] mustEqual "filter"
       (jsonError \ "message").as[String].nonEmpty mustEqual true
     }
+
+    "Allow to get alerts sorted by currency in descending order" in {
+      val user = createVerifiedUser()
+      val token = jwtService.createToken(user)
+      val currencies = exchangeCurrencyDataHandler.getAll().get.sortBy(_.currency.string)
+      val size = 6
+
+      RandomDataGenerator.uniqueItems(currencies.map(_.id), size).foreach { exchangeCurrencyId =>
+        createFixedPriceAlert(user.id, exchangeCurrencyId)
+      }
+
+      val response = GET(url.withQueryParams("orderBy" -> "currency:desc"), token.toHeader)
+      status(response) mustEqual OK
+
+      val json = contentAsJson(response)
+      val alertJsonList = (json \ "data").as[List[JsValue]]
+      alertJsonList.size mustEqual size
+
+      val result = alertJsonList.map { json =>
+        (json \ "currency").as[String]
+      }
+
+      result mustEqual result.sorted.reverse
+    }
   }
 
   "DELETE /fixed-price-alerts/:id" should {

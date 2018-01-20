@@ -1,6 +1,6 @@
 package com.alexitc.coinalerts.commons
 
-import com.alexitc.coinalerts.core.{FilterQuery, Limit, Offset, PaginatedQuery}
+import com.alexitc.coinalerts.core._
 import com.alexitc.coinalerts.models._
 import play.api.mvc.{PathBindable, QueryStringBindable}
 
@@ -104,6 +104,21 @@ object PlayBinders {
 
     override def unbind(key: String, value: FilterQuery): String = {
       binder.unbind("filter", value.string)
+    }
+  }
+
+  implicit def orderByQueryBinder(implicit binder: QueryStringBindable[String]) = new QueryStringBindable[OrderByQuery] {
+    override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, OrderByQuery]] = {
+      val result = for {
+        // the orderBy query is optional
+        string <- binder.bind("orderBy", params).getOrElse(Right(""))
+      } yield OrderByQuery(string)
+
+      Some(result)
+    }
+
+    override def unbind(key: String, value: OrderByQuery): String = {
+      binder.unbind("orderBy", value.string)
     }
   }
 }

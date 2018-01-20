@@ -41,12 +41,14 @@ class FixedPriceAlertService @Inject() (
   def getAlerts(
       userId: UserId,
       query: PaginatedQuery,
-      filterQuery: FilterQuery): FuturePaginatedResult[FixedPriceAlertWithCurrency] = {
+      filterQuery: FilterQuery,
+      orderByQuery: OrderByQuery): FuturePaginatedResult[FixedPriceAlertWithCurrency] = {
 
     val result = for {
       validatedQuery <- paginatedQueryValidator.validate(query).toFutureOr
       filterConditions <- alertFilterParser.from(filterQuery, userId).toFutureOr
-      paginatedResult <- alertFutureDataHandler.getAlerts(filterConditions, FixedPriceAlertOrderByParser.DefaultConditions, validatedQuery).toFutureOr
+      orderByConditions <- alertOrderByParser.from(orderByQuery).toFutureOr
+      paginatedResult <- alertFutureDataHandler.getAlerts(filterConditions, orderByConditions, validatedQuery).toFutureOr
     } yield paginatedResult
 
     result.toFuture
