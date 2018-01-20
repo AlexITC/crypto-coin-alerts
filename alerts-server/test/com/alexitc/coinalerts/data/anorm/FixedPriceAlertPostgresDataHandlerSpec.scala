@@ -103,13 +103,17 @@ class FixedPriceAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
       result.exists(_.id == alert.id) mustEqual true
     }
 
-    // TODO: Fix non-deterministic test
     "retrieve several pending alerts" in {
-      val createAlertModel = CreateFixedPriceAlertModel(RandomDataGenerator.item(currencies).id, true, BigDecimal("5000.00"), None)
+      val selectedCurrencies = RandomDataGenerator.uniqueItems(currencies, 3)
+      val currency1 = selectedCurrencies.head
+      val currency2 = selectedCurrencies(1)
+      val currency3 = selectedCurrencies(2)
+
+      val createAlertModel = CreateFixedPriceAlertModel(currency1.id, true, BigDecimal("5000.00"), None)
       val createAlert1 = createAlertModel
       val createAlert2 = createAlertModel.copy(isGreaterThan = false)
-      val createAlert3 = createAlertModel.copy(exchangeCurrencyId = RandomDataGenerator.item(currencies).id)
-      val createAlert4 = createAlertModel.copy(exchangeCurrencyId = RandomDataGenerator.item(currencies).id)
+      val createAlert3 = createAlertModel.copy(exchangeCurrencyId = currency2.id)
+      val createAlert4 = createAlertModel.copy(exchangeCurrencyId = currency3.id)
 
       val user = createUnverifiedUser()
       val alert1 = alertPostgresDataHandler.create(createAlert1, user.id).get
