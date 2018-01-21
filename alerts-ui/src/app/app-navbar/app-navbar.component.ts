@@ -16,7 +16,8 @@ import { NotificationService } from '../notification.service';
 export class AppNavbarComponent implements OnInit {
 
   public tabs = [
-    { label: 'label.fixedPriceAlerts', path: '/fixed-price-alerts', authRequired: true }
+    { label: 'label.fixedPriceAlerts', path: '/fixed-price-alerts', authRequired: true },
+    { label: 'label.newCurrencyAlerts', path: '/new-currency-alerts', authRequired: true }
   ];
 
   constructor(
