@@ -4,7 +4,7 @@ import java.sql.Connection
 
 import anorm._
 import com.alexitc.coinalerts.data.anorm.parsers.NewCurrencyAlertParsers
-import com.alexitc.coinalerts.models.{Exchange, NewCurrencyAlert, NewCurrencyAlertId, UserId}
+import com.alexitc.coinalerts.models.{Exchange, NewCurrencyAlert, UserId}
 
 class NewCurrencyAlertPostgresDAO {
 
@@ -62,16 +62,16 @@ class NewCurrencyAlertPostgresDAO {
     ).as(parseNewCurrencyAlert.*)
   }
 
-  def delete(id: NewCurrencyAlertId, userId: UserId)(implicit conn: Connection): Option[NewCurrencyAlert] = {
+  def delete(userId: UserId, exchange: Exchange)(implicit conn: Connection): Option[NewCurrencyAlert] = {
     SQL(
       """
         |DELETE FROM new_currency_alerts
-        |WHERE new_currency_alert_id = {new_currency_alert_id} AND
+        |WHERE exchange = {exchange} AND
         |      user_id = {user_id}
         |RETURNING new_currency_alert_id, user_id, exchange
       """.stripMargin
     ).on(
-      "new_currency_alert_id" -> id.int,
+      "exchange" -> exchange.string,
       "user_id" -> userId.string
     ).as(parseNewCurrencyAlert.singleOpt)
   }

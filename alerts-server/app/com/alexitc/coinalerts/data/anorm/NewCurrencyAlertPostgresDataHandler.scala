@@ -49,8 +49,8 @@ class NewCurrencyAlertPostgresDataHandler @Inject() (
     Good(list)
   }
 
-  override def delete(id: NewCurrencyAlertId, userId: UserId): ApplicationResult[NewCurrencyAlert] = withConnection { implicit conn =>
-    val maybe = newCurrencyAlertDAO.delete(id, userId)
+  override def delete(userId: UserId, exchange: Exchange): ApplicationResult[NewCurrencyAlert] = withConnection { implicit conn =>
+    val maybe = newCurrencyAlertDAO.delete(userId, exchange)
 
     Or.from(maybe, One(NewCurrencyAlertNotFoundError))
   }

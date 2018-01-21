@@ -203,6 +203,6 @@ class JsonErrorRenderer @Inject() (messagesApi: MessagesApi) {
 
     case NewCurrencyAlertNotFoundError =>
       val message = messagesApi("error.newCurrencyAlert.notFound")
-      FieldValidationError("id", message)
+      FieldValidationError("exchange", message)
   }
 }

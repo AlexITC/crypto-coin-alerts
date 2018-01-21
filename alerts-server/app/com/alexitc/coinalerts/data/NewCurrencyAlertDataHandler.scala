@@ -1,7 +1,7 @@
 package com.alexitc.coinalerts.data
 
 import com.alexitc.coinalerts.commons.ApplicationResult
-import com.alexitc.coinalerts.models.{Exchange, NewCurrencyAlert, NewCurrencyAlertId, UserId}
+import com.alexitc.coinalerts.models.{Exchange, NewCurrencyAlert, UserId}
 
 import scala.language.higherKinds
 
@@ -15,7 +15,7 @@ trait NewCurrencyAlertDataHandler[F[_]] {
 
   def getAll(): F[List[NewCurrencyAlert]]
 
-  def delete(id: NewCurrencyAlertId, userId: UserId): F[NewCurrencyAlert]
+  def delete(userId: UserId, exchange: Exchange): F[NewCurrencyAlert]
 
 }
 

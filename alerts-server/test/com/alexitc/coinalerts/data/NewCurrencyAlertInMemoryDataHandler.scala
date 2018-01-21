@@ -45,10 +45,10 @@ class NewCurrencyAlertInMemoryDataHandler extends NewCurrencyAlertBlockingDataHa
     Good(list)
   }
 
-  override def delete(id: NewCurrencyAlertId, userId: UserId): ApplicationResult[NewCurrencyAlert] = withLock {
+  override def delete(userId: UserId, exchange: Exchange): ApplicationResult[NewCurrencyAlert] = withLock {
     alerts
         .find { alert =>
-          alert.userId == userId && alert.id == id
+          alert.userId == userId && alert.exchange == exchange
         }
         .map { alert =>
           alerts -= alert

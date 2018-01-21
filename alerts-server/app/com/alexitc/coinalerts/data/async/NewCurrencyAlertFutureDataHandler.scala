@@ -5,7 +5,7 @@ import javax.inject.Inject
 import com.alexitc.coinalerts.commons.FutureApplicationResult
 import com.alexitc.coinalerts.config.DatabaseExecutionContext
 import com.alexitc.coinalerts.data.{NewCurrencyAlertBlockingDataHandler, NewCurrencyAlertDataHandler}
-import com.alexitc.coinalerts.models.{Exchange, NewCurrencyAlert, NewCurrencyAlertId, UserId}
+import com.alexitc.coinalerts.models.{Exchange, NewCurrencyAlert, UserId}
 
 import scala.concurrent.Future
 
@@ -30,7 +30,7 @@ class NewCurrencyAlertFutureDataHandler @Inject() (
     blockingDataHandler.getAll()
   }
 
-  override def delete(id: NewCurrencyAlertId, userId: UserId): FutureApplicationResult[NewCurrencyAlert] = Future {
-    blockingDataHandler.delete(id, userId)
+  override def delete(userId: UserId, exchange: Exchange): FutureApplicationResult[NewCurrencyAlert] = Future {
+    blockingDataHandler.delete(userId, exchange)
   }
 }

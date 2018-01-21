@@ -3,7 +3,7 @@ package controllers
 import javax.inject.Inject
 
 import com.alexitc.coinalerts.commons.{JsonController, JsonControllerComponents}
-import com.alexitc.coinalerts.models.{CreateNewCurrencyAlertModel, NewCurrencyAlertId}
+import com.alexitc.coinalerts.models.{CreateNewCurrencyAlertModel, Exchange}
 import com.alexitc.coinalerts.services.NewCurrencyAlertService
 
 class NewCurrencyAlertsController @Inject() (
@@ -19,7 +19,7 @@ class NewCurrencyAlertsController @Inject() (
     service.get(context.userId)
   }
 
-  def delete(id: NewCurrencyAlertId) = authenticatedNoInput { context =>
-    service.delete(id, context.userId)
+  def delete(exchange: Exchange) = authenticatedNoInput { context =>
+    service.delete(context.userId, exchange)
   }
 }

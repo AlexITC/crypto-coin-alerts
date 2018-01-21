@@ -22,4 +22,4 @@ GET    /exchanges/:exchange/markets/:market/currencies controllers.ExchangeCurre
 
 POST   /new-currency-alerts             controllers.NewCurrencyAlertsController.create()
 GET    /new-currency-alerts             controllers.NewCurrencyAlertsController.get()
-DELETE /new-currency-alerts/:id         controllers.NewCurrencyAlertsController.delete(id: com.alexitc.coinalerts.models.NewCurrencyAlertId)
+DELETE /new-currency-alerts/:exchange   controllers.NewCurrencyAlertsController.delete(exchange: com.alexitc.coinalerts.models.Exchange)

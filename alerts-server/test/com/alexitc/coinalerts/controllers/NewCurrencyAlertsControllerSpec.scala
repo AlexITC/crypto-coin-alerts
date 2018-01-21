@@ -2,7 +2,7 @@ package com.alexitc.coinalerts.controllers
 
 import com.alexitc.coinalerts.commons.{DataHelper, PlayAPISpec}
 import com.alexitc.coinalerts.data.{NewCurrencyAlertBlockingDataHandler, NewCurrencyAlertInMemoryDataHandler}
-import com.alexitc.coinalerts.models.{Exchange, NewCurrencyAlertId}
+import com.alexitc.coinalerts.models.Exchange
 import play.api.Application
 import play.api.inject.bind
 import play.api.libs.json.JsValue
@@ -80,8 +80,8 @@ class NewCurrencyAlertsControllerSpec extends PlayAPISpec {
     }
   }
 
-  "DELETE /new-currency-alerts/:id" should {
-    def url(id: NewCurrencyAlertId) = s"/new-currency-alerts/${id.int}"
+  "DELETE /new-currency-alerts/:exchange" should {
+    def url(exchange: Exchange) = s"/new-currency-alerts/${exchange.string}"
 
     "delete existing alert" in {
       val user = DataHelper.createVerifiedUser()
@@ -89,7 +89,7 @@ class NewCurrencyAlertsControllerSpec extends PlayAPISpec {
       val exchange = Exchange.BITSO
       val alert = dataHandler.create(user.id, exchange).get
 
-      val response = DELETE(url(alert.id), token.toHeader)
+      val response = DELETE(url(exchange), token.toHeader)
       status(response) mustEqual OK
 
       val json = contentAsJson(response)
@@ -101,10 +101,8 @@ class NewCurrencyAlertsControllerSpec extends PlayAPISpec {
     "fail to delete non-existent alert" in {
       val user = DataHelper.createVerifiedUser()
       val token = jwtService.createToken(user)
-      val alerts = dataHandler.getAll().get
-      val nonExistentId = NewCurrencyAlertId(alerts.map(_.id.int).max + 1)
 
-      val response = DELETE(url(nonExistentId), token.toHeader)
+      val response = DELETE(url(Exchange.BITTREX), token.toHeader)
       status(response) mustEqual NOT_FOUND
 
       val json = contentAsJson(response)
@@ -113,7 +111,7 @@ class NewCurrencyAlertsControllerSpec extends PlayAPISpec {
 
       val error = errorList.head
       (error \ "type").as[String] mustEqual "field-validation-error"
-      (error \ "field").as[String] mustEqual "id"
+      (error \ "field").as[String] mustEqual "exchange"
       (error \ "message").as[String].nonEmpty mustEqual true
     }
   }
