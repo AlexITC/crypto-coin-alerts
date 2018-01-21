@@ -23,7 +23,7 @@ class FixedPriceAlertPostgresDAO @Inject() (
         |VALUES
         |  ({user_id}, {currency_id}, {is_greater_than}, {price}, {base_price})
         |RETURNING
-        |  fixed_price_alert_id, user_id, currency_id, is_greater_than, price, base_price, created_on
+        |  fixed_price_alert_id, user_id, currency_id, is_greater_than, price, base_price, created_on, triggered_on
       """.stripMargin
     ).on(
       "user_id" -> userId.string,
@@ -55,7 +55,7 @@ class FixedPriceAlertPostgresDAO @Inject() (
     SQL(
       """
         |SELECT fixed_price_alert_id, user_id, currency_id, is_greater_than, price, base_price,
-        |       exchange, market, currency, created_on
+        |       exchange, market, currency, created_on, triggered_on
         |FROM fixed_price_alerts INNER JOIN currencies USING (currency_id)
         |WHERE triggered_on IS NULL AND
         |      currency_id = {currency_id} AND
@@ -85,7 +85,7 @@ class FixedPriceAlertPostgresDAO @Inject() (
     SQL(
       s"""
          |SELECT fixed_price_alert_id, user_id, currency_id, is_greater_than, price, base_price,
-         |       exchange, market, currency, created_on
+         |       exchange, market, currency, created_on, triggered_on
          |FROM fixed_price_alerts INNER JOIN currencies USING (currency_id)
          |${whereClause.sql}
          |$orderBySQL
@@ -124,7 +124,7 @@ class FixedPriceAlertPostgresDAO @Inject() (
         |WHERE fixed_price_alert_id = {id} AND
         |      user_id = {user_id} AND
         |      triggered_on IS NULL
-        |RETURNING fixed_price_alert_id, user_id, currency_id, is_greater_than, price, base_price, created_on
+        |RETURNING fixed_price_alert_id, user_id, currency_id, is_greater_than, price, base_price, created_on, triggered_on
       """.stripMargin
     ).on(
       "id" -> id.long,

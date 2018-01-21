@@ -225,8 +225,11 @@ class FixedPriceAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
       val result = alertPostgresDataHandler.getAlerts(conditions, defaultOrderByConditions, query).get
 
       result.data.length mustEqual 1
-      result.data.head.id mustEqual triggeredAlert.id
       result.total mustEqual Count(1)
+
+      val alert = result.data.head
+      alert.id mustEqual triggeredAlert.id
+      alert.triggeredOn.isDefined mustEqual true
     }
 
     "return alerts sorted by createdOn" in {

@@ -9,7 +9,7 @@ object CommonParsers {
 
   val parseCreatedOn = get[OffsetDateTime]("created_on")(timestamptzToOffsetDateTime)
 
-  private def timestamptzToOffsetDateTime: Column[OffsetDateTime] = Column.nonNull { case (value, meta) =>
+  def timestamptzToOffsetDateTime: Column[OffsetDateTime] = Column.nonNull { case (value, meta) =>
     val MetaDataItem(qualified, _, clazz) = meta
     value match {
       case timestamp: java.sql.Timestamp =>

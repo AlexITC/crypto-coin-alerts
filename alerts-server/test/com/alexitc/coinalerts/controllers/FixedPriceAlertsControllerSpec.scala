@@ -159,6 +159,25 @@ class FixedPriceAlertsControllerSpec extends PlayAPISpec {
       }
     }
 
+    "return triggeredOn field on a triggered alert" in {
+      val user = createVerifiedUser()
+      val token = jwtService.createToken(user)
+      val currencies = exchangeCurrencyDataHandler.getAll().get
+      val alert = createFixedPriceAlert(user.id, RandomDataGenerator.item(currencies).id).get
+      alertDataHandler.markAsTriggered(alert.id)
+
+      val query = PaginatedQuery(Offset(0), Limit(10))
+      val response = GET(url.withQueryParams(query), token.toHeader)
+      val json = contentAsJson(response)
+      status(response) mustEqual OK
+
+      val alertJsonList = (json \ "data").as[List[JsValue]]
+      alertJsonList.length mustEqual 1
+      (json \ "data").as[List[JsValue]].foreach { alertJson =>
+        (alertJson \ "triggeredOn").asOpt[OffsetDateTime].isDefined mustEqual true
+      }
+    }
+
     "Allow to not set limit and offset params" in {
       val user = createVerifiedUser()
       val token = jwtService.createToken(user)

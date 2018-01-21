@@ -12,7 +12,8 @@ case class FixedPriceAlert(
     isGreaterThan: Boolean,
     price: BigDecimal,
     basePrice: Option[BigDecimal] = None,
-    createdOn: OffsetDateTime
+    createdOn: OffsetDateTime,
+    triggeredOn: Option[OffsetDateTime]
 )
 
 /**
@@ -31,7 +32,8 @@ case class FixedPriceAlertWithCurrency(
     isGreaterThan: Boolean,
     price: BigDecimal,
     basePrice: Option[BigDecimal] = None,
-    createdOn: OffsetDateTime
+    createdOn: OffsetDateTime,
+    triggeredOn: Option[OffsetDateTime]
 )
 object FixedPriceAlertWithCurrency {
 
@@ -46,7 +48,8 @@ object FixedPriceAlertWithCurrency {
       fixedPriceAlert.isGreaterThan,
       fixedPriceAlert.price,
       fixedPriceAlert.basePrice,
-      fixedPriceAlert.createdOn
+      fixedPriceAlert.createdOn,
+      fixedPriceAlert.triggeredOn
     )
   }
 

@@ -27,7 +27,8 @@ trait FixedPriceAlertInMemoryDataHandler extends FixedPriceAlertBlockingDataHand
         createAlertModel.isGreaterThan,
         createAlertModel.price,
         createAlertModel.basePrice,
-        OffsetDateTime.now)
+        OffsetDateTime.now,
+        None)
 
       alertList += fixedPriceAlert
 
@@ -58,8 +59,18 @@ trait FixedPriceAlertInMemoryDataHandler extends FixedPriceAlertBlockingDataHand
     if (triggeredAlertList.contains(alertId)) {
       Bad(FixedPriceAlertNotFoundError).accumulating
     } else {
-      triggeredAlertList += alertId
-      Good(())
+      val maybe = alertList.find(_.id == alertId).map { alert =>
+        alertList -= alert
+
+        val updatedAlert = alert.copy(triggeredOn = Some(OffsetDateTime.now()))
+        alertList += updatedAlert
+        triggeredAlertList += alertId
+
+        updatedAlert
+      }
+
+      Or.from(maybe, One(FixedPriceAlertNotFoundError))
+          .map(_ => ())
     }
   }
 
