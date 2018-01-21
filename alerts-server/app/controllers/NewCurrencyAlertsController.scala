@@ -3,7 +3,7 @@ package controllers
 import javax.inject.Inject
 
 import com.alexitc.coinalerts.commons.{JsonController, JsonControllerComponents}
-import com.alexitc.coinalerts.models.{CreateNewCurrencyAlertModel, Exchange}
+import com.alexitc.coinalerts.models.Exchange
 import com.alexitc.coinalerts.services.NewCurrencyAlertService
 
 class NewCurrencyAlertsController @Inject() (
@@ -11,8 +11,8 @@ class NewCurrencyAlertsController @Inject() (
     service: NewCurrencyAlertService)
     extends JsonController(components) {
 
-  def create() = authenticatedWithInput(Created) { context: AuthCtxModel[CreateNewCurrencyAlertModel] =>
-    service.create(context.userId, context.model.exchange)
+  def create(exchange: Exchange) = authenticatedNoInput(Created) { context =>
+    service.create(context.userId, exchange)
   }
 
   def get() = authenticatedNoInput { context =>

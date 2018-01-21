@@ -18,16 +18,15 @@ class NewCurrencyAlertsControllerSpec extends PlayAPISpec {
       .overrides(bind[NewCurrencyAlertBlockingDataHandler].to(dataHandler))
       .build()
 
-  "POST /new-currency-alerts" should {
-    val url = "/new-currency-alerts"
+  "POST /new-currency-alerts/:exchange" should {
+    def url(exchange: Exchange) = s"/new-currency-alerts/${exchange.string}"
 
     "create a valid alert" in {
       val user = DataHelper.createVerifiedUser()
       val token = jwtService.createToken(user)
       val exchange = Exchange.BITSO
-      val body = s""" { "exchange": "${exchange.string}" } """
 
-      val response = POST(url, Some(body), token.toHeader)
+      val response = POST(url(exchange), token.toHeader)
       status(response) mustEqual CREATED
 
       val json = contentAsJson(response)
@@ -40,10 +39,9 @@ class NewCurrencyAlertsControllerSpec extends PlayAPISpec {
       val user = DataHelper.createVerifiedUser()
       val token = jwtService.createToken(user)
       val exchange = Exchange.BITSO
-      val body = s""" { "exchange": "${exchange.string}" } """
       dataHandler.create(user.id, exchange)
 
-      val response = POST(url, Some(body), token.toHeader)
+      val response = POST(url(exchange), token.toHeader)
       status(response) mustEqual CONFLICT
 
       val json = contentAsJson(response)

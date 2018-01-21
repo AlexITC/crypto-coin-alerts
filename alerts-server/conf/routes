@@ -20,6 +20,6 @@ GET    /currencies/:id                                 controllers.ExchangeCurre
 GET    /exchanges/:exchange/markets                    controllers.ExchangeCurrenciesController.getMarkets(exchange: com.alexitc.coinalerts.models.Exchange)
 GET    /exchanges/:exchange/markets/:market/currencies controllers.ExchangeCurrenciesController.getCurrencies(exchange: com.alexitc.coinalerts.models.Exchange, market: com.alexitc.coinalerts.models.Market)
 
-POST   /new-currency-alerts             controllers.NewCurrencyAlertsController.create()
+POST   /new-currency-alerts/:exchange   controllers.NewCurrencyAlertsController.create(exchange: com.alexitc.coinalerts.models.Exchange)
 GET    /new-currency-alerts             controllers.NewCurrencyAlertsController.get()
 DELETE /new-currency-alerts/:exchange   controllers.NewCurrencyAlertsController.delete(exchange: com.alexitc.coinalerts.models.Exchange)
