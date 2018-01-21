@@ -19,6 +19,8 @@ import { ErrorService } from '../error.service';
 })
 export class FixedPriceAlertsComponent implements OnInit {
 
+  orderBy = 'createdOn';
+  reverseOrder = true;
   total = 0;
   currentPage = 1;
   pageSize = 10;
@@ -38,9 +40,11 @@ export class FixedPriceAlertsComponent implements OnInit {
   getPage(page: number) {
     const offset = (page - 1) * this.pageSize;
     const limit = this.pageSize;
+    const orderBy = this.orderBy + ':' + (this.reverseOrder ? 'desc' : 'asc');
+    const filter = 'triggered:false';
 
     this.asyncItems = this.fixedPriceAlertsService
-      .getUntriggeredAlerts(offset, limit)
+      .getAlerts(offset, limit, filter, orderBy)
       .do(response => this.total = response.total)
       .do(response => this.currentPage = 1 + (response.offset / this.pageSize))
       .map(response => response.data);
@@ -63,13 +67,17 @@ export class FixedPriceAlertsComponent implements OnInit {
     this.translate.get('message.alertDeleted')
       .subscribe(msg => this.notificationService.info(msg));
 
-    this.getPage(this.currentPage);
+    this.reloadPage();
   }
 
   private onAlertNotDeleted(response: any) {
     this.errorService.renderServerErrors(null, response);
 
     // one reason could be that the alert has been triggered, reloading data could help
+    this.reloadPage();
+  }
+
+  reloadPage() {
     this.getPage(this.currentPage);
   }
 }

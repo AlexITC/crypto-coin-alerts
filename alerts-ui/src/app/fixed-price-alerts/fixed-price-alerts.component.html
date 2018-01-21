@@ -5,6 +5,18 @@
     <a routerLink="/new-fixed-price-alert" class="btn-info btn">{{'action.newAlert' | translate}}</a>
   </div>
 
+  <div>
+    <label for="order">{{'label.sort' | translate}}</label>
+    <select [(ngModel)]="orderBy" (change)="reloadPage()" id="order">
+      <option value="createdOn">{{'field.createdOn' | translate}}</option>
+      <option value="exchange">{{'field.exchange' | translate}}</option>
+      <option value="currency">{{'field.currency' | translate}}</option>
+    </select>
+
+    <label for="reverseOrder">{{'label.reverseOrder' | translate}}</label>
+    <input id="reverseOrder" type="checkbox" [(ngModel)]="reverseOrder" (change)="reloadPage()" >
+  </div>
+
   <table class="table table-condensed table-bordered table-striped table-hover">
     <thead>
       <tr>

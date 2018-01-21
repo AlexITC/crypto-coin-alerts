@@ -15,8 +15,8 @@ export class FixedPriceAlertsService {
 
   constructor(private http: HttpClient) { }
 
-  getUntriggeredAlerts(offset: number, limit: number): Observable<any> {
-    const url = `${this.baseUrl}?offset=${offset}&limit=${limit}&filter=triggered:false`;
+  getAlerts(offset: number, limit: number, filter: string = '', orderBy: string = ''): Observable<any> {
+    const url = `${this.baseUrl}?offset=${offset}&limit=${limit}&filter=${filter}&orderBy=${orderBy}`;
     return this.http.get<any>(url);
   }
 

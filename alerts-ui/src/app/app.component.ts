@@ -53,6 +53,8 @@ export class AppComponent implements OnInit {
       'min': 'the value is too small',
       'max': 'the value is too big',
       // labels
+      'label.sort': 'Sort by',
+      'label.reverseOrder': 'Reverse order',
       'label.verifyingEmail': 'Verifying email',
       'label.login': 'Log in',
       'label.logout': 'Log out',
@@ -83,6 +85,7 @@ export class AppComponent implements OnInit {
       'field.price': 'Price',
       'field.basePrice': 'The price when you bought / sold',
       'field.optional': 'optional',
+      'field.createdOn': 'Created on',
       // actions
       'action.createAccount': 'Create account',
       'action.login': 'Log in',
