@@ -32,9 +32,10 @@
         <th class="col-xs-2 col-sm-2 col-md-1 col-lg-1">{{'field.createdOn' | translate}}</th>
         <th class="col-xs-2 col-sm-2 col-md-1 col-lg-1">{{'field.exchange' | translate}}</th>
         <th class="col-xs-1 col-sm-1 col-md-1 col-lg-1">{{'field.currency' | translate}}</th>
-        <th class="col-xs-3 col-sm-3 col-md-2 col-lg-2">{{'field.priceCondition' | translate}}</th>
-        <th class="col-xs-3 col-sm-3 col-md-2 col-lg-2">{{'field.basePrice' | translate}}</th>
-        <th class="col-xs-1 col-sm-1 col-md-5 col-lg-5"></th>
+        <th class="col-xs-2 col-sm-2 col-md-2 col-lg-2">{{'field.priceCondition' | translate}}</th>
+        <th class="col-xs-2 col-sm-2 col-md-2 col-lg-2">{{'field.basePrice' | translate}}</th>
+        <th class="col-xs-2 col-sm-2 col-md-2 col-lg-2">{{'field.triggeredOn' | translate}}</th>
+        <th class="col-xs-1 col-sm-1 col-md-3 col-lg-3"></th>
       </tr>
     </thead>
   
@@ -47,6 +48,7 @@
         <td [hidden]="!item.isGreaterThan">{{'field.above' | translate}} {{item.price}} {{item.market}}</td>
         <td [hidden]="!item.basePrice">{{item.basePrice}} {{item.market}}</td>
         <td [hidden]="item.basePrice"></td>
+        <td>{{item.triggeredOn}}</td>
         <td>
           <input (click)="delete(item)" type="button" class="btn btn-danger" value="{{'action.delete' | translate}}"/>
         </td>

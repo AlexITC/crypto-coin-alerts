@@ -91,6 +91,7 @@ export class AppComponent implements OnInit {
       'field.basePrice': 'The price when you bought / sold',
       'field.optional': 'optional',
       'field.createdOn': 'Created on',
+      'field.triggeredOn': 'Triggered on',
       'field.pendingAlerts': 'Pending alerts',
       'field.triggeredAlerts': 'Triggered alerts',
       'field.all': 'All',
