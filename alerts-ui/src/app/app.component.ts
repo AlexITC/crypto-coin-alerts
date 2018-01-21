@@ -62,6 +62,7 @@ export class AppComponent implements OnInit {
       'label.newAccount': 'New account',
       'label.fixedPriceAlerts': 'Fixed price alerts',
       'label.newCurrencyAlerts': 'New currency alerts',
+      'label.display': 'Display',
       // messages
       'message.welcome': 'Welcome',
       'message.bye': 'You are now logged out',
@@ -90,6 +91,9 @@ export class AppComponent implements OnInit {
       'field.basePrice': 'The price when you bought / sold',
       'field.optional': 'optional',
       'field.createdOn': 'Created on',
+      'field.pendingAlerts': 'Pending alerts',
+      'field.triggeredAlerts': 'Triggered alerts',
+      'field.all': 'All',
       // actions
       'action.createAccount': 'Create account',
       'action.login': 'Log in',

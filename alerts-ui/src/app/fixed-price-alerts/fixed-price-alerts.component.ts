@@ -21,6 +21,9 @@ export class FixedPriceAlertsComponent implements OnInit {
 
   orderBy = 'createdOn';
   reverseOrder = true;
+  triggered = 'false'; // non-triggered alerts by default
+
+  // pagination
   total = 0;
   currentPage = 1;
   pageSize = 10;
@@ -41,7 +44,7 @@ export class FixedPriceAlertsComponent implements OnInit {
     const offset = (page - 1) * this.pageSize;
     const limit = this.pageSize;
     const orderBy = this.orderBy + ':' + (this.reverseOrder ? 'desc' : 'asc');
-    const filter = 'triggered:false';
+    const filter = `triggered:${this.triggered}`;
 
     this.asyncItems = this.fixedPriceAlertsService
       .getAlerts(offset, limit, filter, orderBy)

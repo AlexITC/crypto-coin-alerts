@@ -17,6 +17,15 @@
     <input id="reverseOrder" type="checkbox" [(ngModel)]="reverseOrder" (change)="reloadPage()" >
   </div>
 
+  <div>
+    <label for="triggered">{{'label.display' | translate}}</label>
+    <select [(ngModel)]="triggered" (change)="reloadPage()" id="triggered">
+      <option value="false">{{'field.pendingAlerts' | translate}}</option>
+      <option value="true">{{'field.triggeredAlerts' | translate}}</option>
+      <option value="*">{{'field.all' | translate}}</option>
+    </select>
+  </div>
+
   <table class="table table-condensed table-bordered table-striped table-hover">
     <thead>
       <tr>
