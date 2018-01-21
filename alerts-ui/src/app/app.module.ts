@@ -24,6 +24,7 @@ import { VerifyEmailComponent } from './verify-email/verify-email.component';
 import { UsersService } from './users.service';
 import { FixedPriceAlertsService } from './fixed-price-alerts.service';
 import { ExchangeCurrencyService } from './exchange-currency.service';
+import { NewCurrencyAlertsService } from './new-currency-alerts.service';
 import { ErrorService } from './error.service';
 import { AuthService } from './auth.service';
 import { ReCaptchaService } from './re-captcha.service';
@@ -36,6 +37,7 @@ import { NewFixedPriceAlertComponent } from './new-fixed-price-alert/new-fixed-p
 import { FooterComponent } from './footer/footer.component';
 import { HomeComponent } from './home/home.component';
 import { FixedPriceAlertsComponent } from './fixed-price-alerts/fixed-price-alerts.component';
+import { NewCurrencyAlertsComponent } from './new-currency-alerts/new-currency-alerts.component';
 
 @NgModule({
   declarations: [
@@ -47,7 +49,8 @@ import { FixedPriceAlertsComponent } from './fixed-price-alerts/fixed-price-aler
     NewFixedPriceAlertComponent,
     FooterComponent,
     HomeComponent,
-    FixedPriceAlertsComponent
+    FixedPriceAlertsComponent,
+    NewCurrencyAlertsComponent
   ],
   imports: [
     AppRoutingModule,
@@ -71,6 +74,7 @@ import { FixedPriceAlertsComponent } from './fixed-price-alerts/fixed-price-aler
     UsersService,
     FixedPriceAlertsService,
     ExchangeCurrencyService,
+    NewCurrencyAlertsService,
     AuthService,
     ErrorService,
     ReCaptchaService,

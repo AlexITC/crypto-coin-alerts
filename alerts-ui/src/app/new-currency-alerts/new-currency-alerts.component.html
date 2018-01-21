@@ -1,0 +1,10 @@
+<div class="col-sm-offset-1">
+
+  <legend>{{'label.newCurrencyAlerts' | translate}}</legend>
+  <p>{{'newCurrencyAlerts.description' | translate}}</p>
+
+  <div *ngFor="let exchange of exchanges">
+    <label for="{{exchange}}">{{exchange}}</label>
+    <input id="{{exchange}}" type="checkbox" [(ngModel)]="values[exchange]" (change)="switchState(exchange, $event.target.checked)" >
+  </div>
+</div>

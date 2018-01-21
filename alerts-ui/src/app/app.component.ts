@@ -45,6 +45,7 @@ export class AppComponent implements OnInit {
   englishLang(): Object {
     return {
       'home.descripion': 'Crypto Coin Alerts let you be aware of the changes in your crypto currencies',
+      'newCurrencyAlerts.description': 'Get notified when a new currency is added to your exchanges, we check it every hour!',
       // default messages from angular
       'required': 'a value is required',
       'email': 'invalid email',
@@ -60,6 +61,7 @@ export class AppComponent implements OnInit {
       'label.logout': 'Log out',
       'label.newAccount': 'New account',
       'label.fixedPriceAlerts': 'Fixed price alerts',
+      'label.newCurrencyAlerts': 'New currency alerts',
       // messages
       'message.welcome': 'Welcome',
       'message.bye': 'You are now logged out',
@@ -72,6 +74,8 @@ export class AppComponent implements OnInit {
       'message.alertDeleted': 'Alert deleted',
       'message.yourAboveFixedPriceAlert': 'You will be notified when {{currency}} is above {{price}} {{market}} on {{exchange}}',
       'message.yourBelowFixedPriceAlert': 'You will be notified when {{currency}} is below {{price}} {{market}} on {{exchange}}',
+      'message.newCurrencyAlertCreated': 'Alert created for {{exchange}}',
+      'message.newCurrencyAlertDeleted': 'Alert deleted for {{exchange}}',
       // field names
       'field.email': 'Email',
       'field.password': 'Password',
