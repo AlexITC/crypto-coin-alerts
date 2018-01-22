@@ -18,7 +18,8 @@ At the moment it is supporting the following currency exchanges, more exchanges 
 
 The following alerts are supported while more alert types should be added soon:
 - Fixed price - Receive a notification when a currency gets above or below the given price, you can set a base price to receive a more detailed message.
-- Daily price - Receive a daily notification with the price of the currencies of your choice.
+- Daily price - Receive a daily notification with the price of the currencies of your choice (currently disabled).
+- New currencies - Receive a notification when a currency is addded to the exchanges of your choice.
 
 ## Compile
 Execute `sbt compile` command for compiling the application.
@@ -37,7 +38,7 @@ export CRYPTO_COIN_ALERTS_PSQL_USERNAME="postgres"
 export CRYPTO_COIN_ALERTS_PSQL_PASSWORD="password"
 # from mailgun
 export MAILGUN_API_SECRET_KEY="REPLACE_ME"
-export MAILGUN_DOMAIN="noreply.ccoinalerts.com"
+export MAILGUN_DOMAIN="www.cryptocoinalerts.net"
 ```
 
 Execute `source .env; sbt run` command for running the application.
@@ -92,7 +93,7 @@ We are creating a base trait that could be easily extended for testing, and impl
 See [JWTConfig](app/com/alexitc/coinalerts/config/JWTConfig.scala).
 
 ### Controllers
-For building the HTTP API, we use the [controllers package](app/com/alexitc/coinalerts/controllers), the controller classes make extensive use of the [JsonController](app/com/alexitc/coinalerts/commons/JsonController.scala) that help us to build a controllers that receives JSON and produces JSON (it handles application errors as well), it is still experimental and improving frequently.
+For building the HTTP API, we use the [controllers package](app/controllers), the controller classes make extensive use of the [JsonController](app/com/alexitc/coinalerts/commons/JsonController.scala) that help us to build a controllers that receives JSON and produces JSON (it handles application errors as well), it is still experimental and improving frequently.
 
 The controllers could receive a model (that should be deserializable using play-json) and produce model (that is serializable using play-json).
 
@@ -101,7 +102,7 @@ A controller responsibility is very simple:
 - Delegate the action to the proper service.
 - Serialize the result using a response HTTP Status that makes sense for the action.
 
-See [UsersController](app/com/alexitc/coinalerts/controllers/UsersController.scala).
+See [UsersController](app/controllers/UsersController.scala).
 
 ### Services
 The [services package](app/com/alexitc/coinalerts/services) is the one containing most application logic and rules, the controllers depend specifically on this package for performing most actions and retrieving data.
