@@ -8,7 +8,7 @@ import com.alexitc.coinalerts.config.TaskExecutionContext
 import com.alexitc.coinalerts.data.async.{FixedPriceAlertFutureDataHandler, UserFutureDataHandler}
 import com.alexitc.coinalerts.models._
 import com.alexitc.coinalerts.services.{EmailMessagesProvider, EmailServiceTrait, EmailText}
-import com.alexitc.coinalerts.tasks.collectors.{BitsoTickerCollector, BittrexTickerCollector}
+import com.alexitc.coinalerts.tasks.collectors.{BitsoTickerCollector, BittrexTickerCollector, KucoinTickerCollector}
 import com.alexitc.coinalerts.tasks.models.FixedPriceAlertEvent
 import org.scalactic.{Bad, Good}
 import org.slf4j.LoggerFactory
@@ -21,6 +21,7 @@ class FixedPriceAlertsTask @Inject() (
     alertCollector: FixedPriceAlertCollector,
     bitsoTickerCollector: BitsoTickerCollector,
     bittrexAlertCollector: BittrexTickerCollector,
+    kucoinTickerCollector: KucoinTickerCollector,
     userDataHandler: UserFutureDataHandler,
     alertDataHandler: FixedPriceAlertFutureDataHandler,
     emailMessagesProvider: EmailMessagesProvider,
@@ -30,7 +31,7 @@ class FixedPriceAlertsTask @Inject() (
 
   private val logger = LoggerFactory.getLogger(this.getClass)
 
-  private val tickerCollectorList = List(bitsoTickerCollector, bittrexAlertCollector)
+  private val tickerCollectorList = List(bitsoTickerCollector, bittrexAlertCollector, kucoinTickerCollector)
 
   def execute(): Future[Unit] = {
     val futures = tickerCollectorList.map { tickerCollector =>
