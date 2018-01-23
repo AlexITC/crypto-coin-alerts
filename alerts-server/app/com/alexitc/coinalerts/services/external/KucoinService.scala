@@ -11,13 +11,13 @@ import play.api.libs.ws.{WSClient, WSResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class KucoinService @Inject() (ws: WSClient)(implicit ec: ExecutionContext) {
+class KucoinService @Inject() (ws: WSClient)(implicit ec: ExecutionContext) extends ExchangeService {
 
   private val logger = LoggerFactory.getLogger(this.getClass)
 
   private val BaseURL = "https://api.kucoin.com"
 
-  def availableBooks(): Future[List[Book]] = {
+  override def availableBooks(): Future[List[Book]] = {
     val url = s"$BaseURL/v1/open/tick"
 
     ws.url(url)
@@ -42,7 +42,7 @@ class KucoinService @Inject() (ws: WSClient)(implicit ec: ExecutionContext) {
         }
   }
 
-  def getTickerList(): Future[List[Ticker]] = {
+  override def getTickerList(): Future[List[Ticker]] = {
     val url = s"$BaseURL/v1/open/tick"
 
     ws.url(url)
