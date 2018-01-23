@@ -11,6 +11,8 @@ import { FixedPriceAlertsService } from '../fixed-price-alerts.service';
 import { NavigatorService } from '../navigator.service';
 import { NotificationService } from '../notification.service';
 
+import { exchanges } from '../constants';
+
 @Component({
   selector: 'app-new-fixed-price-alert',
   templateUrl: './new-fixed-price-alert.component.html',
@@ -24,7 +26,7 @@ export class NewFixedPriceAlertComponent implements OnInit {
   selectedCurrency: ExchangeCurrency;
 
   // TODO: load them from the server?
-  availableExchanges = ['BITSO', 'BITTREX'];
+  availableExchanges = exchanges;
   availableMarkets: Observable<string[]>;
   availableCurrencies: Observable<ExchangeCurrency[]>;
 

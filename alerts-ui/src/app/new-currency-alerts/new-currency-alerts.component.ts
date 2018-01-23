@@ -7,6 +7,8 @@ import { NewCurrencyAlertsService } from '../new-currency-alerts.service';
 import { NotificationService } from '../notification.service';
 import { ErrorService } from '../error.service';
 
+import { exchanges } from '../constants';
+
 @Component({
   selector: 'app-new-currency-alerts',
   templateUrl: './new-currency-alerts.component.html',
@@ -14,7 +16,7 @@ import { ErrorService } from '../error.service';
 })
 export class NewCurrencyAlertsComponent implements OnInit {
 
-  exchanges = ['BITSO', 'BITTREX'];
+  availableExchanges = exchanges;
   values: any = {};
 
   constructor(
