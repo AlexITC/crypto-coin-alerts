@@ -56,7 +56,7 @@ class ExchangeCurrencySeederTask @Inject() (
       seed(currencies, Exchange.BITSO, books)
     }
 
-    val bittrexResult = bittrexService.availableBooks.map { books =>
+    val bittrexResult = bittrexService.availableBooks().map { books =>
       seed(currencies, Exchange.BITTREX, books)
     }
 

@@ -11,13 +11,13 @@ import play.api.libs.ws.{WSClient, WSResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class BittrexService @Inject() (ws: WSClient)(implicit ec: ExecutionContext) {
+class BittrexService @Inject() (ws: WSClient)(implicit ec: ExecutionContext) extends ExchangeService {
 
   private val logger = LoggerFactory.getLogger(this.getClass)
 
   private val BaseURL = "https://bittrex.com/api/v1.1/public"
 
-  def availableBooks: Future[List[Book]] = {
+  override def availableBooks(): Future[List[Book]] = {
     val url = s"$BaseURL/getmarkets"
     ws.url(url)
         .get()
@@ -41,7 +41,7 @@ class BittrexService @Inject() (ws: WSClient)(implicit ec: ExecutionContext) {
         }
   }
 
-  def getTickerList(): Future[List[Ticker]] = {
+  override def getTickerList(): Future[List[Ticker]] = {
     val url = s"$BaseURL/getmarketsummaries"
     ws.url(url)
         .get()
@@ -73,7 +73,7 @@ class BittrexService @Inject() (ws: WSClient)(implicit ec: ExecutionContext) {
     }
   }
 
-  implicit val tickerReads: Reads[Option[Ticker]] = {
+  private implicit val tickerReads: Reads[Option[Ticker]] = {
     val builder = (JsPath \ "MarketName").read[String].map(createBook) and
         (JsPath \ "Last").read[BigDecimal]
 
