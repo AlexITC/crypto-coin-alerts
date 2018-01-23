@@ -7,7 +7,7 @@ import com.alexitc.coinalerts.config.TaskExecutionContext
 import com.alexitc.coinalerts.data.ExchangeCurrencyBlockingDataHandler
 import com.alexitc.coinalerts.data.async.{NewCurrencyAlertFutureDataHandler, UserFutureDataHandler}
 import com.alexitc.coinalerts.models._
-import com.alexitc.coinalerts.services.external.{BitsoService, BittrexService}
+import com.alexitc.coinalerts.services.external.{BitsoService, BittrexService, KucoinService}
 import com.alexitc.coinalerts.services.{EmailMessagesProvider, EmailServiceTrait}
 import org.scalactic.TypeCheckedTripleEquals._
 import org.scalactic.{Bad, Good}
@@ -20,6 +20,7 @@ import scala.util.control.NonFatal
 class ExchangeCurrencySeederTask @Inject() (
     bitsoService: BitsoService,
     bittrexService: BittrexService,
+    kucoinService: KucoinService,
     exchangeCurrencyBlockingDataHandler: ExchangeCurrencyBlockingDataHandler,
     newCurrencyAlertFutureDataHandler: NewCurrencyAlertFutureDataHandler,
     userFutureDataHandler: UserFutureDataHandler,
@@ -59,7 +60,11 @@ class ExchangeCurrencySeederTask @Inject() (
       seed(currencies, Exchange.BITTREX, books)
     }
 
-    val results = List(bitsoResult, bittrexResult)
+    val kucoinResult = kucoinService.availableBooks().map { books =>
+      seed(currencies, Exchange.KUCOIN, books)
+    }
+
+    val results = List(bitsoResult, bittrexResult, kucoinResult)
     Future.sequence(results).map(_.flatten)
   }
 
