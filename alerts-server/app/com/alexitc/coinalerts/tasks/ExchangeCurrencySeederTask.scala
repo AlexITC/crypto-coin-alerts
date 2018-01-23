@@ -52,7 +52,7 @@ class ExchangeCurrencySeederTask @Inject() (
   }
 
   private def execute(currencies: List[ExchangeCurrency]) = {
-    val bitsoResult = bitsoService.availableBooks.map { books =>
+    val bitsoResult = bitsoService.availableBooks().map { books =>
       seed(currencies, Exchange.BITSO, books)
     }
 

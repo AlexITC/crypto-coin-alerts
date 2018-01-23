@@ -9,11 +9,11 @@ import org.slf4j.LoggerFactory
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class BitsoService @Inject() (bitso: Bitso)(implicit ec: ExecutionContext) {
+class BitsoService @Inject() (bitso: Bitso)(implicit ec: ExecutionContext) extends ExchangeService {
 
   private val logger = LoggerFactory.getLogger(this.getClass)
 
-  def availableBooks: Future[List[Book]] = Future {
+  override def availableBooks(): Future[List[Book]] = Future {
     bitso.getTicker.toList.flatMap { ticker =>
       BitsoBook.fromString(ticker.getBook)
           .orElse {
@@ -23,7 +23,7 @@ class BitsoService @Inject() (bitso: Bitso)(implicit ec: ExecutionContext) {
     }
   }
 
-  def getTickerList: Future[List[Ticker]] = Future {
+  override def getTickerList(): Future[List[Ticker]] = Future {
     bitso.getTicker
         .toList
         .flatMap(createTicker)
