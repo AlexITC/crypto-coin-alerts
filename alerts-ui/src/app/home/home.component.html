@@ -8,7 +8,7 @@
   </p>
 
   <hr />
-  <p [hidden]="authService.isAuthenticated">
+  <p [hidden]="authService.isAuthenticated()">
     What are you waiting? Create a <a routerLink="/new-account">new account</a> or 
     <a routerLink="/login">login</a> to start receiving alerts.
   </p>
