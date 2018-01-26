@@ -37,8 +37,8 @@ error.exchangeCurrency.notFound=The currency was not found
 error.newCurrencyAlert.repeatedExchange=The given alert already exist
 error.newCurrencyAlert.notFound=The given alert was not found
 
-email.verificationToken.subject=Verify your email
-email.verificationToken.text=Someone registered your email in our site, if that was you, please go to this page to verify your email: {0}
+email.verificationToken.subject=Confirm your account on Crypto Coin Alerts
+email.verificationToken.text=Thanks for signing up with Crypto Coin Alerts! You must follow this link to activate your account: {0}
 
 email.yourAlerts.subject=Your Coin Alerts
 email.fixedPriceAlerts.footer=Do not wait, create your next alert: {0}
