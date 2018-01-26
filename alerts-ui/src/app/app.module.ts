@@ -5,7 +5,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { AlertModule, BsDropdownModule, TooltipModule, ModalModule } from 'ngx-bootstrap';
+import { AlertModule, BsDropdownModule, CollapseModule, TooltipModule, ModalModule } from 'ngx-bootstrap';
 import { TranslateModule } from '@ngx-translate/core';
 import { ToastrModule } from 'ngx-toastr';
 
@@ -56,6 +56,7 @@ import { NewCurrencyAlertsComponent } from './new-currency-alerts/new-currency-a
     AppRoutingModule,
     AlertModule.forRoot(),
     BsDropdownModule.forRoot(),
+    CollapseModule.forRoot(),
     TooltipModule.forRoot(),
     ModalModule.forRoot(),
     CommonModule,

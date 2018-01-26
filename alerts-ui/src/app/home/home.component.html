@@ -3,9 +3,24 @@
   <p>
     {{'home.descripion' | translate}}
   </p>
-  <p>
-    We support <a href="https://bitso.com/">BITSO</a>, <a href="https://bittrex.com/">BITTREX</a> and <a href="https://www.kucoin.com/">KUCOIN</a>, we plan to keep adding support for more exchanges.
-  </p>
+
+  <div>
+    <button type="button" class="btn btn-info" (click)="alertTypesCollapsed = !alertTypesCollapsed">
+      {{'label.alertTypes' | translate}}
+    </button>
+    <div [collapse]="alertTypesCollapsed" class="card card-block card-header">
+      <div class="well well-lg" [innerHTML]="'home.alertTypes' | translate"></div><hr>
+    </div>
+  </div>
+
+  <div>
+    <button type="button" class="btn btn-info" (click)="supportedExchangesCollapsed = !supportedExchangesCollapsed">
+      {{'label.supportedExchanges' | translate}}
+    </button>
+    <div [collapse]="supportedExchangesCollapsed" class="card card-block card-header">
+      <div class="well" [innerHTML]="'home.supportedExchanges' | translate"></div><hr>
+    </div>
+  </div>
 
   <hr />
   <p [hidden]="authService.isAuthenticated()">

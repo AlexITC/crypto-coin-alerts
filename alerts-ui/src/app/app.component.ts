@@ -45,6 +45,17 @@ export class AppComponent implements OnInit {
   englishLang(): Object {
     return {
       'home.descripion': 'Crypto Coin Alerts let you be aware of the changes in your crypto currencies',
+      'home.alertTypes': `<ul>
+  <li>Get notified when a currency increases or decreases a given price</li>
+  <li>Get notified when a new currency is added to the exchanges that you use</li>
+</ul>`,
+
+      'home.supportedExchanges': `<ul>
+  <li><a href="https://bittrex.com/">BITTREX</a></li>
+  <li><a href="https://bitso.com/">BITSO</a></li>
+  <li><a href="https://www.kucoin.com/">KUCOIN</a></li>
+</ul>`,
+
       'newCurrencyAlerts.description': 'Get notified when a new currency is added to your exchanges, we check it every hour!',
       // default messages from angular
       'required': 'a value is required',
@@ -63,6 +74,8 @@ export class AppComponent implements OnInit {
       'label.fixedPriceAlerts': 'Fixed price alerts',
       'label.newCurrencyAlerts': 'New currency alerts',
       'label.display': 'Display',
+      'label.alertTypes': 'Types of alerts that you can receive',
+      'label.supportedExchanges': 'Supported exchanges',
       // messages
       'message.welcome': 'Welcome',
       'message.bye': 'You are now logged out',

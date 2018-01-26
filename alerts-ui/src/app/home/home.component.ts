@@ -8,6 +8,9 @@ import { AuthService } from '../auth.service';
 })
 export class HomeComponent implements OnInit {
 
+  alertTypesCollapsed = true;
+  supportedExchangesCollapsed = true;
+
   constructor(public authService: AuthService) { }
 
   ngOnInit() {
