@@ -1,5 +1,5 @@
 
-<form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate role="form" class="form-horizontal">
+<form [hidden]="createdEmail" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate role="form" class="form-horizontal">
 
   <legend class="col-sm-offset-1">Create account</legend>
 
@@ -49,3 +49,11 @@
   </div>
   
 </form>
+
+<div [hidden]="!createdEmail">
+  <div class="col-sm-offset-1">
+    <h3>
+      <div [innerHTML]="'message.verifyEmail' | translate:{ email: createdEmail }"></div>
+    </h3>
+  </div>
+</div>

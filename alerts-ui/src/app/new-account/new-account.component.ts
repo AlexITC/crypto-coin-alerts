@@ -20,6 +20,7 @@ export class NewAccountComponent implements OnInit {
 
   @ViewChild(ReCaptchaComponent) captcha: ReCaptchaComponent;
   form: FormGroup;
+  createdEmail: string;
 
   private reCaptchaResponse: string;
 
@@ -96,10 +97,7 @@ export class NewAccountComponent implements OnInit {
   }
 
   protected onSubmitSuccess(response) {
-    this.translate.get('message.verifyEmail')
-      .subscribe(msg => this.notificationService.info(msg));
-
-    this.navigatorService.home();
+    this.createdEmail = response.email;
   }
 
   protected onSubmitError(response) {
