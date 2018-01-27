@@ -1,5 +1,6 @@
 package com.alexitc.coinalerts.services.external
 
+import com.alexitc.coinalerts.commons.ExecutionContexts
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
@@ -13,7 +14,7 @@ import scala.concurrent.Future
 class KucoinServiceSpec extends WordSpec with MustMatchers with ScalaFutures with MockitoSugar {
 
   val ws = mock[WSClient]
-  val ec = scala.concurrent.ExecutionContext.global
+  val ec = ExecutionContexts.externalServiceEC
   val service = new KucoinService(ws)(ec)
 
   val responseBody =

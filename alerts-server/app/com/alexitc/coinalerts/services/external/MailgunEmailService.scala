@@ -3,7 +3,7 @@ package com.alexitc.coinalerts.services.external
 import javax.inject.Inject
 
 import com.alexitc.coinalerts.commons.FutureApplicationResult
-import com.alexitc.coinalerts.config.MailgunConfig
+import com.alexitc.coinalerts.config.{ExternalServiceExecutionContext, MailgunConfig}
 import com.alexitc.coinalerts.errors.MailgunSendEmailError
 import com.alexitc.coinalerts.models.UserEmail
 import com.alexitc.coinalerts.services.{EmailServiceTrait, EmailSubject, EmailText}
@@ -14,12 +14,10 @@ import play.api.libs.json.{JsPath, Reads}
 import play.api.libs.ws.{WSAuthScheme, WSClient}
 import play.utils.UriEncoding
 
-import scala.concurrent.ExecutionContext
-
 class MailgunEmailService @Inject() (
     ws: WSClient,
     config: MailgunConfig)(
-    implicit ec: ExecutionContext)
+    implicit ec: ExternalServiceExecutionContext)
     extends EmailServiceTrait {
 
   private val logger = LoggerFactory.getLogger(this.getClass)

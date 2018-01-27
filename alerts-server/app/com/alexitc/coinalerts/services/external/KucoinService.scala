@@ -2,6 +2,7 @@ package com.alexitc.coinalerts.services.external
 
 import javax.inject.Inject
 
+import com.alexitc.coinalerts.config.ExternalServiceExecutionContext
 import com.alexitc.coinalerts.models.{BitsoBook, Book, Currency, Market}
 import com.alexitc.coinalerts.tasks.models.Ticker
 import org.slf4j.LoggerFactory
@@ -9,9 +10,12 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, JsValue, Reads}
 import play.api.libs.ws.{WSClient, WSResponse}
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
-class KucoinService @Inject() (ws: WSClient)(implicit ec: ExecutionContext) extends ExchangeService {
+class KucoinService @Inject() (
+    ws: WSClient)(
+    implicit ec: ExternalServiceExecutionContext)
+    extends ExchangeService {
 
   private val logger = LoggerFactory.getLogger(this.getClass)
 

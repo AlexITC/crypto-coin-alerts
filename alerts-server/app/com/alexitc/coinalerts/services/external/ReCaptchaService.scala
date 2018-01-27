@@ -3,13 +3,11 @@ package com.alexitc.coinalerts.services.external
 import javax.inject.Inject
 
 import com.alexitc.coinalerts.commons.FutureApplicationResult
-import com.alexitc.coinalerts.config.ReCaptchaConfig
+import com.alexitc.coinalerts.config.{ExternalServiceExecutionContext, ReCaptchaConfig}
 import com.alexitc.coinalerts.errors.ReCaptchaValidationError
 import com.alexitc.coinalerts.models.ReCaptchaResponse
 import org.scalactic.{Bad, Good}
 import play.api.libs.ws.WSClient
-
-import scala.concurrent.ExecutionContext
 
 trait ReCaptchaService {
   def verify(reCaptchaResponse: ReCaptchaResponse): FutureApplicationResult[Unit]
@@ -18,7 +16,7 @@ trait ReCaptchaService {
 class GoogleReCaptchaService @Inject() (
     reCaptchaConfig: ReCaptchaConfig,
     ws: WSClient)(
-    implicit ec: ExecutionContext)
+    implicit ec: ExternalServiceExecutionContext)
     extends ReCaptchaService {
 
   private val url = "https://www.google.com/recaptcha/api/siteverify"

@@ -2,14 +2,18 @@ package com.alexitc.coinalerts.services.external
 
 import javax.inject.Inject
 
+import com.alexitc.coinalerts.config.ExternalServiceExecutionContext
 import com.alexitc.coinalerts.models.{BitsoBook, Book}
 import com.alexitc.coinalerts.tasks.models.Ticker
 import com.bitso.{Bitso, BitsoTicker}
 import org.slf4j.LoggerFactory
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
-class BitsoService @Inject() (bitso: Bitso)(implicit ec: ExecutionContext) extends ExchangeService {
+class BitsoService @Inject() (
+    bitso: Bitso)(
+    implicit ec: ExternalServiceExecutionContext)
+    extends ExchangeService {
 
   private val logger = LoggerFactory.getLogger(this.getClass)
 
