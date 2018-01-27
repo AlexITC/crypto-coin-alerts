@@ -5,7 +5,7 @@
   </p>
 
   <div>
-    <button type="button" class="btn btn-info" (click)="alertTypesCollapsed = !alertTypesCollapsed">
+    <button type="button" class="btn btn-primary" (click)="alertTypesCollapsed = !alertTypesCollapsed">
       {{'label.alertTypes' | translate}}
     </button>
     <div [collapse]="alertTypesCollapsed" class="card card-block card-header">
@@ -14,11 +14,21 @@
   </div>
 
   <div>
-    <button type="button" class="btn btn-info" (click)="supportedExchangesCollapsed = !supportedExchangesCollapsed">
+    <button type="button" class="btn btn-primary" (click)="supportedExchangesCollapsed = !supportedExchangesCollapsed">
       {{'label.supportedExchanges' | translate}}
     </button>
     <div [collapse]="supportedExchangesCollapsed" class="card card-block card-header">
       <div class="well" [innerHTML]="'home.supportedExchanges' | translate"></div><hr>
+    </div>
+  </div>
+
+  <div>
+    <button type="button" class="btn btn-danger" (click)="emailNotReceivedHelpCollapsed = !emailNotReceivedHelpCollapsed">
+      {{'label.emailNotReceived' | translate}}
+    </button>
+    <div [collapse]="emailNotReceivedHelpCollapsed" class="card card-block card-header">
+      <div class="well" [innerHTML]="'home.emailNotReceivedHelp' | translate"></div>
+      <hr>
     </div>
   </div>
 

@@ -10,6 +10,7 @@ export class HomeComponent implements OnInit {
 
   alertTypesCollapsed = true;
   supportedExchangesCollapsed = true;
+  emailNotReceivedHelpCollapsed = true;
 
   constructor(public authService: AuthService) { }
 

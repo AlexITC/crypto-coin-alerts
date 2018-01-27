@@ -56,6 +56,10 @@ export class AppComponent implements OnInit {
   <li><a href="https://www.kucoin.com/">KUCOIN</a></li>
 </ul>`,
 
+      'home.emailNotReceivedHelp': `If you have not received our email, please check your spam folder. <hr>
+Still can't find it? Try searching Gmail for "in:all subject:(Confirm your account on Crypto Coin Alerts)" (without quotes). <hr>
+Still can't find it? Just send us an email to support@cryptocoinalerts.net from the account that you registered and we'll validate it.`,
+
       'newCurrencyAlerts.description': 'Get notified when a new currency is added to your exchanges, we check it every hour!',
       // default messages from angular
       'required': 'a value is required',
@@ -76,6 +80,7 @@ export class AppComponent implements OnInit {
       'label.display': 'Display',
       'label.alertTypes': 'Types of alerts that you can receive',
       'label.supportedExchanges': 'Supported exchanges',
+      'label.emailNotReceived': 'Already registered? Haven\'t received the verification email?',
       // messages
       'message.welcome': 'Welcome',
       'message.bye': 'You are now logged out',
@@ -83,7 +88,7 @@ export class AppComponent implements OnInit {
       'message.verifyEmail': `Please check your email ({{email}}) to confirm your account. <hr>
 If {{email}} is not your email address, please go back and enter the correct one. <hr>
 If you have not received our email in 15 minutes, please check your spam folder. <hr>
-Still can not find it? Try searching Gmail for "in:all subject:(Confirm your account on Crypto Coin Alerts)".`,
+Still can not find it? Try searching Gmail for "in:all subject:(Confirm your account on Crypto Coin Alerts)" (without quotes).`,
 
       'message.emailVerified': 'Thanks for verifying your email',
       'message.resolveCaptcha': 'Resolve the reCAPTCHA',
