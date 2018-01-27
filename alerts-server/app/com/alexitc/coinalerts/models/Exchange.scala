@@ -6,12 +6,14 @@ sealed abstract class Exchange(val string: String)
 object Exchange {
 
   case object BITTREX extends Exchange("BITTREX")
+  case object BINANCE extends Exchange("BINANCE")
   case object BITSO extends Exchange("BITSO")
   case object KUCOIN extends Exchange("KUCOIN")
   case class UNKNOWN(override val string: String) extends Exchange(string)
 
   private val fromStringPF: PartialFunction[String, Exchange] = {
     case BITTREX.string => BITTREX
+    case BINANCE.string => BINANCE
     case BITSO.string => BITSO
     case KUCOIN.string => KUCOIN
   }
