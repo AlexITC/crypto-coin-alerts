@@ -5,7 +5,7 @@ import com.alexitc.coinalerts.commons.FakeEmailService
 import com.alexitc.coinalerts.data.async.{NewCurrencyAlertFutureDataHandler, UserFutureDataHandler}
 import com.alexitc.coinalerts.data.{ExchangeCurrencyBlockingDataHandler, ExchangeCurrencyInMemoryDataHandler, NewCurrencyAlertInMemoryDataHandler, UserInMemoryDataHandler}
 import com.alexitc.coinalerts.models.{Book, Currency, Exchange, Market}
-import com.alexitc.coinalerts.services.external.{BinanceService, BitsoService, BittrexService, KucoinService}
+import com.alexitc.coinalerts.services.external._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{MustMatchers, WordSpec}
 
@@ -76,6 +76,12 @@ class ExchangeCurrencySeederTaskSpec extends WordSpec with MustMatchers with Sca
     }
   }
 
+  private def hitbtcService(books: Seq[Book]) = new HitbtcService(null)(null) {
+    override def availableBooks: Future[List[Book]] = {
+      Future.successful(books.toList)
+    }
+  }
+
   private def seederTask(
       bitsoService: BitsoService,
       bittrexService: BittrexService,
@@ -89,6 +95,7 @@ class ExchangeCurrencySeederTaskSpec extends WordSpec with MustMatchers with Sca
       bittrexService,
       kucoinService(List.empty),
       binanceService(List.empty),
+      hitbtcService(List.empty),
       currencyDataHandler,
       newCurrencyAlertDataHandler,
       userFutureDataHandler,
