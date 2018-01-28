@@ -49,7 +49,7 @@ class ExchangeCurrenciesControllerSpec extends PlayAPISpec {
     }
 
     "fail to retrieve the markets for an unknown exchange" in {
-      val response = GET(s"/exchanges/HITBTC/markets")
+      val response = GET(s"/exchanges/BITFINEX/markets")
       status(response) mustEqual BAD_REQUEST
     }
   }

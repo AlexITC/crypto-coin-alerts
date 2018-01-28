@@ -8,6 +8,7 @@ object Exchange {
   case object BITTREX extends Exchange("BITTREX")
   case object BINANCE extends Exchange("BINANCE")
   case object BITSO extends Exchange("BITSO")
+  case object HITBTC extends Exchange("HITBTC")
   case object KUCOIN extends Exchange("KUCOIN")
   case class UNKNOWN(override val string: String) extends Exchange(string)
 
@@ -15,6 +16,7 @@ object Exchange {
     case BITTREX.string => BITTREX
     case BINANCE.string => BINANCE
     case BITSO.string => BITSO
+    case HITBTC.string => HITBTC
     case KUCOIN.string => KUCOIN
   }
 
