@@ -52,7 +52,9 @@ export class AppComponent implements OnInit {
 
       'home.supportedExchanges': `<ul>
   <li><a href="https://bittrex.com/">BITTREX</a></li>
+  <li><a href="https://www.binance.com/">BINANCE</a></li>
   <li><a href="https://bitso.com/">BITSO</a></li>
+  <li><a href="https://hitbtc.com/">HITBTC</a></li>
   <li><a href="https://www.kucoin.com/">KUCOIN</a></li>
 </ul>`,
 
