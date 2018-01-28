@@ -1,2 +1,2 @@
 
-export const exchanges = ['BITSO', 'BITTREX', 'KUCOIN'];
+export const exchanges = ['BITSO', 'BITTREX', 'KUCOIN', 'BINANCE', 'HITBTC'];
