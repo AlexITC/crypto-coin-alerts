@@ -22,20 +22,24 @@
     </div>
   </div>
 
-  <div>
-    <button type="button" class="btn btn-danger" (click)="emailNotReceivedHelpCollapsed = !emailNotReceivedHelpCollapsed">
-      {{'label.emailNotReceived' | translate}}
-    </button>
-    <div [collapse]="emailNotReceivedHelpCollapsed" class="card card-block card-header">
-      <div class="well" [innerHTML]="'home.emailNotReceivedHelp' | translate"></div>
-      <hr>
+  <hr>
+
+  <div [hidden]="authService.isAuthenticated()">
+    <p>
+      What are you waiting? Create a
+      <a routerLink="/new-account">new account</a> or
+      <a routerLink="/login">login</a> to start receiving alerts.
+    </p>
+
+    <div>
+      <button type="button" class="btn btn-danger" (click)="emailNotReceivedHelpCollapsed = !emailNotReceivedHelpCollapsed">
+        {{'label.emailNotReceived' | translate}}
+      </button>
+      <div [collapse]="emailNotReceivedHelpCollapsed" class="card card-block card-header">
+        <div class="well" [innerHTML]="'home.emailNotReceivedHelp' | translate"></div>
+        <hr>
+      </div>
     </div>
   </div>
-
-  <hr />
-  <p [hidden]="authService.isAuthenticated()">
-    What are you waiting? Create a <a routerLink="/new-account">new account</a> or 
-    <a routerLink="/login">login</a> to start receiving alerts.
-  </p>
-  <hr />
+  <hr>
 </div>
