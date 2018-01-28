@@ -118,7 +118,7 @@ class FixedPriceAlertsTask @Inject() (
     val message = messagesApi(
       messageKey,
       event.alert.currency.string,
-      event.currentPrice,
+      event.currentPrice.toString,
       event.alert.market.string)
 
     percentageDifferenceMaybe.map { percent =>
