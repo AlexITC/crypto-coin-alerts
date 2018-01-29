@@ -13,8 +13,12 @@ The alerts server API is built relaying on the following principal technologies:
 - [docker-it-scala](https://github.com/whisklabs/docker-it-scala) - for testing only.
 
 At the moment it is supporting the following currency exchanges, more exchanges might be added in the future:
-- [BITTREX](https://bittrex.com/).
-- [BITSO](https://bitso.com/?l=en).
+- [Binance](https://www.binance.com/).
+- [Bitso](https://bitso.com/?l=en).
+- [Bittrex](https://bittrex.com/).
+- [HitBTC](https://hitbtc.com/).
+- [KuCoin](https://www.kucoin.com/).
+
 
 The following alerts are supported while more alert types should be added soon:
 - Fixed price - Receive a notification when a currency gets above or below the given price, you can set a base price to receive a more detailed message.
