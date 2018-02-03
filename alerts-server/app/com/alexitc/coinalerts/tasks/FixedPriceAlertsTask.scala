@@ -115,17 +115,23 @@ class FixedPriceAlertsTask @Inject() (
       "message.alert.priceDecreased"
     }
 
+    val readableCurrency = alert.currencyName
+        .map { name => s"${alert.currency.string} (${name.string})" }
+        .getOrElse(alert.currency.string)
+
     val message = messagesApi(
       messageKey,
-      event.alert.currency.string,
+      readableCurrency,
       event.currentPrice.toString,
       event.alert.market.string)
 
-    percentageDifferenceMaybe.map { percent =>
-      val readablePercent = percent.round(new MathContext(4))
-      s"$message ($readablePercent %)"
-    }.getOrElse {
-      message
-    }
+    percentageDifferenceMaybe
+        .map { percent =>
+          val readablePercent = percent.round(new MathContext(4))
+          s"$message ($readablePercent %)"
+        }
+        .getOrElse {
+          message
+        }
   }
 }
