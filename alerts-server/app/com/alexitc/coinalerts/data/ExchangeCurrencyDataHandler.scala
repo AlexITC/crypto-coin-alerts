@@ -7,7 +7,7 @@ import scala.language.higherKinds
 
 trait ExchangeCurrencyDataHandler[F[_]] {
 
-  def create(exchange: Exchange, market: Market, currency: Currency): F[ExchangeCurrency]
+  def create(createModel: CreateExchangeCurrencyModel): F[ExchangeCurrency]
 
   def getBy(exchangeCurrencyId: ExchangeCurrencyId): F[Option[ExchangeCurrency]]
 

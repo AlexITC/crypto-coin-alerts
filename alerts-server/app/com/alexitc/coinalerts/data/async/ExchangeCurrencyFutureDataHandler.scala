@@ -14,8 +14,8 @@ class ExchangeCurrencyFutureDataHandler @Inject() (
     implicit ec: DatabaseExecutionContext)
     extends ExchangeCurrencyDataHandler[FutureApplicationResult] {
 
-  override def create(exchange: Exchange, market: Market, currency: Currency): FutureApplicationResult[ExchangeCurrency] = Future {
-    blockingDataHandler.create(exchange, market, currency)
+  override def create(createModel: CreateExchangeCurrencyModel): FutureApplicationResult[ExchangeCurrency] = Future {
+    blockingDataHandler.create(createModel)
   }
 
   override def getBy(exchangeCurrencyId: ExchangeCurrencyId): FutureApplicationResult[Option[ExchangeCurrency]] = Future {

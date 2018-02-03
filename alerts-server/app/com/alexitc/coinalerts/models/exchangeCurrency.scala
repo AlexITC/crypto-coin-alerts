@@ -14,7 +14,7 @@ case class ExchangeCurrency(
     id: ExchangeCurrencyId,
     exchange: Exchange,
     market: Market,
-    currency: Currency)
+    currency: Currency, currencyName: Option[CurrencyName])
 object ExchangeCurrency {
   implicit val writes: Writes[ExchangeCurrency] = Json.writes[ExchangeCurrency]
 }
@@ -28,3 +28,10 @@ object ExchangeCurrencyId {
 
 case class Market(string: String) extends AnyVal with WrappedString
 case class Currency(string: String) extends AnyVal with WrappedString
+case class CurrencyName(string: String) extends AnyVal with WrappedString
+
+case class CreateExchangeCurrencyModel(
+    exchange: Exchange,
+    market: Market,
+    currency: Currency,
+    currencyName: Option[CurrencyName])

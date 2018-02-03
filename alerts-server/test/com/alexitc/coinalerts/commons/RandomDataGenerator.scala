@@ -80,7 +80,7 @@ object RandomDataGenerator {
   }
 
   def exchangeCurrency(id: ExchangeCurrencyId) = {
-    ExchangeCurrency(id, exchange, market, currency)
+    ExchangeCurrency(id, exchange, market, currency, None)
   }
 
   def createFixedPriceAlertModel(

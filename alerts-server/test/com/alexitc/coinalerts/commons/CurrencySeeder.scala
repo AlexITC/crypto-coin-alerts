@@ -1,7 +1,7 @@
 package com.alexitc.coinalerts.commons
 
 import com.alexitc.coinalerts.data.ExchangeCurrencyBlockingDataHandler
-import com.alexitc.coinalerts.models.{Book, Exchange}
+import com.alexitc.coinalerts.models.{Book, CreateExchangeCurrencyModel, Exchange}
 
 object CurrencySeeder {
 
@@ -15,7 +15,8 @@ object CurrencySeeder {
 
   private def seedExchangeCurrencyList(exchange: Exchange, books: Seq[Book])(implicit exchangeCurrencyDataHandler: ExchangeCurrencyBlockingDataHandler) = {
     books.map { book =>
-      exchangeCurrencyDataHandler.create(exchange, book.market, book.currency)
+      val createModel = CreateExchangeCurrencyModel(exchange, book.market, book.currency, None)
+      exchangeCurrencyDataHandler.create(createModel)
     }
   }
 }

@@ -4,30 +4,30 @@ import java.sql.Connection
 
 import anorm._
 import com.alexitc.coinalerts.data.anorm.parsers.ExchangeCurrencyParsers
-import com.alexitc.coinalerts.models._
+import com.alexitc.coinalerts.models.{CreateExchangeCurrencyModel, _}
 
 class ExchangeCurrencyPostgresDAO {
 
   import ExchangeCurrencyParsers._
 
-  def create(exchange: Exchange,
-      market: Market,
-      currency: Currency)(
+  def create(
+      createModel: CreateExchangeCurrencyModel)(
       implicit conn: Connection): Option[ExchangeCurrency] = {
 
     SQL(
       """
         |INSERT INTO currencies
-        |  (exchange, market, currency)
+        |  (exchange, market, currency, currency_name)
         |VALUES
-        |  ({exchange}, {market}, {currency})
+        |  ({exchange}, {market}, {currency}, {currency_name})
         |ON CONFLICT DO NOTHING
-        |RETURNING currency_id, exchange, market, currency
+        |RETURNING currency_id, exchange, market, currency, currency_name
       """.stripMargin
     ).on(
-      "exchange" -> exchange.string,
-      "market" -> market.string,
-      "currency" -> currency.string
+      "exchange" -> createModel.exchange.string,
+      "market" -> createModel.market.string,
+      "currency" -> createModel.currency.string,
+      "currency_name" -> createModel.currencyName.map(_.string).getOrElse("")
     ).as(parseExchangeCurrency.singleOpt)
   }
 
@@ -37,7 +37,7 @@ class ExchangeCurrencyPostgresDAO {
 
     SQL(
       """
-        |SELECT currency_id, exchange, market, currency
+        |SELECT currency_id, exchange, market, currency, currency_name
         |FROM currencies
         |WHERE currency_id = {currency_id}
       """.stripMargin
@@ -54,7 +54,7 @@ class ExchangeCurrencyPostgresDAO {
 
     SQL(
       """
-        |SELECT currency_id, exchange, market, currency
+        |SELECT currency_id, exchange, market, currency, currency_name
         |FROM currencies
         |WHERE exchange = {exchange} AND
         |      market = {market} AND
@@ -75,7 +75,7 @@ class ExchangeCurrencyPostgresDAO {
 
     SQL(
       """
-        |SELECT currency_id, exchange, market, currency
+        |SELECT currency_id, exchange, market, currency, currency_name
         |FROM currencies
         |WHERE exchange = {exchange} AND
         |      market = {market}
@@ -106,7 +106,7 @@ class ExchangeCurrencyPostgresDAO {
   def getAll(implicit conn: Connection): List[ExchangeCurrency] = {
     SQL(
       """
-        |SELECT currency_id, exchange, market, currency
+        |SELECT currency_id, exchange, market, currency, currency_name
         |FROM currencies
       """.stripMargin
     ).as(parseExchangeCurrency.*)

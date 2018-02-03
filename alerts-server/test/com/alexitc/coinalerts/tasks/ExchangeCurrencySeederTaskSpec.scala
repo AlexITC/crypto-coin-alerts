@@ -4,7 +4,7 @@ import com.alexitc.coinalerts.commons.ExecutionContexts._
 import com.alexitc.coinalerts.commons.FakeEmailService
 import com.alexitc.coinalerts.data.async.{NewCurrencyAlertFutureDataHandler, UserFutureDataHandler}
 import com.alexitc.coinalerts.data.{ExchangeCurrencyBlockingDataHandler, ExchangeCurrencyInMemoryDataHandler, NewCurrencyAlertInMemoryDataHandler, UserInMemoryDataHandler}
-import com.alexitc.coinalerts.models.{Book, Currency, Exchange, Market}
+import com.alexitc.coinalerts.models._
 import com.alexitc.coinalerts.services.external._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{MustMatchers, WordSpec}
@@ -37,7 +37,8 @@ class ExchangeCurrencySeederTaskSpec extends WordSpec with MustMatchers with Sca
     "ignored existing currencies" in {
       val bitsoBooks = "BTC_LTC".split(" ").flatMap(Book.fromString)
       val currencyDataHandler = new ExchangeCurrencyInMemoryDataHandler {}
-      currencyDataHandler.create(Exchange.BITSO, Market("BTC"), Currency("LTC"))
+      val createModel = CreateExchangeCurrencyModel(Exchange.BITSO, Market("BTC"), Currency("LTC"), None)
+      currencyDataHandler.create(createModel)
 
       val task = seederTask(
         bitsoService(bitsoBooks),

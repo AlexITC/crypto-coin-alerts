@@ -93,12 +93,16 @@ class ExchangeCurrencySeederTask @Inject() (
       triggerAlerts(newBooks, exchange)
     }
 
-    for (book <- newBooks)
-      yield exchangeCurrencyBlockingDataHandler.create(exchange, book.market, book.currency) match {
+    for (book <- newBooks) yield {
+      val createModel = CreateExchangeCurrencyModel(exchange, book.market, book.currency, None)
+      
+      exchangeCurrencyBlockingDataHandler.create(createModel) match {
         case Good(_) => ()
         case Bad(errors) =>
           logger.error(s"error while creating book = [${book.string}] for exchange = [$exchange], errors = $errors")
       }
+    }
+
   }
 
   private def triggerAlerts(books: List[Book], exchange: Exchange) = {
