@@ -5,17 +5,19 @@ import play.api.libs.json._
 sealed abstract class Exchange(val string: String)
 object Exchange {
 
-  case object BITTREX extends Exchange("BITTREX")
   case object BINANCE extends Exchange("BINANCE")
   case object BITSO extends Exchange("BITSO")
+  case object BITTREX extends Exchange("BITTREX")
+  case object COINMARKETCAP extends Exchange("COINMARKETCAP")
   case object HITBTC extends Exchange("HITBTC")
   case object KUCOIN extends Exchange("KUCOIN")
   case class UNKNOWN(override val string: String) extends Exchange(string)
 
   private val fromStringPF: PartialFunction[String, Exchange] = {
-    case BITTREX.string => BITTREX
     case BINANCE.string => BINANCE
     case BITSO.string => BITSO
+    case BITTREX.string => BITTREX
+    case COINMARKETCAP.string => COINMARKETCAP
     case HITBTC.string => HITBTC
     case KUCOIN.string => KUCOIN
   }
