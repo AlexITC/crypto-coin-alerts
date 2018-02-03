@@ -1,6 +1,6 @@
 package com.alexitc.coinalerts.models
 
-case class Book(market: Market, currency: Currency) {
+case class Book(market: Market, currency: Currency, currencyName: Option[CurrencyName] = None) {
   val string: String = s"${market.string}_${currency.string}".toUpperCase
 }
 object Book {
