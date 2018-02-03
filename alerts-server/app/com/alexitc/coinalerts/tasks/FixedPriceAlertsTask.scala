@@ -24,6 +24,7 @@ class FixedPriceAlertsTask @Inject() (
     kucoinTickerCollector: KucoinTickerCollector,
     binanceTickerCollector: BinanceTickerCollector,
     hitbtcTickerCollector: HitbtcTickerCollector,
+    coinmarketcapTickerCollector: CoinmarketcapTickerCollector,
     userDataHandler: UserFutureDataHandler,
     alertDataHandler: FixedPriceAlertFutureDataHandler,
     emailMessagesProvider: EmailMessagesProvider,
@@ -38,7 +39,8 @@ class FixedPriceAlertsTask @Inject() (
     bittrexAlertCollector,
     kucoinTickerCollector,
     binanceTickerCollector,
-    hitbtcTickerCollector)
+    hitbtcTickerCollector,
+    coinmarketcapTickerCollector)
 
   def execute(): Future[Unit] = {
     val futures = tickerCollectorList.map { tickerCollector =>
