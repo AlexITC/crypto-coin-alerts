@@ -1,12 +1,12 @@
 package com.alexitc.coinalerts.controllers
 
-import com.alexitc.coinalerts.commons.CustomPlayAPISpec
+import com.alexitc.coinalerts.commons.PlayAPISpec
 import com.alexitc.coinalerts.models.{Exchange, ExchangeCurrencyId, Market}
 import play.api.Application
 import play.api.libs.json.JsValue
 import play.api.test.Helpers._
 
-class ExchangeCurrenciesControllerSpec extends CustomPlayAPISpec {
+class ExchangeCurrenciesControllerSpec extends PlayAPISpec {
 
   val application: Application = guiceApplicationBuilder
       .build()
@@ -15,15 +15,21 @@ class ExchangeCurrenciesControllerSpec extends CustomPlayAPISpec {
     def url(exchangeCurrencyId: ExchangeCurrencyId) = s"/currencies/${exchangeCurrencyId.int}"
 
     "retrieve a currency by id" in {
-      val exchangeCurrency = exchangeCurrencyDataHandler.getAll().get.head
+      val exchange = Exchange.HITBTC
+      val market = Market("BTC")
+      val currency = Currency("BTG")
+      val currencyName = Some(CurrencyName("Bitcoin gold"))
+      val exchangeCurrency = exchangeCurrencyDataHandler.create(CreateExchangeCurrencyModel(exchange, market, currency, currencyName)).get
+
       val response = GET(url(exchangeCurrency.id))
       status(response) mustEqual OK
 
       val json = contentAsJson(response)
-      (json \ "id").asOpt[Int].isDefined mustEqual true
-      (json \ "currency").as[String].nonEmpty mustEqual true
-      (json \ "exchange").as[String].nonEmpty mustEqual true
-      (json \ "market").as[String].nonEmpty mustEqual true
+      (json \ "id").as[Int] mustEqual exchangeCurrency.id.int
+      (json \ "exchange").as[String] mustEqual exchangeCurrency.exchange.string
+      (json \ "market").as[String] mustEqual exchangeCurrency.market.string
+      (json \ "currency").as[String] mustEqual exchangeCurrency.currency.string
+      (json \ "currencyName").as[String] mustEqual exchangeCurrency.currencyName.get.string
     }
 
     "fail to retrieve a non-existent currency" in {
