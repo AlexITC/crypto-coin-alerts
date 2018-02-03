@@ -40,6 +40,7 @@ object FixedPriceAlertParsers {
           parseExchange ~
           parseMarket ~
           parseCurrency ~
+          parseCurrencyName ~
           parseisGreaterThan ~
           parsePrice ~
           parseBasePrice.? ~
@@ -52,6 +53,7 @@ object FixedPriceAlertParsers {
         exchange ~
         market ~
         currency ~
+        currencyName ~
         isGreaterThan ~
         price ~
         basePrice ~
@@ -65,6 +67,7 @@ object FixedPriceAlertParsers {
         exchange,
         market,
         currency,
+        currencyName,
         isGreaterThan,
         price,
         basePrice,

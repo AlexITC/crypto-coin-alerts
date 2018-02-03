@@ -55,7 +55,7 @@ class FixedPriceAlertPostgresDAO @Inject() (
     SQL(
       """
         |SELECT fixed_price_alert_id, user_id, currency_id, is_greater_than, price, base_price,
-        |       exchange, market, currency, created_on, triggered_on
+        |       exchange, market, currency, currency_name, created_on, triggered_on
         |FROM fixed_price_alerts INNER JOIN currencies USING (currency_id)
         |WHERE triggered_on IS NULL AND
         |      currency_id = {currency_id} AND
@@ -85,7 +85,7 @@ class FixedPriceAlertPostgresDAO @Inject() (
     SQL(
       s"""
          |SELECT fixed_price_alert_id, user_id, currency_id, is_greater_than, price, base_price,
-         |       exchange, market, currency, created_on, triggered_on
+         |       exchange, market, currency, currency_name, created_on, triggered_on
          |FROM fixed_price_alerts INNER JOIN currencies USING (currency_id)
          |${whereClause.sql}
          |$orderBySQL
