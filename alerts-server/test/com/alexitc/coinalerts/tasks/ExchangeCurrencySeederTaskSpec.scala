@@ -83,6 +83,12 @@ class ExchangeCurrencySeederTaskSpec extends WordSpec with MustMatchers with Sca
     }
   }
 
+  private def coinmarketcapService(books: Seq[Book]) = new CoinmarketcapService(null)(null) {
+    override def availableBooks: Future[List[Book]] = {
+      Future.successful(books.toList)
+    }
+  }
+
   private def seederTask(
       bitsoService: BitsoService,
       bittrexService: BittrexService,
@@ -97,6 +103,7 @@ class ExchangeCurrencySeederTaskSpec extends WordSpec with MustMatchers with Sca
       kucoinService(List.empty),
       binanceService(List.empty),
       hitbtcService(List.empty),
+      coinmarketcapService(List.empty),
       currencyDataHandler,
       newCurrencyAlertDataHandler,
       userFutureDataHandler,

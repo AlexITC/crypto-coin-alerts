@@ -23,6 +23,7 @@ class ExchangeCurrencySeederTask @Inject() (
     kucoinService: KucoinService,
     binanceService: BinanceService,
     hitbtcService: HitbtcService,
+    coinmarketcapService: CoinmarketcapService,
     exchangeCurrencyBlockingDataHandler: ExchangeCurrencyBlockingDataHandler,
     newCurrencyAlertFutureDataHandler: NewCurrencyAlertFutureDataHandler,
     userFutureDataHandler: UserFutureDataHandler,
@@ -74,7 +75,11 @@ class ExchangeCurrencySeederTask @Inject() (
       seed(currencies, Exchange.HITBTC, books)
     }
 
-    val results = List(bitsoResult, bittrexResult, kucoinResult, binanceResult, hitbtcResult)
+    val coinmarketcapResult = coinmarketcapService.availableBooks().map { books =>
+      seed(currencies, Exchange.COINMARKETCAP, books)
+    }
+
+    val results = List(bitsoResult, bittrexResult, kucoinResult, binanceResult, hitbtcResult, coinmarketcapResult)
     Future.sequence(results).map(_.flatten)
   }
 
