@@ -16,6 +16,7 @@
       </li>
     </ul>
 
+    <!-- user -->
     <ul [hidden]="isAuthenticated()" class="nav navbar-nav navbar-right">
       <li>
         <a routerLink="/new-account">{{'label.newAccount' | translate}}</a>
@@ -25,13 +26,32 @@
       </li>
     </ul>
 
-    <ul div [hidden]="!isAuthenticated()" class="nav navbar-nav navbar-right">
+    <ul [hidden]="!isAuthenticated()" class="nav navbar-nav navbar-right">
       <li>
         <button type="button" class="btn btn-link">{{getAuthenticatedUser()}}</button>
       </li>
       <li>
         <button type="button" class="btn btn-link" (click)="logout()">{{'label.logout' | translate}}</button>
       </li>
+    </ul>
+
+    <!-- TODO: Fix weird positioning issue, this component is placed before the user data -->
+    <!-- language -->
+    <ul class="nav navbar-nav navbar-right">
+      <div class="btn-group" dropdown>
+        <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
+          <!-- TODO: Display current lang -->
+          {{'label.language' | translate}}
+          <span class="caret"></span>
+        </button>
+
+        <!-- TODO: load langs dynamically -->
+        <ul *dropdownMenu class="dropdown-menu" role="menu">
+          <li>
+            <button type="button" class="dropdown-item" (click)="setLang('en')">{{'en' | translate}}</button>
+          </li>
+        </ul>
+      </div>
     </ul>
   </div>
 </nav>

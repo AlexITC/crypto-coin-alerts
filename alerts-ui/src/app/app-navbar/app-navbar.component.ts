@@ -7,6 +7,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../auth.service';
 import { NavigatorService } from '../navigator.service';
 import { NotificationService } from '../notification.service';
+import { LanguageService } from '../language.service';
 
 @Component({
   selector: 'app-navbar',
@@ -24,12 +25,14 @@ export class AppNavbarComponent implements OnInit {
     private authService: AuthService,
     private navigatorService: NavigatorService,
     private notificationService: NotificationService,
+    private languageService: LanguageService,
     private translate: TranslateService,
     private location: Location) { }
 
   ngOnInit() {
   }
 
+  /* tabs */
   isSelected(path: string): boolean {
     if (!path.startsWith('/')) {
       path = '/' + path;
@@ -46,6 +49,7 @@ export class AppNavbarComponent implements OnInit {
     }
   }
 
+  /* user */
   isAuthenticated(): boolean {
     return this.authService.isAuthenticated();
   }
@@ -66,5 +70,10 @@ export class AppNavbarComponent implements OnInit {
     // TODO: invalidate token on the server
     this.authService.setToken(null);
     this.navigatorService.home();
+  }
+
+  /* lang */
+  setLang(lang: string) {
+    this.languageService.setLang(lang);
   }
 }

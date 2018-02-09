@@ -23,8 +23,6 @@ export class AppComponent implements OnInit {
       private router: Router) {
 
     translate.setDefaultLang(DEFAULT_LANG);
-
-    // TODO: choose lang based on the user preferences
     translate.use(languageService.getLang());
 
     // define langs
@@ -73,7 +71,10 @@ Still can't find it? Just send us an email to support@cryptocoinalerts.net from 
       'maxlength': 'too many characters',
       'min': 'the value is too small',
       'max': 'the value is too big',
+      // langs
+      'en': 'English',
       // labels
+      'label.language': 'Language',
       'label.sort': 'Sort by',
       'label.reverseOrder': 'Reverse order',
       'label.verifyingEmail': 'Verifying email',
