@@ -7,6 +7,8 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { environment } from '../environments/environment';
 
+import { DEFAULT_LANG, LanguageService } from './language.service';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -16,13 +18,14 @@ export class AppComponent implements OnInit {
   title = 'Crypto Coin Alerts';
 
   constructor(
-      translate: TranslateService,
+      private translate: TranslateService,
+      private languageService: LanguageService,
       private router: Router) {
 
-    translate.setDefaultLang('en');
+    translate.setDefaultLang(DEFAULT_LANG);
 
     // TODO: choose lang based on the user preferences
-    translate.use('en');
+    translate.use(languageService.getLang());
 
     // define langs
     translate.setTranslation('en', this.englishLang());
