@@ -5,7 +5,7 @@ import javax.inject.Inject
 import com.alexitc.coinalerts.commons.ApplicationResult
 import com.alexitc.coinalerts.data.UserBlockingDataHandler
 import com.alexitc.coinalerts.data.anorm.dao.UserPostgresDAO
-import com.alexitc.coinalerts.errors.{EmailAlreadyExistsError, UserVerificationTokenAlreadyExistsError, UserVerificationTokenNotFoundError, VerifiedUserNotFound}
+import com.alexitc.coinalerts.errors._
 import com.alexitc.coinalerts.models._
 import org.scalactic.{Good, One, Or}
 import org.slf4j.LoggerFactory
@@ -22,8 +22,8 @@ class UserPostgresDataHandler @Inject() (
   override def create(email: UserEmail, password: UserHiddenPassword): ApplicationResult[User] = withConnection { implicit conn =>
     val userMaybe = userDAO.create(email, password)
     userMaybe.foreach { user =>
-      val preferences = UserPreferences.default(user.id)
-      val _ = userDAO.createUserPreferences(preferences)
+      val preferences = SetUserPreferencesModel.default
+      val _ = userDAO.setUserPreferences(user.id, preferences)
     }
 
     Or.from(userMaybe, One(EmailAlreadyExistsError))
@@ -66,5 +66,23 @@ class UserPostgresDataHandler @Inject() (
         }
 
     Good(userPreferences)
+  }
+
+  override def setUserPreferences(
+      userId: UserId,
+      preferencesModel: SetUserPreferencesModel): ApplicationResult[UserPreferences] = {
+
+    val result = withConnection { implicit conn =>
+      val userPreferencesMaybe = userDAO.setUserPreferences(userId, preferencesModel)
+
+      Or.from(userPreferencesMaybe, One(VerifiedUserNotFound))
+    }
+
+    result.badMap { errors =>
+      errors.map {
+        case PostgresIntegrityViolationError(Some("user_id"), _) => VerifiedUserNotFound
+        case e => e
+      }
+    }
   }
 }

@@ -13,6 +13,7 @@ trait UserInMemoryDataHandler extends UserBlockingDataHandler {
   val passwords = mutable.HashMap[UserEmail, UserHiddenPassword]()
   val verificationTokenList = mutable.ListBuffer[(UserId, UserVerificationToken)]()
   val verifiedUserList = mutable.ListBuffer[User]()
+  val userPreferences = mutable.HashMap[UserId, UserPreferences]()
 
   override def create(email: UserEmail, password: UserHiddenPassword): ApplicationResult[User] = userList.synchronized {
     if (userList.exists(_.email.string.equalsIgnoreCase(email.string))) {
@@ -21,6 +22,8 @@ trait UserInMemoryDataHandler extends UserBlockingDataHandler {
       val newUser = User(UserId.create, email)
       userList += newUser
       passwords += email -> password
+      userPreferences += newUser.id -> UserPreferences.default(newUser.id)
+
       Good(newUser)
     }
   }
@@ -63,5 +66,18 @@ trait UserInMemoryDataHandler extends UserBlockingDataHandler {
 
   override def getUserPreferences(userId: UserId): ApplicationResult[UserPreferences] = userList.synchronized {
     Good(UserPreferences.default(userId))
+  }
+
+  override def setUserPreferences(userId: UserId, preferencesModel: SetUserPreferencesModel): ApplicationResult[UserPreferences] = userList.synchronized {
+    val preferencesMaybe = verifiedUserList
+        .find(_.id == userId)
+        .map { _ =>
+          val preferences = UserPreferences.from(userId, preferencesModel)
+          userPreferences += userId -> preferences
+
+          preferences
+        }
+
+    Or.from(preferencesMaybe, One(VerifiedUserNotFound))
   }
 }

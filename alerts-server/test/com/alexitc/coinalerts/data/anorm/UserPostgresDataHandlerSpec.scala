@@ -5,6 +5,7 @@ import com.alexitc.coinalerts.data.anorm.dao.UserPostgresDAO
 import com.alexitc.coinalerts.errors._
 import com.alexitc.coinalerts.models._
 import org.scalactic.{Bad, Good, One}
+import play.api.i18n.Lang
 
 class UserPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
 
@@ -151,6 +152,24 @@ class UserPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
     "Succeed even if the user doesn't exists" in {
       val preferences = userPostgresDataHandler.getUserPreferences(UserId.create)
       preferences.isGood mustEqual true
+    }
+  }
+
+  "Setting user preferences" should {
+    "update the preferences" in {
+      val user = createVerifiedUser(RandomDataGenerator.email)
+      val lang = Lang("es")
+      val preferencesModel = SetUserPreferencesModel.default.copy(lang = lang)
+
+      val result = userPostgresDataHandler.setUserPreferences(user.id, preferencesModel).get
+      result.lang mustEqual lang
+    }
+
+    "fail when the user doesn't exist" in {
+      val preferencesModel = SetUserPreferencesModel.default
+
+      val result = userPostgresDataHandler.setUserPreferences(UserId.create, preferencesModel)
+      result mustEqual Bad(VerifiedUserNotFound).accumulating
     }
   }
 

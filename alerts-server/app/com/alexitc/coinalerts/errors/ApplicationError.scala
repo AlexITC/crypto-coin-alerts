@@ -36,6 +36,7 @@ case class InvalidPasswordLengthError(validLength: Range) extends UserError with
 case object EmailAlreadyExistsError extends UserError with ConflictError
 case object VerifiedUserNotFound extends UserError with InputValidationError
 case object IncorrectPasswordError extends UserError with InputValidationError
+case object UnsupportedLangError extends UserError with InputValidationError
 
 // Verify user email
 sealed trait UserVerificationTokenError

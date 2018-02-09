@@ -20,6 +20,8 @@ trait UserDataHandler[F[_]] {
   def getVerifiedUserById(userId: UserId): F[User]
 
   def getUserPreferences(userId: UserId): F[UserPreferences]
+
+  def setUserPreferences(userId: UserId, preferencesModel: SetUserPreferencesModel): F[UserPreferences]
 }
 
 trait UserBlockingDataHandler extends UserDataHandler[ApplicationResult]

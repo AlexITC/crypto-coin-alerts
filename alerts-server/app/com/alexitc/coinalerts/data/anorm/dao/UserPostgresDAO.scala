@@ -111,21 +111,6 @@ class UserPostgresDAO {
     userMaybe
   }
 
-  def createUserPreferences(userPreferences: UserPreferences)(implicit conn: Connection): Int = {
-    SQL(
-      """
-        |INSERT INTO user_preferences
-        |  (user_id, lang)
-        |VALUES
-        |  ({user_id}, {lang})
-        |ON CONFLICT DO NOTHING
-      """.stripMargin
-    ).on(
-      "user_id" -> userPreferences.userId.string,
-      "lang" -> userPreferences.lang.code
-    ).executeUpdate()
-  }
-
   def getUserPreferences(userId: UserId)(implicit conn: Connection): Option[UserPreferences] = {
     SQL(
       """
@@ -135,6 +120,27 @@ class UserPostgresDAO {
       """.stripMargin
     ).on(
       "user_id" -> userId.string
+    ).as(parseUserPreferences.singleOpt)
+  }
+
+  def setUserPreferences(
+      userId: UserId,
+      preferencesModel: SetUserPreferencesModel)(
+      implicit conn: Connection): Option[UserPreferences] = {
+
+    SQL(
+      """
+        |INSERT INTO user_preferences
+        |  (user_id, lang)
+        |VALUES
+        |  ({user_id}, {lang})
+        |ON CONFLICT (user_id) DO UPDATE
+        |  SET lang = EXCLUDED.lang
+        |RETURNING user_id, lang
+      """.stripMargin
+    ).on(
+      "user_id" -> userId.string,
+      "lang" -> preferencesModel.lang.code
     ).as(parseUserPreferences.singleOpt)
   }
 }
