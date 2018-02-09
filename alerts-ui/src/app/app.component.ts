@@ -27,6 +27,7 @@ export class AppComponent implements OnInit {
 
     // define langs
     translate.setTranslation('en', this.englishLang());
+    translate.setTranslation('es', this.spanishLang());
   }
 
   ngOnInit() {
@@ -51,14 +52,6 @@ export class AppComponent implements OnInit {
   <li>Get notified when a new currency is added to the exchanges that you use</li>
 </ul>`,
 
-      'home.supportedExchanges': `<ul>
-  <li><a href="https://bittrex.com/">BITTREX</a></li>
-  <li><a href="https://www.binance.com/">BINANCE</a></li>
-  <li><a href="https://bitso.com/">BITSO</a></li>
-  <li><a href="https://hitbtc.com/">HITBTC</a></li>
-  <li><a href="https://www.kucoin.com/">KUCOIN</a></li>
-</ul>`,
-
       'home.emailNotReceivedHelp': `If you have not received our email, please check your spam folder. <hr>
 Still can't find it? Try searching Gmail for "in:all subject:(Confirm your account on Crypto Coin Alerts)" (without quotes). <hr>
 Still can't find it? Just send us an email to support@cryptocoinalerts.net from the account that you registered and we'll validate it.`,
@@ -73,6 +66,7 @@ Still can't find it? Just send us an email to support@cryptocoinalerts.net from 
       'max': 'the value is too big',
       // langs
       'en': 'English',
+      'es': 'Spanish',
       // labels
       'label.language': 'Language',
       'label.sort': 'Sort by',
@@ -138,6 +132,98 @@ Still can not find it? Try searching Gmail for "in:all subject:(Confirm your acc
       'action.delete': 'Delete',
       // custom validations
       'validation.passwordMismatch': 'the password does not match'
+    };
+  }
+
+  spanishLang(): Object {
+    return {
+      'home.descripion': 'Crypto Coin Alerts te permite enterarte de los cambios en los precios de cripto monedas',
+      'home.alertTypes': `<ul>
+  <li>Recibe una alerta cuando una cripto moneda sube o baja de cierto precio</li>
+  <li>Recibe una alerta cuando alguno de los exchanges que usas agrega una nueva cripto moneda</li>
+</ul>`,
+
+      'home.emailNotReceivedHelp': `Si no has recibido el email para verificar tu cuenta,
+por favor verifica en el correo no deseado (spam). <hr>
+Si aún no lo encuentras? Intenta buscando esto en Gmail "in:all subject:(Confirm your account on Crypto Coin Alerts)" (sin comillas). <hr>
+Si aún así, no lo encuentras? envianos un email a support@cryptocoinalerts.net desde la cuenta que registraste.`,
+
+      'newCurrencyAlerts.description': 'Recibe una alerta cuando tus exchanges agregan una cripto moneda, ¡verificamos cada hora!',
+      // default messages from angular
+      'required': 'campo requerido',
+      'email': 'email invalido',
+      'minlength': 'se necesitan mas caracteres',
+      'maxlength': 'demasiados caracteres',
+      'min': 'el valor es muy pequeño',
+      'max': 'el valor es muy grande',
+      // langs
+      'en': 'Inglés',
+      'es': 'Español',
+      // labels
+      'label.language': 'Idioma',
+      'label.sort': 'Ordenar por',
+      'label.reverseOrder': 'Invertir orden',
+      'label.verifyingEmail': 'Verificando email',
+      'label.login': 'Acceder',
+      'label.logout': 'Salir',
+      'label.newAccount': 'Crear cuenta',
+      'label.fixedPriceAlerts': 'Alertas por precio',
+      'label.newCurrencyAlerts': 'Alerts de nuevas monedas',
+      'label.display': 'Mostrar',
+      'label.alertTypes': 'Tipos de alertas que puedes recibir',
+      'label.supportedExchanges': 'Exchanges soportados',
+      'label.emailNotReceived': '¿Ya te has registrado?, ¿Aún no has recibido el email para verificar tu cuenta?',
+      // messages
+      'message.welcome': 'Bienvenido',
+      'message.bye': 'Tu sesión a finalizado',
+      'message.authError': 'No tienes permisos, por favor, accede a tu cuenta',
+      'message.verifyEmail': `Por favor, accede a tu email ({{email}}) para verificar tu cuenta. <hr>
+Si {{email}} no es tu email, por favor, vuelve átras e ingresa el email correcto. <hr>
+Si no has recibido nuestro email en 15 minutos, por favor verifica tu correo no deseado (spam). <hr>
+¿Aún no lo encuentras? Intenta buscando esto en Gmail "in:all subject:(Confirm your account on Crypto Coin Alerts)" (sin comillas).`,
+
+      'message.accountNeeded.question': '¿Qué esperas? Crea una',
+      'message.accountNeeded.new': 'nueva cuenta',
+      'message.accountNeeded.or': 'o',
+      'message.accountNeeded.login': 'ingresa',
+      'message.accountNeeded.last': 'para comenzar a registrar alertas',
+
+      'message.emailVerified': 'Gracias por verificar tu cuenta',
+      'message.resolveCaptcha': 'Resuelve el reCAPTCHA',
+      'message.alertCreated': 'Alerta creada',
+      'message.confirmDeleteAlert': 'La alerta será borrada, ¿continuar?',
+      'message.alertDeleted': 'Alerta borrada',
+      'message.yourAboveFixedPriceAlert': 'Te notificaremos cuando {{currency}} este arriba de {{price}} {{market}} en {{exchange}}',
+      'message.yourBelowFixedPriceAlert': 'Te notificaremos cuando {{currency}} este abajo de {{price}} {{market}} en {{exchange}}',
+      'message.newCurrencyAlertCreated': 'Alerta creada para {{exchange}}',
+      'message.newCurrencyAlertDeleted': 'Alerta borrada para {{exchange}}',
+      // field names
+      'field.email': 'Email',
+      'field.password': 'Constraseña',
+      'field.repeatPassword': 'Repite contraseña',
+      'field.exchange': 'Exchange',
+      'field.market': 'Mercado',
+      'field.currency': 'Moneda',
+      'field.priceCondition': 'Condición del precio',
+      'field.above': 'Arriba de',
+      'field.below': 'Abajo de',
+      'field.price': 'Precio',
+      'field.basePrice': 'Precio cuando compraste / vendiste',
+      'field.optional': 'opcional',
+      'field.createdOn': 'Creado en',
+      'field.triggeredOn': 'Enviado en',
+      'field.pendingAlerts': 'Alertas pendientes',
+      'field.triggeredAlerts': 'Alertas enviadas',
+      'field.all': 'Todas',
+      // actions
+      'action.createAccount': 'Crear cuenta',
+      'action.login': 'Entrar',
+      'action.createAlert': 'Crear alerta',
+      'action.newAlert': 'Nueva alerta',
+      'action.cancel': 'Cancelar',
+      'action.delete': 'Borrar',
+      // custom validations
+      'validation.passwordMismatch': 'las contraseñas no coinciden'
     };
   }
 }
