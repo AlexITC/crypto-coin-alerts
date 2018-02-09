@@ -131,6 +131,10 @@ class JsonErrorRenderer @Inject() (messagesApi: MessagesApi) {
     case IncorrectPasswordError =>
       val message = messagesApi("error.password.incorrect")
       FieldValidationError("password", message)
+
+    case UnsupportedLangError =>
+      val message = messagesApi("error.lang.incorrect")
+      FieldValidationError("lang", message)
   }
 
   private def renderUserVerificationTokenError(error: UserVerificationTokenError)(implicit lang: Lang) = error match {

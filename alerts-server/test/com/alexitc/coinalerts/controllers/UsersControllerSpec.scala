@@ -4,6 +4,7 @@ import com.alexitc.coinalerts.commons.PlayAPISpec.AuthorizationTokenExt
 import com.alexitc.coinalerts.commons.{DataHelper, PlayAPISpec, RandomDataGenerator}
 import com.alexitc.coinalerts.models._
 import play.api.Application
+import play.api.libs.json.JsValue
 import play.api.test.Helpers._
 
 class UsersControllerSpec extends PlayAPISpec {
@@ -139,6 +140,65 @@ class UsersControllerSpec extends PlayAPISpec {
       val header = "Bearer Xys"
       val response = GET(url, AUTHORIZATION -> header)
       status(response) mustEqual UNAUTHORIZED
+    }
+  }
+
+  "GET /users/me/preferences" should {
+    val url = "/users/me/preferences"
+
+    "retrieve the preferences" in {
+      val user = DataHelper.createVerifiedUser()
+      val token = jwtService.createToken(user)
+
+      val response = GET(url, token.toHeader)
+      status(response) mustEqual OK
+
+      val json = contentAsJson(response)
+      (json \ "userId").as[String] mustEqual user.id.string
+      (json \ "lang").as[String] mustEqual "en"
+    }
+  }
+
+  "PUT /users/me/preferences" should {
+    val url = "/users/me/preferences"
+
+    "update the preferences" in {
+      val user = DataHelper.createVerifiedUser()
+      val token = jwtService.createToken(user)
+      val lang = "en"
+      val body =
+        s"""
+          |{ "lang": "$lang" }
+        """.stripMargin
+
+      val response = PUT(url, Some(body), token.toHeader)
+      status(response) mustEqual OK
+
+      val json = contentAsJson(response)
+      (json \ "userId").as[String] mustEqual user.id.string
+      (json \ "lang").as[String] mustEqual lang
+    }
+
+    "fail to set an unsupported language" in {
+      val user = DataHelper.createVerifiedUser()
+      val token = jwtService.createToken(user)
+      val lang = "ru"
+      val body =
+        s"""
+           |{ "lang": "$lang" }
+        """.stripMargin
+
+      val response = PUT(url, Some(body), token.toHeader)
+      status(response) mustEqual BAD_REQUEST
+
+      val json = contentAsJson(response)
+      val errorList = (json \ "errors").as[List[JsValue]]
+      errorList.size mustEqual 1
+
+      val error = errorList.head
+      (error \ "type").as[String] mustEqual "field-validation-error"
+      (error \ "field").as[String] mustEqual "lang"
+      (error \ "message").as[String].nonEmpty mustEqual true
     }
   }
 }

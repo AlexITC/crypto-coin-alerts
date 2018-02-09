@@ -76,4 +76,17 @@ class UserService @Inject() (
   def userById(userId: UserId): FutureApplicationResult[User] = {
     userDataHandler.getVerifiedUserById(userId)
   }
+
+  def getPreferences(userId: UserId): FutureApplicationResult[UserPreferences] = {
+    userDataHandler.getUserPreferences(userId)
+  }
+
+  def setPreferences(userId: UserId, preferencesModel: SetUserPreferencesModel): FutureApplicationResult[UserPreferences] = {
+    val result = for {
+      validatedPreferences <- userValidator.validateSetUserPreferencesModel(preferencesModel).toFutureOr
+      userPreferences <- userDataHandler.setUserPreferences(userId, validatedPreferences).toFutureOr
+    } yield userPreferences
+
+    result.toFuture
+  }
 }

@@ -8,6 +8,8 @@ POST   /users                           controllers.UsersController.create()
 POST   /users/verify-email/:token       controllers.UsersController.verifyEmail(token: com.alexitc.coinalerts.models.UserVerificationToken)
 POST   /users/login                     controllers.UsersController.loginByEmail()
 GET    /users/me                        controllers.UsersController.whoAmI()
+GET    /users/me/preferences            controllers.UsersController.getPreferences()
+PUT    /users/me/preferences            controllers.UsersController.setPreferences()
 
 POST   /fixed-price-alerts              controllers.FixedPriceAlertsController.create()
 GET    /fixed-price-alerts              controllers.FixedPriceAlertsController.getAlerts(query: com.alexitc.coinalerts.core.PaginatedQuery, filterQuery: com.alexitc.coinalerts.core.FilterQuery, orderByQuery: com.alexitc.coinalerts.core.OrderByQuery)

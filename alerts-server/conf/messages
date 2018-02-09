@@ -6,6 +6,7 @@ error.email.format=The email is not correct, choose another one
 error.email.length=The email should have at most {0} characters
 error.email.conflict=The email already exists, choose another one
 error.password.length=The password should have between {0} and {1} characters
+error.lang.incorrect=The given language is not supported
 
 error.token.verification=The given token is not valid or it does not exist
 

@@ -122,6 +122,18 @@ trait PlayAPISpec extends PlaySpec with ScalaFutures {
 
     response
   }
+
+  def PUT(url: String, jsonBody: Option[String], extraHeaders: (String, String)*): Future[Result] = {
+    val headers = JsonHeader :: extraHeaders.toList
+    val json = jsonBody.getOrElse(EmptyJson)
+    val request = FakeRequest("PUT", url)
+        .withHeaders(headers: _*)
+        .withBody(json)
+
+    val response = route(application, request).get
+    logRequestResponse(request, response)
+    response
+  }
 }
 
 object PlayAPISpec {

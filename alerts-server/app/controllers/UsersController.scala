@@ -40,4 +40,12 @@ class UsersController @Inject() (
   def whoAmI() = authenticatedNoInput { context: AuthCtx =>
     userService.userById(context.userId)
   }
+
+  def getPreferences() = authenticatedNoInput { context =>
+    userService.getPreferences(context.userId)
+  }
+
+  def setPreferences() = authenticatedWithInput { context: AuthCtxModel[SetUserPreferencesModel] =>
+    userService.setPreferences(context.userId, context.model)
+  }
 }

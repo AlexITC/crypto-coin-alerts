@@ -1,11 +1,11 @@
 package com.alexitc.coinalerts.services.validators
 
 import com.alexitc.coinalerts.commons.ApplicationResult
-import com.alexitc.coinalerts.errors.{InvalidEmailFormatError, InvalidEmailLengthError, InvalidPasswordLengthError}
-import com.alexitc.coinalerts.models.{CreateUserModel, UserEmail, UserPassword}
+import com.alexitc.coinalerts.errors.{InvalidEmailFormatError, InvalidEmailLengthError, InvalidPasswordLengthError, UnsupportedLangError}
+import com.alexitc.coinalerts.models._
 import org.apache.commons.validator.routines.EmailValidator
 import org.scalactic.Accumulation.withGood
-import org.scalactic.{Bad, Good}
+import org.scalactic.{Bad, Good, One, Or}
 
 class UserValidator {
 
@@ -16,6 +16,15 @@ class UserValidator {
 
       createUserModel
     }
+  }
+
+  def validateSetUserPreferencesModel(preferencesModel: SetUserPreferencesModel): ApplicationResult[SetUserPreferencesModel] = {
+    val preferencesMaybe = UserPreferences
+        .AvailableLangs
+        .find(_ == preferencesModel.lang)
+        .map(_ => preferencesModel)
+
+    Or.from(preferencesMaybe, One(UnsupportedLangError))
   }
 
   private val MaxEmailLength = 64
