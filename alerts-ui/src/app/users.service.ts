@@ -41,4 +41,11 @@ export class UsersService {
     const url = this.baseUrl + '/verify-email/' + token;
     return this.http.post(url, {}, httpOptions);
   }
+
+  setPreferences(lang: string): Observable<any> {
+    const url = this.baseUrl + '/me/preferences';
+    const data = { lang: lang };
+
+    return this.http.put(url, data, httpOptions);
+  }
 }

@@ -8,6 +8,8 @@ import { AuthService } from '../auth.service';
 import { NavigatorService } from '../navigator.service';
 import { NotificationService } from '../notification.service';
 import { LanguageService } from '../language.service';
+import { UsersService } from '../users.service';
+import { ErrorService } from '../error.service';
 
 @Component({
   selector: 'app-navbar',
@@ -26,6 +28,8 @@ export class AppNavbarComponent implements OnInit {
     private navigatorService: NavigatorService,
     private notificationService: NotificationService,
     private languageService: LanguageService,
+    private usersService: UsersService,
+    private errorService: ErrorService,
     private translate: TranslateService,
     private location: Location) { }
 
@@ -74,6 +78,21 @@ export class AppNavbarComponent implements OnInit {
 
   /* lang */
   setLang(lang: string) {
-    this.languageService.setLang(lang);
+    if (this.authService.isAuthenticated()) {
+      // set the lang in the server, and then, locally
+      this.usersService
+        .setPreferences(lang)
+        .subscribe(
+          response => this.onServerLangSet(response),
+          response => this.errorService.renderServerErrors(null, response)
+        );
+    } else {
+      // not-authenticated, just store the lang
+      this.languageService.setLang(lang);
+    }
+  }
+
+  private onServerLangSet(response: any) {
+    this.languageService.setLang(response.lang);
   }
 }
