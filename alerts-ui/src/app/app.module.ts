@@ -33,6 +33,7 @@ import { NavigatorService } from './navigator.service';
 
 import { AppRoutingModule } from './app-routing.module';
 import { JWTInterceptor } from './jwt.interceptor';
+import { LangInterceptor } from './lang.interceptor';
 import { NewFixedPriceAlertComponent } from './new-fixed-price-alert/new-fixed-price-alert.component';
 import { FooterComponent } from './footer/footer.component';
 import { HomeComponent } from './home/home.component';
@@ -86,6 +87,11 @@ import { LanguageService } from './language.service';
     {
       provide: HTTP_INTERCEPTORS,
       useClass: JWTInterceptor,
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: LangInterceptor,
       multi: true
     }
   ],
