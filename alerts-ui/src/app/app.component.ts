@@ -96,6 +96,12 @@ If {{email}} is not your email address, please go back and enter the correct one
 If you have not received our email in 15 minutes, please check your spam folder. <hr>
 Still can not find it? Try searching Gmail for "in:all subject:(Confirm your account on Crypto Coin Alerts)" (without quotes).`,
 
+      'message.accountNeeded.question': 'What are you waiting? Create a',
+      'message.accountNeeded.new': 'new account',
+      'message.accountNeeded.or': 'or',
+      'message.accountNeeded.login': 'login',
+      'message.accountNeeded.last': 'to start receiving alerts',
+
       'message.emailVerified': 'Thanks for verifying your email',
       'message.resolveCaptcha': 'Resolve the reCAPTCHA',
       'message.alertCreated': 'Your alert was created',

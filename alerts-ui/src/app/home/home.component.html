@@ -26,9 +26,9 @@
 
   <div [hidden]="authService.isAuthenticated()">
     <p>
-      What are you waiting? Create a
-      <a routerLink="/new-account">new account</a> or
-      <a routerLink="/login">login</a> to start receiving alerts.
+      {{'message.accountNeeded.question' | translate}}
+      <a routerLink="/new-account">{{'message.accountNeeded.new' | translate}}</a> {{'message.accountNeeded.or' | translate}}
+      <a routerLink="/login">{{'message.accountNeeded.login' | translate}}</a> {{'message.accountNeeded.last' | translate}}.
     </p>
 
     <div>
