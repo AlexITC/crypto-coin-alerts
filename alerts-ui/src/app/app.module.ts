@@ -38,6 +38,7 @@ import { FooterComponent } from './footer/footer.component';
 import { HomeComponent } from './home/home.component';
 import { FixedPriceAlertsComponent } from './fixed-price-alerts/fixed-price-alerts.component';
 import { NewCurrencyAlertsComponent } from './new-currency-alerts/new-currency-alerts.component';
+import { LanguageService } from './language.service';
 
 @NgModule({
   declarations: [
@@ -81,6 +82,7 @@ import { NewCurrencyAlertsComponent } from './new-currency-alerts/new-currency-a
     ReCaptchaService,
     NotificationService,
     NavigatorService,
+    LanguageService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: JWTInterceptor,
