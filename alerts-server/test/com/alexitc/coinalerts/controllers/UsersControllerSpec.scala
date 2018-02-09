@@ -4,6 +4,7 @@ import com.alexitc.coinalerts.commons.PlayAPISpec.AuthorizationTokenExt
 import com.alexitc.coinalerts.commons.{DataHelper, PlayAPISpec, RandomDataGenerator}
 import com.alexitc.coinalerts.models._
 import play.api.Application
+import play.api.i18n.Lang
 import play.api.libs.json.JsValue
 import play.api.test.Helpers._
 
@@ -165,7 +166,7 @@ class UsersControllerSpec extends PlayAPISpec {
     "update the preferences" in {
       val user = DataHelper.createVerifiedUser()
       val token = jwtService.createToken(user)
-      val lang = "en"
+      val lang = "es"
       val body =
         s"""
           |{ "lang": "$lang" }
@@ -199,6 +200,24 @@ class UsersControllerSpec extends PlayAPISpec {
       (error \ "type").as[String] mustEqual "field-validation-error"
       (error \ "field").as[String] mustEqual "lang"
       (error \ "message").as[String].nonEmpty mustEqual true
+    }
+
+    "returns a response in a Spanish" in {
+      val user = DataHelper.createVerifiedUser()
+      val token = jwtService.createToken(user)
+      val lang = Lang("es")
+      val body =
+        s"""
+           |{ "lang": "ru" }
+        """.stripMargin
+
+      userDataHandler.setUserPreferences(user.id, SetUserPreferencesModel.default.copy(lang = lang))
+      val response = PUT(url, Some(body), token.toHeader, "Accept-Language" -> lang.code)
+
+      val json = contentAsJson(response)
+      val errorList = (json \ "errors").as[List[JsValue]]
+      val error = errorList.head
+      (error \ "message").as[String] mustEqual "Idioma no disponible"
     }
   }
 }

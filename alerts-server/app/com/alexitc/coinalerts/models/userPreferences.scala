@@ -7,7 +7,7 @@ case class UserPreferences (userId: UserId, lang: Lang)
 
 object UserPreferences {
 
-  val AvailableLangs = List("en").map(Lang.apply)
+  val AvailableLangs = List("en", "es").map(Lang.apply)
 
   def default(userId: UserId): UserPreferences = {
     val defaultPreferences = SetUserPreferencesModel.default
