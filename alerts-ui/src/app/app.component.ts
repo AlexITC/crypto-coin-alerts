@@ -57,6 +57,9 @@ Still can't find it? Try searching Gmail for "in:all subject:(Confirm your accou
 Still can't find it? Just send us an email to support@cryptocoinalerts.net from the account that you registered and we'll validate it.`,
 
       'newCurrencyAlerts.description': 'Get notified when a new currency is added to your exchanges, we check it every hour!',
+
+      'footer.description': 'Crypto Coin Alerts is an open source project, help us to improve it on ',
+      'footer.stayUpdatedMessage': 'Stay updated following us on our social networks!',
       // default messages from angular
       'required': 'a value is required',
       'email': 'invalid email',
@@ -81,6 +84,8 @@ Still can't find it? Just send us an email to support@cryptocoinalerts.net from 
       'label.alertTypes': 'Types of alerts that you can receive',
       'label.supportedExchanges': 'Supported exchanges',
       'label.emailNotReceived': 'Already registered? Haven\'t received the verification email?',
+      'label.yourAlerts': 'Your alerts',
+      'label.createFixedPriceAlert': 'Create a fixed price alert',
       // messages
       'message.welcome': 'Welcome',
       'message.bye': 'You are now logged out',
@@ -149,6 +154,8 @@ Si aún no lo encuentras? Intenta buscando esto en Gmail "in:all subject:(Confir
 Si aún así, no lo encuentras? envianos un email a support@cryptocoinalerts.net desde la cuenta que registraste.`,
 
       'newCurrencyAlerts.description': 'Recibe una alerta cuando tus exchanges agregan una cripto moneda, ¡verificamos cada hora!',
+      'footer.description': 'Crypto Coin Alerts projecto open source, ayudanos a mejorarlo en ',
+      'footer.stayUpdatedMessage': 'Mantente al tanto de las novedades siguiendonos en nuestras redes sociales',
       // default messages from angular
       'required': 'campo requerido',
       'email': 'email invalido',
@@ -173,6 +180,8 @@ Si aún así, no lo encuentras? envianos un email a support@cryptocoinalerts.net
       'label.alertTypes': 'Tipos de alertas que puedes recibir',
       'label.supportedExchanges': 'Exchanges soportados',
       'label.emailNotReceived': '¿Ya te has registrado?, ¿Aún no has recibido el email para verificar tu cuenta?',
+      'label.yourAlerts': 'Tus alertas',
+      'label.createFixedPriceAlert': 'Crear alerta',
       // messages
       'message.welcome': 'Bienvenido',
       'message.bye': 'Tu sesión a finalizado',

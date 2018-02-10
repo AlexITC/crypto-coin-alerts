@@ -1,7 +1,7 @@
 
 <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate role="form" class="form-horizontal">
 
-  <legend class="col-sm-offset-1">Create a fixed price alert</legend>
+  <legend class="col-sm-offset-1">{{'label.createFixedPriceAlert' | translate}}</legend>
 
   <!-- TODO: Add help block explaining the alert -->
   <div [ngClass]="{ 'has-success': errorService.hasCorrectValue(form, 'exchange'), 'has-error': errorService.hasWrongValue(form, 'exchange') }"
