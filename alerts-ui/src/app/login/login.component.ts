@@ -12,6 +12,7 @@ import { ErrorService } from '../error.service';
 import { ReCaptchaService } from '../re-captcha.service';
 import { NotificationService } from '../notification.service';
 import { NavigatorService } from '../navigator.service';
+import { LanguageService } from '../language.service';
 
 @Component({
   selector: 'app-login',
@@ -39,6 +40,7 @@ export class LoginComponent implements OnInit {
     private authService: AuthService,
     private notificationService: NotificationService,
     private navigatorService: NavigatorService,
+    private languageService: LanguageService,
     private translate: TranslateService,
     public errorService: ErrorService,
     public reCaptchaService: ReCaptchaService) {
@@ -87,6 +89,11 @@ export class LoginComponent implements OnInit {
     this.authService.setToken(response);
     this.translate.get('message.welcome')
       .subscribe(msg => this.notificationService.info(`${msg} ${this.authService.getAuthenticatedUser().email}`));
+
+    // load lang from server
+    this.usersService
+      .getPreferences()
+      .subscribe(preferences => this.languageService.setLang(preferences.lang));
 
     this.navigatorService.home();
   }

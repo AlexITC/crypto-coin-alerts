@@ -48,4 +48,10 @@ export class UsersService {
 
     return this.http.put(url, data, httpOptions);
   }
+
+  getPreferences(): Observable<any> {
+    const url = this.baseUrl + '/me/preferences';
+
+    return this.http.get(url);
+  }
 }
