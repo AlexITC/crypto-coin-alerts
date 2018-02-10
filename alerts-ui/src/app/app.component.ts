@@ -168,7 +168,7 @@ Si aún así, no lo encuentras? envianos un email a support@cryptocoinalerts.net
       'label.logout': 'Salir',
       'label.newAccount': 'Crear cuenta',
       'label.fixedPriceAlerts': 'Alertas por precio',
-      'label.newCurrencyAlerts': 'Alerts de nuevas monedas',
+      'label.newCurrencyAlerts': 'Alertas de nuevas monedas',
       'label.display': 'Mostrar',
       'label.alertTypes': 'Tipos de alertas que puedes recibir',
       'label.supportedExchanges': 'Exchanges soportados',
