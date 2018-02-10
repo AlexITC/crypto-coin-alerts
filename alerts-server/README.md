@@ -45,6 +45,8 @@ export MAILGUN_API_SECRET_KEY="REPLACE_ME"
 export MAILGUN_DOMAIN="www.cryptocoinalerts.net"
 ```
 
+Last, as the development environment is prepared for running without nginx, uncomment the line with this text `play.filters.enabled += "play.filters.cors.CORSFilter"` (or just add the text as a new line) from [application.conf](conf/application.conf).
+
 Execute `source .env; sbt run` command for running the application.
 
 A more flexible way would be to modify [application.conf](conf/application.conf) file to your needs and then execute `sbt run` command.
