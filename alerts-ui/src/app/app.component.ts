@@ -154,7 +154,7 @@ Si aún no lo encuentras? Intenta buscando esto en Gmail "in:all subject:(Confir
 Si aún así, no lo encuentras? envianos un email a support@cryptocoinalerts.net desde la cuenta que registraste.`,
 
       'newCurrencyAlerts.description': 'Recibe una alerta cuando tus exchanges agregan una cripto moneda, ¡verificamos cada hora!',
-      'footer.description': 'Crypto Coin Alerts projecto open source, ayudanos a mejorarlo en ',
+      'footer.description': 'Crypto Coin Alerts es un proyecto open source, ayudanos a mejorarlo en ',
       'footer.stayUpdatedMessage': 'Mantente al tanto de las novedades siguiendonos en nuestras redes sociales',
       // default messages from angular
       'required': 'campo requerido',
