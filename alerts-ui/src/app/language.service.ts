@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 export const DEFAULT_LANG = 'en';
-export const SUPPORTED_LANGS = ['en'];
+export const SUPPORTED_LANGS = ['en', 'es'];
 
 @Injectable()
 export class LanguageService {
@@ -18,7 +18,7 @@ export class LanguageService {
       this.lang = localStorage.getItem('lang');
     }
 
-    return this.lang || DEFAULT_LANG;
+    return this.lang || this.defaultLang();
   }
 
   setLang(lang: string) {
@@ -26,5 +26,17 @@ export class LanguageService {
 
     localStorage.setItem('lang', lang);
     this.translate.use(lang);
+  }
+
+  // quite simplle function to detect preferred lang based on the browser lang
+  private defaultLang(): string {
+    const browserLang = (window.navigator.language || DEFAULT_LANG);
+    const preferredLang = browserLang.substr(0, 2);
+
+    if (SUPPORTED_LANGS.indexOf(preferredLang) >= 0) {
+      return preferredLang;
+    } else {
+      return DEFAULT_LANG;
+    }
   }
 }
