@@ -121,6 +121,7 @@ Still can't find it? Just send us an email to support@cryptocoinalerts.net from 
       'label.yourAlerts': 'Your alerts',
       'label.createFixedPriceAlert': 'Create a fixed price alert',
       // messages
+      'message.serverUnavailable': 'Server unavailable, please try again in a minute',
       'message.welcome': 'Welcome',
       'message.bye': 'You are now logged out',
       'message.authError': 'You are not authorized, please log in',
@@ -220,6 +221,7 @@ Si aún así, no lo encuentras? envianos un email a support@cryptocoinalerts.net
       'label.yourAlerts': 'Tus alertas',
       'label.createFixedPriceAlert': 'Crear alerta',
       // messages
+      'message.serverUnavailable': 'El servidor no esta disponible, por favor, intenta de nuevo en un minuto',
       'message.welcome': 'Bienvenido',
       'message.bye': 'Tu sesión a finalizado',
       'message.authError': 'No tienes permisos, por favor, accede a tu cuenta',

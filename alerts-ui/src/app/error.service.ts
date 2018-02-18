@@ -1,14 +1,27 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms/src/model';
 
+import { TranslateService } from '@ngx-translate/core';
+
 import { NotificationService } from './notification.service';
 
 @Injectable()
 export class ErrorService {
 
-  constructor(private notificationService: NotificationService) { }
+  constructor(
+    private translateService: TranslateService,
+    private notificationService: NotificationService) { }
 
   renderServerErrors(form: FormGroup, response: any) {
+    if (response.error.errors == null) {
+      // server error responses are consistent, if the errors array is not defined
+      // it is very likely that there are issues with the server.
+      this.translateService.get('message.serverUnavailable')
+        .subscribe(msg => this.notificationService.error(msg));
+
+      return;
+    }
+
     response.error.errors.forEach((element: any) => {
       // field errors are handled here, different errors should be handled globally
       if (element.type === 'field-validation-error') {
