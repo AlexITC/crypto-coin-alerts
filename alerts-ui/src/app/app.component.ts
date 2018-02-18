@@ -40,8 +40,39 @@ export class AppComponent implements OnInit {
 
       return true;
     }).subscribe((x: any) => {
-      (<any>window).gtag('config', environment.gtag.id, { 'page_path': x.url });
+      const dirtyUrl: string = x.url || '';
+      const url = this.cleanUrlForAnalytics(dirtyUrl);
+      (<any>window).gtag('config', environment.gtag.id, { 'page_path': url });
     });
+  }
+
+  private cleanUrlForAnalytics(dirtyUrl: string): string {
+    const urlWithoutParams = this.removeQueryParams(dirtyUrl);
+    const urlWithoutToken = this.removeTokens(urlWithoutParams);
+
+    return urlWithoutToken;
+  }
+
+  private removeTokens(dirtyUrl: string): string {
+    const urlWithToken = ['/verify-email'];
+    const result = urlWithToken
+      .filter(prefix => dirtyUrl.indexOf(prefix) >= 0)
+      .map(prefix => dirtyUrl.substring(0, dirtyUrl.indexOf(prefix) + prefix.length) );
+
+    if (result.length === 0) {
+      return dirtyUrl;
+    } else {
+      return result[0];
+    }
+  }
+
+  private removeQueryParams(url: string): string {
+    const index = url.indexOf('?');
+    if (index >= 0) {
+      return url.substring(0, index);
+    } else {
+      return url;
+    }
   }
 
   englishLang(): Object {
