@@ -46,6 +46,9 @@ export class AppComponent implements OnInit {
 
   englishLang(): Object {
     return {
+      'home.examples': 'Examples',
+      'home.newCurrenciesAlertExample': 'New Currencies Alert',
+      'home.priceAlertExample': 'Price Alert',
       'home.descripion': 'Crypto Coin Alerts let you be aware of the changes in your crypto currencies',
       'home.alertTypes': `<ul>
   <li>Get notified when a currency increases or decreases a given price</li>
@@ -142,10 +145,13 @@ Still can not find it? Try searching Gmail for "in:all subject:(Confirm your acc
 
   spanishLang(): Object {
     return {
+      'home.examples': 'Ejemplos',
+      'home.newCurrenciesAlertExample': 'Nuevas monedas',
+      'home.priceAlertExample': 'Alerta por precio',
       'home.descripion': 'Crypto Coin Alerts te permite enterarte de los cambios en los precios de cripto monedas',
       'home.alertTypes': `<ul>
   <li>Recibe una alerta cuando una cripto moneda sube o baja de cierto precio</li>
-  <li>Recibe una alerta cuando alguno de los exchanges que usas agrega una nueva cripto moneda</li>
+  <li>Recibe una alerta cuando alguno de los exchanges que usas agrega una nueva moneda</li>
 </ul>`,
 
       'home.emailNotReceivedHelp': `Si no has recibido el email para verificar tu cuenta,

@@ -1,63 +1,62 @@
 
-<div class="col-sm-offset-1">
-  <p>
-    {{'home.descripion' | translate}}
-  </p>
+<div class="container">
 
-  <div>
-    <button type="button" class="btn btn-primary" (click)="alertTypesCollapsed = !alertTypesCollapsed">
-      {{'label.alertTypes' | translate}}
-    </button>
-    <div [collapse]="alertTypesCollapsed" class="card card-block card-header">
-      <div class="well well-lg" [innerHTML]="'home.alertTypes' | translate"></div><hr>
-    </div>
-  </div>
-
-  <div>
-    <button type="button" class="btn btn-primary" (click)="supportedExchangesCollapsed = !supportedExchangesCollapsed">
-      {{'label.supportedExchanges' | translate}}
-    </button>
-    <div [collapse]="supportedExchangesCollapsed" class="card card-block card-header">
-      <div class="well">
-        <ul>
-          <li>
-            <a href="https://bittrex.com/">BITTREX</a>
-          </li>
-          <li>
-            <a href="https://www.binance.com/">BINANCE</a>
-          </li>
-          <li>
-            <a href="https://bitso.com/">BITSO</a>
-          </li>
-          <li>
-            <a href="https://hitbtc.com/">HITBTC</a>
-          </li>
-          <li>
-            <a href="https://www.kucoin.com/">KUCOIN</a>
-          </li>
-        </ul>
-      </div><hr>
-    </div>
-  </div>
-
-  <hr>
-
-  <div [hidden]="authService.isAuthenticated()">
-    <p>
-      {{'message.accountNeeded.question' | translate}}
-      <a routerLink="/new-account">{{'message.accountNeeded.new' | translate}}</a> {{'message.accountNeeded.or' | translate}}
-      <a routerLink="/login">{{'message.accountNeeded.login' | translate}}</a> {{'message.accountNeeded.last' | translate}}.
-    </p>
+  <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 home-description">
+    <header>
+      <h2>{{'home.descripion' | translate}}</h2>
+    </header>
 
     <div>
-      <button type="button" class="btn btn-danger" (click)="emailNotReceivedHelpCollapsed = !emailNotReceivedHelpCollapsed">
-        {{'label.emailNotReceived' | translate}}
-      </button>
-      <div [collapse]="emailNotReceivedHelpCollapsed" class="card card-block card-header">
-        <div class="well" [innerHTML]="'home.emailNotReceivedHelp' | translate"></div>
-        <hr>
+      <div class="panel panel-default">
+        <div class="well well-lg" [innerHTML]="'home.alertTypes' | translate"></div><hr>
       </div>
     </div>
+
+    <div>
+      <label id="home-supported-exchanges">{{'label.supportedExchanges' | translate}}:</label>
+      <a href="https://bittrex.com/">BITTREX</a>,
+      <a href="https://www.binance.com/">BINANCE</a>,
+      <a href="https://bitso.com/">BITSO</a>,
+      <a href="https://hitbtc.com/">HITBTC</a>,
+      <a href="https://www.kucoin.com/">KUCOIN</a>
+    </div>
+
+    <hr>
+
+    <div [hidden]="authService.isAuthenticated()">
+      <p id="home-accountRequired">
+        {{'message.accountNeeded.question' | translate}}
+        <a routerLink="/new-account">{{'message.accountNeeded.new' | translate}}</a> {{'message.accountNeeded.or' | translate}}
+        <a routerLink="/login">{{'message.accountNeeded.login' | translate}}</a> {{'message.accountNeeded.last' | translate}}.
+      </p>
+
+      <div>
+        <button type="button" class="btn btn-danger" (click)="emailNotReceivedHelpCollapsed = !emailNotReceivedHelpCollapsed">
+          {{'label.emailNotReceived' | translate}}
+        </button>
+        <div [collapse]="emailNotReceivedHelpCollapsed" class="card card-block card-header">
+          <div class="well" [innerHTML]="'home.emailNotReceivedHelp' | translate"></div>
+          <hr>
+        </div>
+      </div>
+    </div>
+    <hr>
   </div>
-  <hr>
+
+  <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+    <label id="home-examples">{{'home.examples' | translate}}</label>
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <img src="assets/new-currencies-email.png" alt="New Currency Email">
+      </div>
+      <div class="panel-footer">{{'home.newCurrenciesAlertExample' | translate}}</div>
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <img src="assets/price-alert-email.png" alt="Price Alert Email">
+      </div>
+      <div class="panel-footer">{{'home.priceAlertExample' | translate}}</div>
+    </div>
+  </div>
+
 </div>
