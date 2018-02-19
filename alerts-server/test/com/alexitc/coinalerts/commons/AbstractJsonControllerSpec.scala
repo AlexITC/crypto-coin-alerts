@@ -2,14 +2,16 @@ package com.alexitc.coinalerts.commons
 
 import javax.inject.Inject
 
-import com.alexitc.coinalerts.errors.IncorrectPasswordError
 import com.alexitc.coinalerts.models.User
+import com.alexitc.coinalerts.services.JWTService
 import org.scalactic.{Bad, Good, Many}
+import play.api.i18n.Lang
 import play.api.libs.json.{Format, JsValue, Json}
+import play.api.mvc.MessagesControllerComponents
 import play.api.test.Helpers._
 import play.api.test._
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class AbstractJsonControllerSpec extends PlayAPISpec {
 
@@ -46,12 +48,16 @@ class AbstractJsonControllerSpec extends PlayAPISpec {
       val errorList = (json \ "errors").as[List[JsValue]]
 
       errorList.size mustEqual 2
-      errorList.foreach { error =>
-        val error = errorList.head
-        (error \ "type").as[String] mustEqual "field-validation-error"
-        (error \ "field").as[String] mustEqual "password"
-        (error \ "message").as[String].nonEmpty mustEqual true
-      }
+
+      val firstError = errorList.head
+      (firstError \ "type").as[String] mustEqual "field-validation-error"
+      (firstError \ "field").as[String] mustEqual "field"
+      (firstError \ "message").as[String].nonEmpty mustEqual true
+
+      val secondError = errorList.lift(1).get
+      (secondError \ "type").as[String] mustEqual "field-validation-error"
+      (secondError \ "field").as[String] mustEqual "anotherField"
+      (secondError \ "message").as[String].nonEmpty mustEqual true
     }
 
     "serialize exceptions as json with an error id" in {
@@ -211,12 +217,16 @@ class AbstractJsonControllerSpec extends PlayAPISpec {
       val errorList = (json \ "errors").as[List[JsValue]]
 
       errorList.size mustEqual 2
-      errorList.foreach { error =>
-        val error = errorList.head
-        (error \ "type").as[String] mustEqual "field-validation-error"
-        (error \ "field").as[String] mustEqual "password"
-        (error \ "message").as[String].nonEmpty mustEqual true
-      }
+
+      val firstError = errorList.head
+      (firstError \ "type").as[String] mustEqual "field-validation-error"
+      (firstError \ "field").as[String] mustEqual "field"
+      (firstError \ "message").as[String].nonEmpty mustEqual true
+
+      val secondError = errorList.lift(1).get
+      (secondError \ "type").as[String] mustEqual "field-validation-error"
+      (secondError \ "field").as[String] mustEqual "anotherField"
+      (secondError \ "message").as[String].nonEmpty mustEqual true
     }
 
     "serialize exceptions as json with an error id" in {
@@ -245,8 +255,42 @@ class AbstractJsonControllerSpec extends PlayAPISpec {
   }
 }
 
+class CustomErrorMapper extends ApplicationErrorMapper {
+  import CustomErrorMapper._
+  override def toPublicErrorList(applicationError: ApplicationError)(implicit lang: Lang): Seq[PublicError] = applicationError match {
+    case JsonFieldValidationError(path, errors) =>
+      val field = path.path.map(_.toJsonString.replace(".", "")).mkString(".")
+      errors.map { messageKey =>
+        val message = messageKey.string
+        FieldValidationError(field, message)
+      }
 
-class PublicWithInputController @Inject() (cc: JsonControllerComponents) extends AbstractJsonController(cc) {
+    case InputError =>
+      val publicError = FieldValidationError("field", "just an error")
+      List(publicError)
+
+    case DuplicateError =>
+      val publicError = FieldValidationError("anotherField", "just another error")
+      List(publicError)
+  }
+}
+
+object CustomErrorMapper {
+  sealed trait CustomError
+  case object InputError extends CustomError with InputValidationError
+  case object DuplicateError extends CustomError with ConflictError
+}
+
+class CustomComponents @Inject()(
+    override val messagesControllerComponents: MessagesControllerComponents,
+    override val jwtService: JWTService,
+    override val executionContext: ExecutionContext,
+    override val publicErrorRenderer: PublicErrorRenderer,
+    override val applicationErrorMapper: CustomErrorMapper)
+    extends JsonControllerComponents
+
+
+class PublicWithInputController @Inject() (cc: CustomComponents) extends AbstractJsonController(cc) {
   def getModel() = publicWithInput { context: PublicRequestContextWithModel[CustomModel] =>
     Future.successful(Good(context.model))
   }
@@ -255,9 +299,8 @@ class PublicWithInputController @Inject() (cc: JsonControllerComponents) extends
     Future.successful(Good(context.model))
   }
 
-  // TODO: Don't depend on app errors, allow to customize it
   def getErrors() = publicWithInput[CustomModel, CustomModel] { context: PublicRequestContextWithModel[CustomModel] =>
-    val result = Bad(Many(IncorrectPasswordError, IncorrectPasswordError))
+    val result = Bad(Many(CustomErrorMapper.InputError, CustomErrorMapper.DuplicateError))
     Future.successful(result)
   }
 
@@ -266,7 +309,8 @@ class PublicWithInputController @Inject() (cc: JsonControllerComponents) extends
   }
 }
 
-class PublicNoInputController @Inject() (cc: JsonControllerComponents) extends AbstractJsonController(cc) {
+class PublicNoInputController @Inject() (cc: CustomComponents) extends AbstractJsonController(cc) {
+
   def getModel(int: Int, string: String) = publicNoInput { context =>
     val result = CustomModel(int, string)
     Future.successful(Good(result))
@@ -278,8 +322,7 @@ class PublicNoInputController @Inject() (cc: JsonControllerComponents) extends A
   }
 
   def getErrors() = publicNoInput[User] { context: PublicRequestContext =>
-      // TODO: Don't depend on app errors, allow to customize it
-    val result = Bad(Many(IncorrectPasswordError, IncorrectPasswordError))
+    val result = Bad(Many(CustomErrorMapper.InputError, CustomErrorMapper.DuplicateError))
     Future.successful(result)
   }
 

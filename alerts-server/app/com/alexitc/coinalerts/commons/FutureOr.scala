@@ -1,6 +1,5 @@
 package com.alexitc.coinalerts.commons
 
-import com.alexitc.coinalerts.errors.ApplicationError
 import org.scalactic.{Bad, Good, One, Or}
 
 import scala.concurrent.{ExecutionContext, Future}

@@ -2,50 +2,13 @@ package com.alexitc.coinalerts.errors
 
 import javax.inject.Inject
 
-import com.alexitc.coinalerts.core.ErrorId
+import com.alexitc.coinalerts.commons._
 import play.api.i18n.{Lang, MessagesApi}
-import play.api.libs.json.{JsValue, Json}
 
-class JsonErrorRenderer @Inject() (messagesApi: MessagesApi) {
+class MyApplicationErrorMapper @Inject() (messagesApi: MessagesApi) extends ApplicationErrorMapper {
 
-  def renderPublicError(publicError: PublicError): JsValue = publicError match {
-    case e: GenericPublicError =>
-      val obj = Json.obj(
-        "type" -> "generic-error",
-        "message" -> e.message
-      )
-      Json.toJson(obj)
-
-    case e: FieldValidationError =>
-      val obj = Json.obj(
-        "type" -> "field-validation-error",
-        "field" -> e.field,
-        "message" -> e.message
-      )
-      Json.toJson(obj)
-
-    case e: HeaderValidationError =>
-      val obj = Json.obj(
-        "type" -> "header-validation-error",
-        "header" -> e.header,
-        "message" -> e.message
-      )
-      Json.toJson(obj)
-  }
-
-  def renderPrivateError(errorId: ErrorId) = {
-    Json.obj(
-      "type" -> "server-error",
-      "errorId" -> errorId.string
-    )
-  }
-
-  def toPublicError(message: String): PublicError = {
-    GenericPublicError(message)
-  }
-
-  def toPublicErrorList(error: ApplicationError)(implicit lang: Lang): Seq[PublicError] = error match {
-    case _: PrivateError => List.empty
+  override def toPublicErrorList(error: ApplicationError)(implicit lang: Lang): Seq[PublicError] = error match {
+    case _: ServerError => List.empty
 
     case error: JWTError =>
       List(renderJWTError(error))
@@ -56,6 +19,7 @@ class JsonErrorRenderer @Inject() (messagesApi: MessagesApi) {
     case error: ReCaptchaError =>
       List(renderReCaptchaError(error))
 
+    // TODO: avoid requiring this core mapper here
     case JsonFieldValidationError(path, errors) =>
       val field = path.path.map(_.toJsonString.replace(".", "")).mkString(".")
       errors.map { messageKey =>

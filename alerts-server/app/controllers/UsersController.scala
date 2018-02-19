@@ -3,16 +3,15 @@ package controllers
 import javax.inject.Inject
 
 import com.alexitc.coinalerts.commons.FutureOr.Implicits.FutureOps
-import com.alexitc.coinalerts.commons._
 import com.alexitc.coinalerts.models._
 import com.alexitc.coinalerts.services.UserService
 import com.alexitc.coinalerts.services.external.ReCaptchaService
 
 class UsersController @Inject() (
     reCaptchaService: ReCaptchaService,
-    components: JsonControllerComponents,
+    components: MyJsonControllerComponents,
     userService: UserService)
-    extends AbstractJsonController(components) {
+    extends MyJsonController(components) {
 
   def create() = publicWithInput(Created) { context: PublicCtxModel[CreateUserModel] =>
     val result = for {

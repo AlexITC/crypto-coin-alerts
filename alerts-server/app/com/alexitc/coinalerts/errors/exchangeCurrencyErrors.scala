@@ -1,0 +1,8 @@
+package com.alexitc.coinalerts.errors
+
+import com.alexitc.coinalerts.commons.{InputValidationError, NotFoundError}
+
+sealed trait ExchangeCurrencyError
+case object UnknownExchangeCurrencyIdError extends ExchangeCurrencyError with InputValidationError
+case object RepeatedExchangeCurrencyError extends ExchangeCurrencyError with InputValidationError
+case object ExchangeCurrencyNotFoundError extends ExchangeCurrencyError with NotFoundError

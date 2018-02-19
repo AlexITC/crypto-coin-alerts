@@ -257,11 +257,11 @@ abstract class AbstractJsonController @Inject() (components: JsonControllerCompo
       case _: ConflictError => Results.Conflict
       case _: NotFoundError => Results.NotFound
       case _: AuthenticationError => Results.Unauthorized
-      case _: PrivateError => Results.InternalServerError
+      case _: ServerError => Results.InternalServerError
     }
 
     val json = errors.head match {
-      case error: PrivateError =>
+      case error: ServerError =>
         val errorId = ErrorId.create
         logPrivateError(error, errorId)
         renderPrivateError(errorId)
@@ -274,18 +274,18 @@ abstract class AbstractJsonController @Inject() (components: JsonControllerCompo
   private def renderPublicErrors(errors: ApplicationErrors)(implicit lang: Lang) = {
     val jsonErrorList = errors
         .toList
-        .flatMap(components.errorRenderer.toPublicErrorList)
-        .map(components.errorRenderer.renderPublicError)
+        .flatMap(components.applicationErrorMapper.toPublicErrorList)
+        .map(components.publicErrorRenderer.renderPublicError)
 
     Json.obj("errors" -> jsonErrorList)
   }
 
-  private def logPrivateError(error: PrivateError, errorId: ErrorId) = {
+  private def logPrivateError(error: ServerError, errorId: ErrorId) = {
     logger.error(s"Unexpected internal error = ${errorId.string}", error.cause)
   }
 
   private def renderPrivateError(errorId: ErrorId) = {
-    val jsonError = components.errorRenderer.renderPrivateError(errorId)
+    val jsonError = components.publicErrorRenderer.renderPrivateError(errorId)
 
     Json.obj("errors" -> List(jsonError))
   }

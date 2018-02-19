@@ -1,6 +1,5 @@
 package com.alexitc.coinalerts
 
-import com.alexitc.coinalerts.errors.ApplicationError
 import org.scalactic.{Every, Or}
 
 import scala.concurrent.Future

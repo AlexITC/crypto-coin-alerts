@@ -2,6 +2,7 @@ package com.alexitc.coinalerts.errors
 
 import javax.inject.{Inject, Singleton}
 
+import com.alexitc.coinalerts.commons.{PublicError, PublicErrorRenderer}
 import com.alexitc.coinalerts.core.ErrorId
 import org.slf4j.LoggerFactory
 import play.api.http.HttpErrorHandler
@@ -12,12 +13,12 @@ import play.api.mvc._
 import scala.concurrent._
 
 @Singleton
-class PlayErrorHandler @Inject() (errorRenderer: JsonErrorRenderer) extends HttpErrorHandler {
+class PlayErrorHandler @Inject() (errorRenderer: PublicErrorRenderer) extends HttpErrorHandler {
 
   private val logger = LoggerFactory.getLogger(this.getClass)
 
   def onClientError(request: RequestHeader, statusCode: Int, message: String) = {
-    val publicError = errorRenderer.toPublicError(message)
+    val publicError = PublicError.genericError(message)
     val error = errorRenderer.renderPublicError(publicError)
     val json = Json.obj(
       "errors" -> Json.arr(error)

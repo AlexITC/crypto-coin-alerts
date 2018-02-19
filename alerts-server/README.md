@@ -80,7 +80,7 @@ These tests are useful for verifying that the API works as expected on the clien
 Here are some details about the architecure design, they could be useful if you want to understand the code.
 
 ### Application results
-Most results computed by our code base depend on the [ApplicationError](app/com/alexitc/coinalerts/errors/ApplicationError.scala) trait, it simply represents and error produced by our code that we should be able to handle.
+Most results computed by our code base depend on the [ApplicationError](app/com/alexitc/coinalerts/commons/applicationErrors.scala) trait, it simply represents and error produced by our code that we should be able to handle.
 
 There is a extensive use of [Scalatic Or and Every](http://www.scalactic.org/user_guide/OrAndEvery) for returning alternative error results, while it is similar to scala `Either[L, R]` type, it has a built-in mechanism for returning several errors instead of just 1 and it has a built-in non empty list make our code safer.
 

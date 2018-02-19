@@ -2,15 +2,14 @@ package controllers
 
 import javax.inject.Inject
 
-import com.alexitc.coinalerts.commons.{AbstractJsonController, JsonControllerComponents}
 import com.alexitc.coinalerts.core.{FilterQuery, OrderByQuery, PaginatedQuery}
 import com.alexitc.coinalerts.models.{CreateFixedPriceAlertModel, FixedPriceAlertId}
 import com.alexitc.coinalerts.services.FixedPriceAlertService
 
 class FixedPriceAlertsController @Inject() (
-    components: JsonControllerComponents,
+    components: MyJsonControllerComponents,
     alertService: FixedPriceAlertService)
-    extends AbstractJsonController(components) {
+    extends MyJsonController(components) {
 
   def create() = authenticatedWithInput(Created) { context: AuthCtxModel[CreateFixedPriceAlertModel] =>
     alertService.create(context.model, context.userId)
