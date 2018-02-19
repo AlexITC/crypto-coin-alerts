@@ -12,7 +12,7 @@ class UsersController @Inject() (
     reCaptchaService: ReCaptchaService,
     components: JsonControllerComponents,
     userService: UserService)
-    extends JsonController(components) {
+    extends AbstractJsonController(components) {
 
   def create() = publicWithInput(Created) { context: PublicCtxModel[CreateUserModel] =>
     val result = for {

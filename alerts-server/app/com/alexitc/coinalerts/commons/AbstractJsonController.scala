@@ -23,7 +23,7 @@ import scala.util.control.NonFatal
  * The controller handles the json serialization and deserialization as well
  * as the error responses and http status codes.
  */
-abstract class JsonController @Inject() (components: JsonControllerComponents)
+abstract class AbstractJsonController @Inject() (components: JsonControllerComponents)
     extends MessagesBaseController {
 
   protected val logger = LoggerFactory.getLogger(this.getClass)

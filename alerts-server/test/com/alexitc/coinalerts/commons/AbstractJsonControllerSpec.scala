@@ -11,7 +11,7 @@ import play.api.test._
 
 import scala.concurrent.Future
 
-class JsonControllerSpec extends PlayAPISpec {
+class AbstractJsonControllerSpec extends PlayAPISpec {
 
   val application = guiceApplicationBuilder.build()
   implicit val materializer = application.materializer
@@ -246,7 +246,7 @@ class JsonControllerSpec extends PlayAPISpec {
 }
 
 
-class PublicWithInputController @Inject() (cc: JsonControllerComponents) extends JsonController(cc) {
+class PublicWithInputController @Inject() (cc: JsonControllerComponents) extends AbstractJsonController(cc) {
   def getModel() = publicWithInput { context: PublicRequestContextWithModel[CustomModel] =>
     Future.successful(Good(context.model))
   }
@@ -266,7 +266,7 @@ class PublicWithInputController @Inject() (cc: JsonControllerComponents) extends
   }
 }
 
-class PublicNoInputController @Inject() (cc: JsonControllerComponents) extends JsonController(cc) {
+class PublicNoInputController @Inject() (cc: JsonControllerComponents) extends AbstractJsonController(cc) {
   def getModel(int: Int, string: String) = publicNoInput { context =>
     val result = CustomModel(int, string)
     Future.successful(Good(result))

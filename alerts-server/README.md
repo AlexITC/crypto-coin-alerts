@@ -99,7 +99,7 @@ We are creating a base trait that could be easily extended for testing, and impl
 See [JWTConfig](app/com/alexitc/coinalerts/config/JWTConfig.scala).
 
 ### Controllers
-For building the HTTP API, we use the [controllers package](app/controllers), the controller classes make extensive use of the [JsonController](app/com/alexitc/coinalerts/commons/JsonController.scala) that help us to build a controllers that receives JSON and produces JSON (it handles application errors as well), it is still experimental and improving frequently.
+For building the HTTP API, we use the [controllers package](app/controllers), the controller classes make extensive use of the [AbstractJsonController](app/com/alexitc/coinalerts/commons/AbstractJsonController.scala) that help us to build a controllers that receives JSON and produces JSON (it handles application errors as well), it is still experimental and improving frequently.
 
 The controllers could receive a model (that should be deserializable using play-json) and produce model (that is serializable using play-json).
 
