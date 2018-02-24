@@ -8,7 +8,7 @@ import org.scalactic.{Bad, Good, Many}
 
 import scala.concurrent.Future
 
-class PublicNoInputController @Inject() (cc: CustomControllerComponents) extends AbstractJsonController(cc) {
+class PublicNoInputController @Inject() (cc: CustomControllerComponents) extends CustomJsonController(cc) {
 
   def getModel(int: Int, string: String) = publicNoInput { context =>
     val result = CustomModel(int, string)

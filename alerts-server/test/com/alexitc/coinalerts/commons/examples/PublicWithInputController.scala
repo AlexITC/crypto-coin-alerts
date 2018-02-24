@@ -2,12 +2,12 @@ package com.alexitc.coinalerts.commons.examples
 
 import javax.inject.Inject
 
-import com.alexitc.coinalerts.commons.{AbstractJsonController, PublicRequestContextWithModel}
+import com.alexitc.coinalerts.commons.PublicRequestContextWithModel
 import org.scalactic.{Bad, Good, Many}
 
 import scala.concurrent.Future
 
-class PublicWithInputController @Inject() (cc: CustomControllerComponents) extends AbstractJsonController(cc) {
+class PublicWithInputController @Inject() (cc: CustomControllerComponents) extends CustomJsonController(cc) {
   def getModel() = publicWithInput { context: PublicRequestContextWithModel[CustomModel] =>
     Future.successful(Good(context.model))
   }

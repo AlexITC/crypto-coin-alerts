@@ -1,10 +1,10 @@
-package controllers
+package com.alexitc.coinalerts.commons.examples
 
 import com.alexitc.coinalerts.commons.{AbstractJsonController, ServerError}
 import com.alexitc.coinalerts.core.ErrorId
 import org.slf4j.LoggerFactory
 
-class MyJsonController (components: MyJsonControllerComponents) extends AbstractJsonController(components) {
+class CustomJsonController (components: CustomControllerComponents) extends AbstractJsonController(components) {
 
   protected val logger = LoggerFactory.getLogger(this.getClass)
 

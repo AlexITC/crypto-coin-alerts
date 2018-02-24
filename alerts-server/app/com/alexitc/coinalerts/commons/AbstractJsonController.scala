@@ -6,7 +6,6 @@ import com.alexitc.coinalerts.commons.FutureOr.Implicits.{FutureOps, OrOps}
 import com.alexitc.coinalerts.core.{ErrorId, MessageKey}
 import com.alexitc.coinalerts.errors._
 import org.scalactic.{Bad, Every, Good}
-import org.slf4j.LoggerFactory
 import play.api.i18n.Lang
 import play.api.libs.json._
 import play.api.mvc._
@@ -26,11 +25,19 @@ import scala.util.control.NonFatal
 abstract class AbstractJsonController[A] @Inject() (components: JsonControllerComponents[A])
     extends MessagesBaseController {
 
-  protected val logger = LoggerFactory.getLogger(this.getClass)
+  override protected val controllerComponents: MessagesControllerComponents = components.messagesControllerComponents
 
   protected implicit val ec = components.executionContext
 
-  protected def controllerComponents: MessagesControllerComponents = components.messagesControllerComponents
+  /**
+   * Override this and decide what to do in case of server errors.
+   *
+   * For example, log the error with the id, handle metrics, etc.
+   *
+   * @param error the error that occurred.
+   * @param errorId the unique identifier for the error.
+   */
+  protected def onServerError(error: ServerError, errorId: ErrorId): Unit
 
   /**
    * Ignores the body returning an empty json.
@@ -240,7 +247,7 @@ abstract class AbstractJsonController[A] @Inject() (components: JsonControllerCo
     val json = errors.head match {
       case error: ServerError =>
         val errorId = ErrorId.create
-        logPrivateError(error, errorId)
+        onServerError(error, errorId)
         renderPrivateError(errorId)
 
       case _ => renderPublicErrors(errors)
@@ -255,10 +262,6 @@ abstract class AbstractJsonController[A] @Inject() (components: JsonControllerCo
         .map(components.publicErrorRenderer.renderPublicError)
 
     Json.obj("errors" -> jsonErrorList)
-  }
-
-  private def logPrivateError(error: ServerError, errorId: ErrorId) = {
-    logger.error(s"Unexpected internal error = ${errorId.string}", error.cause)
   }
 
   private def renderPrivateError(errorId: ErrorId) = {
