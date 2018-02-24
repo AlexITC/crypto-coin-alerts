@@ -2,8 +2,7 @@ package com.alexitc.coinalerts.errors
 
 import javax.inject.{Inject, Singleton}
 
-import com.alexitc.coinalerts.commons.{PublicError, PublicErrorRenderer}
-import com.alexitc.coinalerts.core.ErrorId
+import com.alexitc.coinalerts.commons.{ErrorId, PublicError, PublicErrorRenderer}
 import org.slf4j.LoggerFactory
 import play.api.http.HttpErrorHandler
 import play.api.libs.json.Json

@@ -1,7 +1,6 @@
 package com.alexitc.coinalerts.commons.examples
 
-import com.alexitc.coinalerts.commons.{AbstractJsonController, ServerError}
-import com.alexitc.coinalerts.core.ErrorId
+import com.alexitc.coinalerts.commons.{AbstractJsonController, ErrorId, ServerError}
 import org.slf4j.LoggerFactory
 
 class CustomJsonController (components: CustomControllerComponents) extends AbstractJsonController(components) {

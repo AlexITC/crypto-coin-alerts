@@ -1,6 +1,5 @@
 package com.alexitc.coinalerts.commons
 
-import com.alexitc.coinalerts.core.ErrorId
 import play.api.libs.json.{JsValue, Json}
 
 class PublicErrorRenderer {
