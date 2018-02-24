@@ -12,7 +12,7 @@ class FixedPriceAlertsController @Inject() (
     extends MyJsonController(components) {
 
   def create() = authenticatedWithInput(Created) { context: AuthCtxModel[CreateFixedPriceAlertModel] =>
-    alertService.create(context.model, context.userId)
+    alertService.create(context.model, context.auth)
   }
 
   def getAlerts(
@@ -20,10 +20,10 @@ class FixedPriceAlertsController @Inject() (
       filterQuery: FilterQuery,
       orderByQuery: OrderByQuery) = authenticatedNoInput { context: AuthCtx =>
 
-    alertService.getAlerts(context.userId, query, filterQuery, orderByQuery)
+    alertService.getAlerts(context.auth, query, filterQuery, orderByQuery)
   }
 
   def delete(id: FixedPriceAlertId) = authenticatedNoInput { context: AuthCtx =>
-    alertService.delete(id, context.userId)
+    alertService.delete(id, context.auth)
   }
 }

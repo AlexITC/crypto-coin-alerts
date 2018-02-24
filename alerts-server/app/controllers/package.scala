@@ -1,5 +1,6 @@
 
 import com.alexitc.coinalerts.commons.{AuthenticatedRequestContext, AuthenticatedRequestContextWithModel, PublicRequestContext, PublicRequestContextWithModel}
+import com.alexitc.coinalerts.models.UserId
 
 package object controllers {
   /**
@@ -7,6 +8,6 @@ package object controllers {
    */
   type PublicCtx = PublicRequestContext
   type PublicCtxModel[T] = PublicRequestContextWithModel[T]
-  type AuthCtx = AuthenticatedRequestContext
-  type AuthCtxModel[T] = AuthenticatedRequestContextWithModel[T]
+  type AuthCtx = AuthenticatedRequestContext[UserId]
+  type AuthCtxModel[T] = AuthenticatedRequestContextWithModel[UserId, T]
 }

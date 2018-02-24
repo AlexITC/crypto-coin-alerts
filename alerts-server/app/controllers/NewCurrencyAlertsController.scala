@@ -11,14 +11,14 @@ class NewCurrencyAlertsController @Inject() (
     extends MyJsonController(components) {
 
   def create(exchange: Exchange) = authenticatedNoInput(Created) { context =>
-    service.create(context.userId, exchange)
+    service.create(context.auth, exchange)
   }
 
   def get() = authenticatedNoInput { context =>
-    service.get(context.userId)
+    service.get(context.auth)
   }
 
   def delete(exchange: Exchange) = authenticatedNoInput { context =>
-    service.delete(context.userId, exchange)
+    service.delete(context.auth, exchange)
   }
 }

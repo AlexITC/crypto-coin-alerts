@@ -1,16 +1,12 @@
 package com.alexitc.coinalerts.commons
 
-import com.alexitc.coinalerts.services.JWTService
 import play.api.mvc.MessagesControllerComponents
 
 import scala.concurrent.ExecutionContext
 
-trait JsonControllerComponents {
+trait JsonControllerComponents[A] {
 
   def messagesControllerComponents: MessagesControllerComponents
-
-  // TODO: allow to override it
-  def jwtService: JWTService
 
   def executionContext: ExecutionContext
 
@@ -18,4 +14,5 @@ trait JsonControllerComponents {
 
   def applicationErrorMapper: ApplicationErrorMapper
 
+  def authenticatorService: AbstractAuthenticatorService[A]
 }

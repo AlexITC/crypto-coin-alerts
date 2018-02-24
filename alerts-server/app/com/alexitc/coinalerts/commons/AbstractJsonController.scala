@@ -2,11 +2,9 @@ package com.alexitc.coinalerts.commons
 
 import javax.inject.Inject
 
-import com.alexitc.coinalerts.commons.FutureOr.Implicits.{FutureOps, OptionOps, OrOps}
-import com.alexitc.coinalerts.core.{AuthorizationToken, ErrorId, MessageKey}
+import com.alexitc.coinalerts.commons.FutureOr.Implicits.{FutureOps, OrOps}
+import com.alexitc.coinalerts.core.{ErrorId, MessageKey}
 import com.alexitc.coinalerts.errors._
-import com.alexitc.coinalerts.models.UserId
-import org.scalactic.TypeCheckedTripleEquals._
 import org.scalactic.{Bad, Every, Good}
 import org.slf4j.LoggerFactory
 import play.api.i18n.Lang
@@ -22,8 +20,10 @@ import scala.util.control.NonFatal
  *
  * The controller handles the json serialization and deserialization as well
  * as the error responses and http status codes.
+ *
+ * @tparam A the value type for an authenticated request, like User or UserId.
  */
-abstract class AbstractJsonController @Inject() (components: JsonControllerComponents)
+abstract class AbstractJsonController[A] @Inject() (components: JsonControllerComponents[A])
     extends MessagesBaseController {
 
   protected val logger = LoggerFactory.getLogger(this.getClass)
@@ -125,18 +125,14 @@ abstract class AbstractJsonController @Inject() (components: JsonControllerCompo
    */
   def authenticatedWithInput[R: Reads, M](
       successStatus: Status)(
-      block: AuthenticatedRequestContextWithModel[R] => FutureApplicationResult[M])(
+      block: AuthenticatedRequestContextWithModel[A, R] => FutureApplicationResult[M])(
       implicit tjs: Writes[M]): Action[JsValue] = Action.async(parse.json) { request =>
 
     val lang = messagesApi.preferred(request).lang
     val result = for {
-      authorizationHeader <- request.headers
-          .get(AUTHORIZATION)
-          .toFutureOr(InvalidJWTError)
-
-      userId <- validateJWT(authorizationHeader).toFutureOr
       input <- validate[R](request.body).toFutureOr
-      context = AuthenticatedRequestContextWithModel(userId, input, lang)
+      authValue <- components.authenticatorService.authenticate(request).toFutureOr
+      context = AuthenticatedRequestContextWithModel(authValue, input, lang)
       output <- block(context).toFutureOr
     } yield output
 
@@ -147,7 +143,7 @@ abstract class AbstractJsonController @Inject() (components: JsonControllerCompo
    * Sets a default successStatus.
    */
   def authenticatedWithInput[R: Reads, M](
-      block: AuthenticatedRequestContextWithModel[R] => FutureApplicationResult[M])(
+      block: AuthenticatedRequestContextWithModel[A, R] => FutureApplicationResult[M])(
       implicit tjs: Writes[M]): Action[JsValue] = {
 
     authenticatedWithInput[R, M](Ok)(block)
@@ -166,17 +162,13 @@ abstract class AbstractJsonController @Inject() (components: JsonControllerCompo
    */
   def authenticatedNoInput[M](
       successStatus: Status)(
-      block: AuthenticatedRequestContext => FutureApplicationResult[M])(
+      block: AuthenticatedRequestContext[A] => FutureApplicationResult[M])(
       implicit tjs: Writes[M]): Action[JsValue] = Action.async(EmptyJsonParser) { request =>
 
     val lang = messagesApi.preferred(request).lang
     val result = for {
-      authorizationHeader <- request.headers
-          .get(AUTHORIZATION)
-          .toFutureOr(InvalidJWTError)
-
-      userId <- validateJWT(authorizationHeader).toFutureOr
-      context = AuthenticatedRequestContext(userId, lang)
+      authValue <- components.authenticatorService.authenticate(request).toFutureOr
+      context = AuthenticatedRequestContext(authValue, lang)
       output <- block(context).toFutureOr
     } yield output
 
@@ -187,25 +179,10 @@ abstract class AbstractJsonController @Inject() (components: JsonControllerCompo
    * Sets a default successStatus.
    */
   def authenticatedNoInput[M](
-      block: AuthenticatedRequestContext => FutureApplicationResult[M])(
+      block: AuthenticatedRequestContext[A] => FutureApplicationResult[M])(
       implicit tjs: Writes[M]): Action[JsValue] = {
 
     authenticatedNoInput[M](Ok)(block)
-  }
-
-  private def validateJWT(authorizationHeader: String): ApplicationResult[UserId] = {
-    val tokenType = "Bearer"
-    val headerParts = authorizationHeader.split(" ")
-
-    Option(headerParts)
-        .filter(_.length === 2)
-        .filter(_.head === tokenType)
-        .map(_.drop(1).head)
-        .map(AuthorizationToken.apply)
-        .map { token =>
-          components.jwtService.decodeToken(token).map(_.id)
-        }
-        .getOrElse(Bad(InvalidJWTError).accumulating)
   }
 
   private def validate[R: Reads](json: JsValue): ApplicationResult[R] = {

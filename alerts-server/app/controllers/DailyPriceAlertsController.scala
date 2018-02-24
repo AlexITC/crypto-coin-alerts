@@ -12,10 +12,10 @@ class DailyPriceAlertsController @Inject() (
     extends MyJsonController(components) {
 
   def create() = authenticatedWithInput { context: AuthCtxModel[CreateDailyPriceAlertModel] =>
-    dailyPriceAlertService.create(context.userId, context.model)
+    dailyPriceAlertService.create(context.auth, context.model)
   }
 
   def getAlerts(query: PaginatedQuery) = authenticatedNoInput { context: AuthCtx =>
-    dailyPriceAlertService.getAlerts(context.userId, query)
+    dailyPriceAlertService.getAlerts(context.auth, query)
   }
 }
