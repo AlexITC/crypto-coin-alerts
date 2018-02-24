@@ -1,6 +1,5 @@
 package com.alexitc.coinalerts.commons
 
-import com.alexitc.coinalerts.core.MessageKey
 import play.api.libs.json.JsPath
 
 sealed trait JsonControllerErrors

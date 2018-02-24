@@ -3,7 +3,6 @@ package com.alexitc.coinalerts.commons
 import javax.inject.Inject
 
 import com.alexitc.coinalerts.commons.FutureOr.Implicits.{FutureOps, OrOps}
-import com.alexitc.coinalerts.core.MessageKey
 import org.scalactic.{Bad, Every, Good}
 import play.api.i18n.Lang
 import play.api.libs.json._
