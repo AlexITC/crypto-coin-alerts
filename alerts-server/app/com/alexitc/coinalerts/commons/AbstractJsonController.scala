@@ -4,7 +4,6 @@ import javax.inject.Inject
 
 import com.alexitc.coinalerts.commons.FutureOr.Implicits.{FutureOps, OrOps}
 import com.alexitc.coinalerts.core.{ErrorId, MessageKey}
-import com.alexitc.coinalerts.errors._
 import org.scalactic.{Bad, Every, Good}
 import play.api.i18n.Lang
 import play.api.libs.json._

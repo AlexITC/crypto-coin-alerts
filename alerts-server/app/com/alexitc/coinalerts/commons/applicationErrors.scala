@@ -10,3 +10,5 @@ trait ServerError extends ApplicationError {
   // contains data private to the server
   def cause: Throwable
 }
+
+case class WrappedExceptionError(cause: Throwable) extends ServerError

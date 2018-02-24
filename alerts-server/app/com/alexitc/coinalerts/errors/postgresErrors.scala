@@ -8,5 +8,3 @@ sealed trait PostgresError extends ServerError {
   def cause: PSQLException
 }
 case class PostgresIntegrityViolationError(column: Option[String], cause: PSQLException) extends PostgresError
-
-case class WrappedExceptionError(cause: Throwable) extends ServerError
