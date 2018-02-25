@@ -1,6 +1,6 @@
 package com.alexitc.coinalerts.commons
 
-import com.alexitc.coinalerts.commons.examples.{PublicNoInputController, PublicWithInputController}
+import com.alexitc.coinalerts.commons.examples.{AuthenticatedNoInputController, PublicNoInputController, PublicWithInputController}
 import play.api.libs.json.{JsValue, Json}
 import play.api.test.Helpers._
 import play.api.test._
@@ -243,6 +243,31 @@ class AbstractJsonControllerSpec extends PlayAPISpec {
       val error = errorList.head
       (error \ "type").as[String] mustEqual "server-error"
       (error \ "errorId").as[String].nonEmpty mustEqual true
+    }
+  }
+
+  "authenticatedNoInput" should {
+    val controller = injector.instanceOf[AuthenticatedNoInputController]
+
+    "return UNAUTHORIZED when no AUTHORIZATION header is present" in {
+      val result = controller.getModel(0, "").apply(FakeRequest())
+
+      status(result) mustEqual UNAUTHORIZED
+      val json = contentAsJson(result)
+      val errorList = (json \ "errors").as[List[JsValue]]
+      errorList.size mustEqual 1
+
+      val jsonError = errorList.head
+      (jsonError \ "type").as[String] mustEqual "header-validation-error"
+      (jsonError \ "header").as[String] mustEqual AUTHORIZATION
+      (jsonError \ "message").as[String].nonEmpty mustEqual true
+    }
+
+    "return OK when the request is authenticated" in {
+      val request = FakeRequest().withHeaders(AUTHORIZATION -> "user")
+      val result = controller.getModel(0, "").apply(request)
+
+      status(result) mustEqual OK
     }
   }
 }
