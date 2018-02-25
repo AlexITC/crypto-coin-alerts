@@ -1,6 +1,6 @@
 package com.alexitc.coinalerts.errors
 
-import com.alexitc.coinalerts.commons.AuthenticationError
+import com.alexitc.playsonify.models.AuthenticationError
 
 sealed trait JWTError
 case object AuthorizationHeaderRequiredError extends JWTError with AuthenticationError

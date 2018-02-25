@@ -2,7 +2,8 @@ package com.alexitc.coinalerts.errors
 
 import javax.inject.Inject
 
-import com.alexitc.coinalerts.commons._
+import com.alexitc.playsonify.ApplicationErrorMapper
+import com.alexitc.playsonify.models._
 import play.api.i18n.{Lang, MessagesApi}
 
 class MyApplicationErrorMapper @Inject() (messagesApi: MessagesApi) extends ApplicationErrorMapper {

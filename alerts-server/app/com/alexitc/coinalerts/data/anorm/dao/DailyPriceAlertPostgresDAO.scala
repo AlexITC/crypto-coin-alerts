@@ -3,11 +3,11 @@ package com.alexitc.coinalerts.data.anorm.dao
 import java.sql.Connection
 
 import anorm._
-import com.alexitc.coinalerts.commons.ApplicationResult
 import com.alexitc.coinalerts.core.{Count, PaginatedQuery}
 import com.alexitc.coinalerts.data.anorm.parsers.DailyPriceAlertParsers
 import com.alexitc.coinalerts.errors.RepeatedDailyPriceAlertError
 import com.alexitc.coinalerts.models.{CreateDailyPriceAlertModel, DailyPriceAlert, UserId}
+import com.alexitc.playsonify.core.ApplicationResult
 import org.scalactic.{One, Or}
 
 class DailyPriceAlertPostgresDAO {

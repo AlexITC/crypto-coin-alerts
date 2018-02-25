@@ -2,7 +2,8 @@ package com.alexitc.coinalerts.errors
 
 import javax.inject.{Inject, Singleton}
 
-import com.alexitc.coinalerts.commons.{ErrorId, PublicError, PublicErrorRenderer}
+import com.alexitc.playsonify.PublicErrorRenderer
+import com.alexitc.playsonify.models.{ErrorId, PublicError}
 import org.slf4j.LoggerFactory
 import play.api.http.HttpErrorHandler
 import play.api.libs.json.Json

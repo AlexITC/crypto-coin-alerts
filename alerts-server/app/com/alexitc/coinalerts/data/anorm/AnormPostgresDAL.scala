@@ -2,8 +2,8 @@ package com.alexitc.coinalerts.data.anorm
 
 import java.sql.Connection
 
-import com.alexitc.coinalerts.commons.ApplicationResult
 import com.alexitc.coinalerts.errors.{PostgresError, PostgresIntegrityViolationError}
+import com.alexitc.playsonify.core.ApplicationResult
 import org.postgresql.util.PSQLException
 import org.scalactic.Bad
 import play.api.db.Database

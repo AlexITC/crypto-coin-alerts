@@ -1,10 +1,10 @@
 package com.alexitc.coinalerts.parsers
 
-import com.alexitc.coinalerts.commons.ApplicationResult
 import com.alexitc.coinalerts.core.OrderByQuery
 import com.alexitc.coinalerts.errors.InvalidOrderError
 import com.alexitc.coinalerts.models.FixedPriceAlertOrderBy
 import com.alexitc.coinalerts.models.FixedPriceAlertOrderBy.{Conditions, DescendingOrderCondition, OrderByCreatedOn}
+import com.alexitc.playsonify.core.ApplicationResult
 import org.scalactic.{Bad, Good, One, Or}
 
 class FixedPriceAlertOrderByParser {

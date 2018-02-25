@@ -1,10 +1,11 @@
 package com.alexitc.coinalerts.data
 import java.time.OffsetDateTime
 
-import com.alexitc.coinalerts.commons.{ApplicationResult, RandomDataGenerator}
+import com.alexitc.coinalerts.commons.RandomDataGenerator
 import com.alexitc.coinalerts.core.{Count, PaginatedQuery, PaginatedResult}
 import com.alexitc.coinalerts.errors.RepeatedDailyPriceAlertError
 import com.alexitc.coinalerts.models.{CreateDailyPriceAlertModel, DailyPriceAlert, UserId}
+import com.alexitc.playsonify.core.ApplicationResult
 import org.scalactic.{Bad, Good}
 
 import scala.collection.mutable

@@ -1,8 +1,7 @@
 package com.alexitc.coinalerts.errors
 
-import com.alexitc.coinalerts.commons.InputValidationError
+import com.alexitc.playsonify.models.InputValidationError
 
-// Paginated query
 sealed trait PaginatedQueryError
 case object InvalidQueryOffsetError extends PaginatedQueryError with InputValidationError
 case class InvalidQueryLimitError(maxValue: Int) extends PaginatedQueryError with InputValidationError

@@ -2,11 +2,11 @@ package com.alexitc.coinalerts.data.anorm
 
 import javax.inject.Inject
 
-import com.alexitc.coinalerts.commons.ApplicationResult
 import com.alexitc.coinalerts.data.ExchangeCurrencyBlockingDataHandler
 import com.alexitc.coinalerts.data.anorm.dao.ExchangeCurrencyPostgresDAO
 import com.alexitc.coinalerts.errors.RepeatedExchangeCurrencyError
 import com.alexitc.coinalerts.models._
+import com.alexitc.playsonify.core.ApplicationResult
 import org.scalactic.{Good, One, Or}
 import play.api.db.Database
 

@@ -1,9 +1,8 @@
 package com.alexitc.coinalerts.errors
 
-import com.alexitc.coinalerts.commons.ServerError
+import com.alexitc.playsonify.models.ServerError
 import org.postgresql.util.PSQLException
 
-// PostgreSQL specific errors
 sealed trait PostgresError extends ServerError {
   def cause: PSQLException
 }

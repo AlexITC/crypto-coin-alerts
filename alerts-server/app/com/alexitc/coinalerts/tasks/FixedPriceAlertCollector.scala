@@ -2,12 +2,12 @@ package com.alexitc.coinalerts.tasks
 
 import javax.inject.Inject
 
-import com.alexitc.coinalerts.commons.FutureOr.Implicits.FutureOps
 import com.alexitc.coinalerts.config.TaskExecutionContext
 import com.alexitc.coinalerts.data.async.{ExchangeCurrencyFutureDataHandler, FixedPriceAlertFutureDataHandler}
 import com.alexitc.coinalerts.models._
 import com.alexitc.coinalerts.tasks.collectors.TickerCollector
 import com.alexitc.coinalerts.tasks.models.{FixedPriceAlertEvent, Ticker}
+import com.alexitc.playsonify.core.FutureOr.Implicits.FutureOps
 import org.scalactic.{Bad, Good}
 import org.slf4j.LoggerFactory
 

@@ -2,10 +2,11 @@ package com.alexitc.coinalerts.services
 
 import javax.inject.Inject
 
-import com.alexitc.coinalerts.commons.{AbstractAuthenticatorService, ApplicationResult, FutureApplicationResult}
 import com.alexitc.coinalerts.core.AuthorizationToken
 import com.alexitc.coinalerts.errors.{AuthorizationHeaderRequiredError, InvalidJWTError}
 import com.alexitc.coinalerts.models.UserId
+import com.alexitc.playsonify.AbstractAuthenticatorService
+import com.alexitc.playsonify.core.{ApplicationResult, FutureApplicationResult}
 import org.scalactic.{Bad, One, Or}
 import play.api.http.HeaderNames
 import play.api.libs.json.JsValue

@@ -1,8 +1,8 @@
 package com.alexitc.coinalerts.data
 
-import com.alexitc.coinalerts.commons.ApplicationResult
 import com.alexitc.coinalerts.errors.{NewCurrencyAlertNotFoundError, RepeatedExchangeError}
 import com.alexitc.coinalerts.models.{Exchange, NewCurrencyAlert, NewCurrencyAlertId, UserId}
+import com.alexitc.playsonify.core.ApplicationResult
 import org.scalactic.{Bad, Good}
 
 class NewCurrencyAlertInMemoryDataHandler extends NewCurrencyAlertBlockingDataHandler {

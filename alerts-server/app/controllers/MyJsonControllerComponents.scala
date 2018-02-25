@@ -2,10 +2,10 @@ package controllers
 
 import javax.inject.Inject
 
-import com.alexitc.coinalerts.commons.{JsonControllerComponents, PublicErrorRenderer}
 import com.alexitc.coinalerts.errors.MyApplicationErrorMapper
 import com.alexitc.coinalerts.models.UserId
 import com.alexitc.coinalerts.services.JWTAuthenticatorService
+import com.alexitc.playsonify.{JsonControllerComponents, PublicErrorRenderer}
 import play.api.mvc.MessagesControllerComponents
 
 import scala.concurrent.ExecutionContext

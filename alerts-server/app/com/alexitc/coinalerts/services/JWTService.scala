@@ -2,11 +2,11 @@ package com.alexitc.coinalerts.services
 
 import javax.inject.Inject
 
-import com.alexitc.coinalerts.commons.ApplicationResult
 import com.alexitc.coinalerts.config.JWTConfig
 import com.alexitc.coinalerts.core.AuthorizationToken
 import com.alexitc.coinalerts.errors.InvalidJWTError
 import com.alexitc.coinalerts.models.{User, UserEmail, UserId}
+import com.alexitc.playsonify.core.ApplicationResult
 import org.scalactic.{Bad, Good}
 import pdi.jwt.{Jwt, JwtAlgorithm, JwtClaim}
 import play.api.libs.json.Json

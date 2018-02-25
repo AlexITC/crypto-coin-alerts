@@ -1,8 +1,8 @@
 package com.alexitc.coinalerts.services.validators
 
-import com.alexitc.coinalerts.commons.ApplicationResult
 import com.alexitc.coinalerts.errors.{InvalidEmailFormatError, InvalidEmailLengthError, InvalidPasswordLengthError, UnsupportedLangError}
 import com.alexitc.coinalerts.models._
+import com.alexitc.playsonify.core.ApplicationResult
 import org.apache.commons.validator.routines.EmailValidator
 import org.scalactic.Accumulation.withGood
 import org.scalactic.{Bad, Good, One, Or}

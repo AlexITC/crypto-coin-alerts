@@ -3,13 +3,13 @@ package com.alexitc.coinalerts.tasks
 import java.math.MathContext
 import javax.inject.Inject
 
-import com.alexitc.coinalerts.commons.FutureOr.Implicits.FutureOps
 import com.alexitc.coinalerts.config.TaskExecutionContext
 import com.alexitc.coinalerts.data.async.{FixedPriceAlertFutureDataHandler, UserFutureDataHandler}
 import com.alexitc.coinalerts.models._
 import com.alexitc.coinalerts.services.{EmailMessagesProvider, EmailServiceTrait, EmailText}
 import com.alexitc.coinalerts.tasks.collectors._
 import com.alexitc.coinalerts.tasks.models.FixedPriceAlertEvent
+import com.alexitc.playsonify.core.FutureOr.Implicits.FutureOps
 import org.scalactic.{Bad, Good}
 import org.slf4j.LoggerFactory
 import play.api.i18n.{Lang, MessagesApi}

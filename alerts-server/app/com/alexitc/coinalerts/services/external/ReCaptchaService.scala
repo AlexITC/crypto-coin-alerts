@@ -2,10 +2,10 @@ package com.alexitc.coinalerts.services.external
 
 import javax.inject.Inject
 
-import com.alexitc.coinalerts.commons.FutureApplicationResult
 import com.alexitc.coinalerts.config.{ExternalServiceExecutionContext, ReCaptchaConfig}
 import com.alexitc.coinalerts.errors.ReCaptchaValidationError
 import com.alexitc.coinalerts.models.ReCaptchaResponse
+import com.alexitc.playsonify.core.FutureApplicationResult
 import org.scalactic.{Bad, Good}
 import play.api.libs.ws.WSClient
 

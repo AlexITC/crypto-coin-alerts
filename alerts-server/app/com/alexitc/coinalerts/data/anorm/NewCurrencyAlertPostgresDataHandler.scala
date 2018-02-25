@@ -2,11 +2,11 @@ package com.alexitc.coinalerts.data.anorm
 
 import javax.inject.Inject
 
-import com.alexitc.coinalerts.commons.ApplicationResult
 import com.alexitc.coinalerts.data.NewCurrencyAlertBlockingDataHandler
 import com.alexitc.coinalerts.data.anorm.dao.NewCurrencyAlertPostgresDAO
 import com.alexitc.coinalerts.errors.{NewCurrencyAlertNotFoundError, PostgresIntegrityViolationError, RepeatedExchangeError, VerifiedUserNotFound}
-import com.alexitc.coinalerts.models.{Exchange, NewCurrencyAlert, NewCurrencyAlertId, UserId}
+import com.alexitc.coinalerts.models.{Exchange, NewCurrencyAlert, UserId}
+import com.alexitc.playsonify.core.ApplicationResult
 import org.scalactic.{Good, One, Or}
 import play.api.db.Database
 

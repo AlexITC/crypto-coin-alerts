@@ -1,8 +1,8 @@
 package com.alexitc.coinalerts.data
 
-import com.alexitc.coinalerts.commons.ApplicationResult
 import com.alexitc.coinalerts.errors.{EmailAlreadyExistsError, UserVerificationTokenNotFoundError, VerifiedUserNotFound}
 import com.alexitc.coinalerts.models._
+import com.alexitc.playsonify.core.ApplicationResult
 import org.scalactic.{Bad, Good, One, Or}
 
 import scala.collection.mutable

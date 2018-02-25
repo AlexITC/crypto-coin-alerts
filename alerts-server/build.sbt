@@ -35,6 +35,7 @@ coverageExcludedPackages := "<empty>;Reverse.*;router\\.*"
 libraryDependencies ++= Seq(guice, evolutions, jdbc, ws, specs2 % Test)
 libraryDependencies += "com.typesafe.play" %% "anorm" % "2.5.3"
 
+libraryDependencies += "com.alexitc" %% "playsonify" % "1.0.0"
 libraryDependencies += "com.google.inject" % "guice" % "4.1.0"
 libraryDependencies += "org.scalactic" %% "scalactic" % "3.0.4"
 libraryDependencies += "org.postgresql" % "postgresql" % "9.4.1212" // docker-it-scala has issues with 42.1.4

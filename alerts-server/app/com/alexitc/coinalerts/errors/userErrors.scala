@@ -1,8 +1,7 @@
 package com.alexitc.coinalerts.errors
 
-import com.alexitc.coinalerts.commons.{ConflictError, InputValidationError}
+import com.alexitc.playsonify.models.{ConflictError, InputValidationError}
 
-// User errors
 sealed trait UserError
 case object InvalidEmailFormatError extends UserError with InputValidationError
 case class InvalidEmailLengthError(maxLength: Int) extends UserError with InputValidationError

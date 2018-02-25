@@ -1,9 +1,9 @@
 package com.alexitc.coinalerts.parsers
 
-import com.alexitc.coinalerts.commons.ApplicationResult
 import com.alexitc.coinalerts.core.FilterQuery
 import com.alexitc.coinalerts.errors.InvalidFilterError
 import com.alexitc.coinalerts.models.{FixedPriceAlertFilter, UserId}
+import com.alexitc.playsonify.core.ApplicationResult
 import org.scalactic.{Bad, Good}
 
 class FixedPriceAlertFilterParser {

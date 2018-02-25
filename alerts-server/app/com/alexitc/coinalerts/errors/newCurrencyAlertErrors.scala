@@ -1,6 +1,6 @@
 package com.alexitc.coinalerts.errors
 
-import com.alexitc.coinalerts.commons.{ConflictError, NotFoundError}
+import com.alexitc.playsonify.models.{ConflictError, NotFoundError}
 
 sealed trait NewCurrencyAlertError
 case object RepeatedExchangeError extends NewCurrencyAlertError with ConflictError

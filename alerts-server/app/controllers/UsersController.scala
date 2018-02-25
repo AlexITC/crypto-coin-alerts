@@ -2,10 +2,10 @@ package controllers
 
 import javax.inject.Inject
 
-import com.alexitc.coinalerts.commons.FutureOr.Implicits.FutureOps
 import com.alexitc.coinalerts.models._
 import com.alexitc.coinalerts.services.UserService
 import com.alexitc.coinalerts.services.external.ReCaptchaService
+import com.alexitc.playsonify.core.FutureOr.Implicits.FutureOps
 
 class UsersController @Inject() (
     reCaptchaService: ReCaptchaService,

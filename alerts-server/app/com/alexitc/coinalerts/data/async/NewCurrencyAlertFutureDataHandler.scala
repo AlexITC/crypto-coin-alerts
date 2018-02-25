@@ -2,10 +2,10 @@ package com.alexitc.coinalerts.data.async
 
 import javax.inject.Inject
 
-import com.alexitc.coinalerts.commons.FutureApplicationResult
 import com.alexitc.coinalerts.config.DatabaseExecutionContext
 import com.alexitc.coinalerts.data.{NewCurrencyAlertBlockingDataHandler, NewCurrencyAlertDataHandler}
 import com.alexitc.coinalerts.models.{Exchange, NewCurrencyAlert, UserId}
+import com.alexitc.playsonify.core.FutureApplicationResult
 
 import scala.concurrent.Future
 

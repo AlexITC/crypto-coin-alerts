@@ -2,11 +2,11 @@ package com.alexitc.coinalerts.data.async
 
 import javax.inject.Inject
 
-import com.alexitc.coinalerts.commons.FutureApplicationResult
 import com.alexitc.coinalerts.config.DatabaseExecutionContext
 import com.alexitc.coinalerts.core.{Count, FuturePaginatedResult, PaginatedQuery}
 import com.alexitc.coinalerts.data.{FixedPriceAlertBlockingDataHandler, FixedPriceAlertDataHandler}
 import com.alexitc.coinalerts.models._
+import com.alexitc.playsonify.core.FutureApplicationResult
 
 import scala.concurrent.Future
 

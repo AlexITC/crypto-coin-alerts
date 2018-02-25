@@ -2,9 +2,8 @@ package com.alexitc.coinalerts.services
 
 import javax.inject.Inject
 
-import com.alexitc.coinalerts.commons.FutureApplicationResult
-import com.alexitc.coinalerts.commons.FutureOr.Implicits.{FutureOps, OrOps}
 import com.alexitc.coinalerts.config.FixedPriceAlertConfig
+import com.alexitc.playsonify.core.FutureOr.Implicits.{FutureOps, OrOps}
 import com.alexitc.coinalerts.core._
 import com.alexitc.coinalerts.data.async.FixedPriceAlertFutureDataHandler
 import com.alexitc.coinalerts.errors.TooManyFixedPriceAlertsError
@@ -12,6 +11,8 @@ import com.alexitc.coinalerts.models.FixedPriceAlertFilter.{HasNotBeenTriggeredC
 import com.alexitc.coinalerts.models._
 import com.alexitc.coinalerts.parsers.{FixedPriceAlertFilterParser, FixedPriceAlertOrderByParser}
 import com.alexitc.coinalerts.services.validators.{FixedPriceAlertValidator, PaginatedQueryValidator}
+import com.alexitc.playsonify.core.FutureApplicationResult
+import com.alexitc.playsonify.core.FutureOr.Implicits.{FutureOps, OrOps}
 import org.scalactic.{Bad, Good}
 
 import scala.concurrent.ExecutionContext

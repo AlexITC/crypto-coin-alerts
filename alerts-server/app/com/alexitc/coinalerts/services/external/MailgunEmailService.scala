@@ -2,11 +2,11 @@ package com.alexitc.coinalerts.services.external
 
 import javax.inject.Inject
 
-import com.alexitc.coinalerts.commons.FutureApplicationResult
 import com.alexitc.coinalerts.config.{ExternalServiceExecutionContext, MailgunConfig}
 import com.alexitc.coinalerts.errors.MailgunSendEmailError
 import com.alexitc.coinalerts.models.UserEmail
 import com.alexitc.coinalerts.services.{EmailServiceTrait, EmailSubject, EmailText}
+import com.alexitc.playsonify.core.FutureApplicationResult
 import org.scalactic.{Bad, Good}
 import org.slf4j.LoggerFactory
 import play.api.libs.functional.syntax._

@@ -1,7 +1,7 @@
 package com.alexitc.coinalerts.data
 
-import com.alexitc.coinalerts.commons.ApplicationResult
 import com.alexitc.coinalerts.models.{Exchange, NewCurrencyAlert, UserId}
+import com.alexitc.playsonify.core.ApplicationResult
 
 import scala.language.higherKinds
 

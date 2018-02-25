@@ -1,6 +1,6 @@
 package com.alexitc.coinalerts
 
-import com.alexitc.coinalerts.commons.FutureApplicationResult
+import com.alexitc.playsonify.core.FutureApplicationResult
 
 package object core {
 

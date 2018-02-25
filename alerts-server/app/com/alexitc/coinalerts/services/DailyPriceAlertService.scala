@@ -2,12 +2,12 @@ package com.alexitc.coinalerts.services
 
 import javax.inject.Inject
 
-import com.alexitc.coinalerts.commons.FutureApplicationResult
-import com.alexitc.coinalerts.commons.FutureOr.Implicits.{FutureOps, OrOps}
 import com.alexitc.coinalerts.core.{FuturePaginatedResult, PaginatedQuery}
 import com.alexitc.coinalerts.data.async.DailyPriceAlertFutureDataHandler
 import com.alexitc.coinalerts.models.{CreateDailyPriceAlertModel, DailyPriceAlert, UserId}
 import com.alexitc.coinalerts.services.validators.PaginatedQueryValidator
+import com.alexitc.playsonify.core.FutureApplicationResult
+import com.alexitc.playsonify.core.FutureOr.Implicits.{FutureOps, OrOps}
 
 import scala.concurrent.ExecutionContext
 

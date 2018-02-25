@@ -1,6 +1,6 @@
 package com.alexitc.coinalerts.errors
 
-import com.alexitc.coinalerts.commons.{InputValidationError, NotFoundError}
+import com.alexitc.playsonify.models.{InputValidationError, NotFoundError}
 
 sealed trait ExchangeCurrencyError
 case object UnknownExchangeCurrencyIdError extends ExchangeCurrencyError with InputValidationError

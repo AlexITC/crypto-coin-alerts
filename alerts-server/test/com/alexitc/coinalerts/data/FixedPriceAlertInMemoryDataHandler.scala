@@ -2,10 +2,11 @@ package com.alexitc.coinalerts.data
 
 import java.time.OffsetDateTime
 
-import com.alexitc.coinalerts.commons.{ApplicationResult, RandomDataGenerator}
+import com.alexitc.coinalerts.commons.RandomDataGenerator
 import com.alexitc.coinalerts.core.{Count, PaginatedQuery, PaginatedResult}
 import com.alexitc.coinalerts.errors.{FixedPriceAlertNotFoundError, UnknownExchangeCurrencyIdError}
 import com.alexitc.coinalerts.models._
+import com.alexitc.playsonify.core.ApplicationResult
 import org.scalactic.{Bad, Good, One, Or}
 
 import scala.collection.mutable

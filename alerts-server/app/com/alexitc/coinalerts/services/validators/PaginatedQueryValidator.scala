@@ -1,8 +1,8 @@
 package com.alexitc.coinalerts.services.validators
 
-import com.alexitc.coinalerts.commons.ApplicationResult
 import com.alexitc.coinalerts.core.{Limit, Offset, PaginatedQuery}
 import com.alexitc.coinalerts.errors.{InvalidQueryLimitError, InvalidQueryOffsetError}
+import com.alexitc.playsonify.core.ApplicationResult
 import org.scalactic.{Accumulation, Bad, Good}
 
 class PaginatedQueryValidator {

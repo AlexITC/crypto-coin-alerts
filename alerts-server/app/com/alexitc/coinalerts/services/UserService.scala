@@ -2,13 +2,13 @@ package com.alexitc.coinalerts.services
 
 import javax.inject.Inject
 
-import com.alexitc.coinalerts.commons.FutureOr.Implicits._
-import com.alexitc.coinalerts.commons.{ApplicationErrors, FutureApplicationResult}
 import com.alexitc.coinalerts.core.AuthorizationToken
 import com.alexitc.coinalerts.data.async.UserFutureDataHandler
 import com.alexitc.coinalerts.errors.IncorrectPasswordError
 import com.alexitc.coinalerts.models._
 import com.alexitc.coinalerts.services.validators.UserValidator
+import com.alexitc.playsonify.core.FutureOr.Implicits.{FutureOps, OrOps}
+import com.alexitc.playsonify.core.{ApplicationErrors, FutureApplicationResult}
 import org.mindrot.jbcrypt.BCrypt
 import org.scalactic._
 import play.api.i18n.Lang

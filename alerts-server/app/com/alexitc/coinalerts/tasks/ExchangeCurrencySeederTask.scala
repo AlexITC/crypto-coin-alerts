@@ -2,13 +2,13 @@ package com.alexitc.coinalerts.tasks
 
 import javax.inject.Inject
 
-import com.alexitc.coinalerts.commons.FutureOr.Implicits.FutureOps
 import com.alexitc.coinalerts.config.TaskExecutionContext
 import com.alexitc.coinalerts.data.ExchangeCurrencyBlockingDataHandler
 import com.alexitc.coinalerts.data.async.{NewCurrencyAlertFutureDataHandler, UserFutureDataHandler}
 import com.alexitc.coinalerts.models._
 import com.alexitc.coinalerts.services.external._
 import com.alexitc.coinalerts.services.{EmailMessagesProvider, EmailServiceTrait}
+import com.alexitc.playsonify.core.FutureOr.Implicits.FutureOps
 import org.scalactic.TypeCheckedTripleEquals._
 import org.scalactic.{Bad, Good}
 import org.slf4j.LoggerFactory
