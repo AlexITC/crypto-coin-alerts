@@ -1,14 +1,11 @@
 package com.alexitc.coinalerts.commons
 
-import java.net.URLEncoder
-
 import com.alexitc.coinalerts.core.{AuthorizationToken, PaginatedQuery}
 import com.alexitc.coinalerts.data._
 import com.alexitc.coinalerts.modules.{ExchangeCurrencySeederTaskModule, FixedPriceAlertsTaskModule}
 import com.alexitc.coinalerts.services.external.ReCaptchaService
 import com.alexitc.coinalerts.services.{EmailServiceTrait, JWTService}
-import org.scalatest.concurrent.ScalaFutures
-import org.scalatestplus.play.PlaySpec
+import com.alexitc.playsonify.test.PlayAPISpec
 import org.slf4j.LoggerFactory
 import play.api.db.{DBApi, Database, Databases}
 import play.api.inject.bind
@@ -16,7 +13,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.api.{Application, Configuration, Environment, Mode}
+import play.api.{Configuration, Environment, Mode}
 
 import scala.concurrent.Future
 
@@ -25,7 +22,7 @@ import scala.concurrent.Future
  * without depending on a database but custom implementations
  * for the data layer.
  */
-trait PlayAPISpec extends PlaySpec with ScalaFutures {
+trait CustomPlayAPISpec extends PlayAPISpec {
 
   private val logger = LoggerFactory.getLogger(this.getClass)
 
@@ -60,7 +57,7 @@ trait PlayAPISpec extends PlaySpec with ScalaFutures {
   implicit val exchangeCurrencyDataHandler: ExchangeCurrencyBlockingDataHandler = new ExchangeCurrencyInMemoryDataHandler {}
   CurrencySeeder.seed
 
-  val guiceApplicationBuilder: GuiceApplicationBuilder = GuiceApplicationBuilder(loadConfiguration = loadConfigWithoutEvolutions)
+  override val guiceApplicationBuilder: GuiceApplicationBuilder = GuiceApplicationBuilder(loadConfiguration = loadConfigWithoutEvolutions)
       .in(Mode.Test)
       .disable(classOf[FixedPriceAlertsTaskModule])
       .disable(classOf[ExchangeCurrencySeederTaskModule])
@@ -71,86 +68,19 @@ trait PlayAPISpec extends PlaySpec with ScalaFutures {
       .overrides(bind[UserBlockingDataHandler].to(userDataHandler))
       .overrides(bind[ExchangeCurrencyBlockingDataHandler].to(exchangeCurrencyDataHandler))
 
-  def application: Application
-
   lazy val jwtService = application.injector.instanceOf[JWTService]
 
-
-  /***********************************************************************/
-
-  private val JsonHeader = CONTENT_TYPE -> "application/json"
-  private val EmptyJson = "{}"
-
-  private def logRequestResponse[T](request: FakeRequest[T], response: Future[Result]) = {
+  override protected def log[T](request: FakeRequest[T], response: Future[Result]) = {
     logger.info(s"REQUEST > $request, headers = ${request.headers}; RESPONSE < status = ${status(response)}, body = ${contentAsString(response)}")
-  }
-
-  /** Syntactic sugar for calling APIs **/
-  def POST(url: String, jsonBody: Option[String], extraHeaders: (String, String)*): Future[Result] = {
-    val headers = JsonHeader :: extraHeaders.toList
-    val json = jsonBody.getOrElse(EmptyJson)
-    val request = FakeRequest("POST", url)
-        .withHeaders(headers: _*)
-        .withBody(json)
-
-    val response = route(application, request).get
-    logRequestResponse(request, response)
-    response
-  }
-
-  def POST(url: String, extraHeaders: (String, String)*): Future[Result] = {
-    POST(url, None, extraHeaders: _*)
-  }
-
-  def GET(url: String, extraHeaders: (String, String)*): Future[Result] = {
-    val headers = JsonHeader :: extraHeaders.toList
-    val request = FakeRequest("GET", url)
-        .withHeaders(headers: _*)
-
-    val response = route(application, request).get
-    logRequestResponse(request, response)
-    response
-  }
-
-  def DELETE(url: String, extraHeaders: (String, String)*): Future[Result] = {
-    val headers = JsonHeader :: extraHeaders.toList
-    val request = FakeRequest("DELETE", url)
-        .withHeaders(headers: _*)
-
-    val response = route(application, request).get
-    logRequestResponse(request, response)
-
-    response
-  }
-
-  def PUT(url: String, jsonBody: Option[String], extraHeaders: (String, String)*): Future[Result] = {
-    val headers = JsonHeader :: extraHeaders.toList
-    val json = jsonBody.getOrElse(EmptyJson)
-    val request = FakeRequest("PUT", url)
-        .withHeaders(headers: _*)
-        .withBody(json)
-
-    val response = route(application, request).get
-    logRequestResponse(request, response)
-    response
   }
 }
 
-object PlayAPISpec {
+object CustomPlayAPISpec {
+
+  import PlayAPISpec.Implicits._
+
   implicit class AuthorizationTokenExt(val token: AuthorizationToken) extends AnyVal {
     def toHeader: (String, String) = AUTHORIZATION -> s"Bearer ${token.string}"
-  }
-
-  implicit class HttpExt(val params: List[(String, String)]) extends AnyVal {
-    def toQueryString: String = {
-      params
-          .map { case (key, value) =>
-            val encodedKey = URLEncoder.encode(key, "UTF-8")
-            val encodedValue = URLEncoder.encode(value, "UTF-8")
-            List(encodedKey, encodedValue).mkString("=")
-          }
-          .mkString("&")
-    }
   }
 
   implicit class PaginatedQueryExt(val query: PaginatedQuery) extends AnyVal {

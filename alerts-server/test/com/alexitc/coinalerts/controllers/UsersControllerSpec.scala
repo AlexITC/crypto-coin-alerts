@@ -1,14 +1,15 @@
 package com.alexitc.coinalerts.controllers
 
-import com.alexitc.coinalerts.commons.PlayAPISpec.AuthorizationTokenExt
-import com.alexitc.coinalerts.commons.{DataHelper, PlayAPISpec, RandomDataGenerator}
+import com.alexitc.coinalerts.commons.{CustomPlayAPISpec, DataHelper, RandomDataGenerator}
 import com.alexitc.coinalerts.models._
 import play.api.Application
 import play.api.i18n.Lang
 import play.api.libs.json.JsValue
 import play.api.test.Helpers._
 
-class UsersControllerSpec extends PlayAPISpec {
+class UsersControllerSpec extends CustomPlayAPISpec {
+
+  import CustomPlayAPISpec._
 
   val application: Application = guiceApplicationBuilder.build()
 

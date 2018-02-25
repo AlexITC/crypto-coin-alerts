@@ -1,12 +1,12 @@
 package com.alexitc.coinalerts.controllers
 
-import com.alexitc.coinalerts.commons.PlayAPISpec
+import com.alexitc.coinalerts.commons.CustomPlayAPISpec
 import com.alexitc.coinalerts.models.{Exchange, ExchangeCurrencyId, Market}
 import play.api.Application
 import play.api.libs.json.JsValue
 import play.api.test.Helpers._
 
-class ExchangeCurrenciesControllerSpec extends PlayAPISpec {
+class ExchangeCurrenciesControllerSpec extends CustomPlayAPISpec {
 
   val application: Application = guiceApplicationBuilder
       .build()

@@ -52,6 +52,7 @@ libraryDependencies += "com.github.bitsoex" % "bitso-java" % "v3.0.5"
 libraryDependencies += "com.pauldijou" %% "jwt-core" % "0.14.1"
 
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.0" % Test
+libraryDependencies += "com.alexitc" %% "playsonifytest" % "1.0.0" % Test
 
 libraryDependencies ++= Seq(
   "com.spotify" % "docker-client" % "8.9.1",

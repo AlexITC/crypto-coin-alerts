@@ -1,6 +1,6 @@
 package com.alexitc.coinalerts.controllers
 
-import com.alexitc.coinalerts.commons.{DataHelper, PlayAPISpec}
+import com.alexitc.coinalerts.commons.{CustomPlayAPISpec, DataHelper}
 import com.alexitc.coinalerts.data.{NewCurrencyAlertBlockingDataHandler, NewCurrencyAlertInMemoryDataHandler}
 import com.alexitc.coinalerts.models.Exchange
 import play.api.Application
@@ -8,9 +8,9 @@ import play.api.inject.bind
 import play.api.libs.json.JsValue
 import play.api.test.Helpers._
 
-class NewCurrencyAlertsControllerSpec extends PlayAPISpec {
+class NewCurrencyAlertsControllerSpec extends CustomPlayAPISpec {
 
-  import PlayAPISpec._
+  import CustomPlayAPISpec._
 
   val dataHandler = new NewCurrencyAlertInMemoryDataHandler {}
 

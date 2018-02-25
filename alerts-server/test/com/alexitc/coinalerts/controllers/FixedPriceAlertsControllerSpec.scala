@@ -3,7 +3,7 @@ package com.alexitc.coinalerts.controllers
 import java.time.OffsetDateTime
 
 import com.alexitc.coinalerts.commons.DataHelper._
-import com.alexitc.coinalerts.commons.{PlayAPISpec, RandomDataGenerator}
+import com.alexitc.coinalerts.commons.{CustomPlayAPISpec, RandomDataGenerator}
 import com.alexitc.coinalerts.core.{Limit, Offset, PaginatedQuery}
 import com.alexitc.coinalerts.data.{FixedPriceAlertBlockingDataHandler, FixedPriceAlertInMemoryDataHandler}
 import com.alexitc.coinalerts.models.FixedPriceAlertId
@@ -12,9 +12,9 @@ import play.api.inject.bind
 import play.api.libs.json.JsValue
 import play.api.test.Helpers._
 
-class FixedPriceAlertsControllerSpec extends PlayAPISpec {
+class FixedPriceAlertsControllerSpec extends CustomPlayAPISpec {
 
-  import PlayAPISpec._
+  import CustomPlayAPISpec._
 
   implicit val alertDataHandler: FixedPriceAlertBlockingDataHandler = new FixedPriceAlertInMemoryDataHandler {
     override def exchangeCurrencyBlocingDataHandler = Some(exchangeCurrencyDataHandler)

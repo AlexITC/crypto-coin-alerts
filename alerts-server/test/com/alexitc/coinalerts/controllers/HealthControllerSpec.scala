@@ -1,10 +1,10 @@
 package com.alexitc.coinalerts.controllers
 
-import com.alexitc.coinalerts.commons.PlayAPISpec
+import com.alexitc.coinalerts.commons.CustomPlayAPISpec
 import play.api.Application
 import play.api.test.Helpers._
 
-class HealthControllerSpec extends PlayAPISpec {
+class HealthControllerSpec extends CustomPlayAPISpec {
 
   val application: Application = guiceApplicationBuilder.build()
 
