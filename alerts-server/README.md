@@ -79,17 +79,10 @@ These tests are useful for verifying that the API works as expected on the clien
 ## Development
 Here are some details about the architecure design, they could be useful if you want to understand the code.
 
-### Application results
-Most results computed by our code base depend on the [ApplicationError](app/com/alexitc/coinalerts/commons/applicationErrors.scala) trait, it simply represents and error produced by our code that we should be able to handle.
+### Playsonify
+We use the [playsonify](https://github.com/AlexITC/playsonify) extensively, you are encouraged to read its documentation.
 
-There is a extensive use of [Scalatic Or and Every](http://www.scalactic.org/user_guide/OrAndEvery) for returning alternative error results, while it is similar to scala `Either[L, R]` type, it has a built-in mechanism for returning several errors instead of just 1 and it has a built-in non empty list make our code safer.
-
-It could be tedious to be writing long types for our application results (like `Future[Unit Or Every[ApplicationResult]`), as most of our result types are similar, we have created the following custom types to avoid writing these long result types (see [commons package](app/com/alexitc/coinalerts/commons/package.scala)):
-- `ApplicationErrors` - representing a non empty collection of errors.
-- `ApplicationResult` - representing a blocking result that accumulates errors.
-- `FutureApplicationResult` - representing a non-blocking result that accumulates errors (using scala `Future`).
-
-When working with non-blocking results, the code could get an awful level of nesting while computing a result using several steps, we have created a simple monad transformed called [FutureOr](app/com/alexitc/coinalerts/commons/FutureOr.scala) (most of the code comes from this [gist](https://gist.github.com/atamborrino/5a6b7c014b1f7af0a6bd2c3922e5aec6#file-testscalactic-scala-L44)), you could an usage examplle at [UserService#create()](app/com/alexitc/coinalerts/services/UserService.scala#L26).
+When working with non-blocking results, the code could get an awful level of nesting while computing a result using several steps, we use a simple monad transformed called [FutureOr](https://github.com/AlexITC/playsonify/blob/master/playsonify/src/com/alexitc/playsonify/core/FutureOr.scala)), you could see its usage at [UserService#create()](app/com/alexitc/coinalerts/services/UserService.scala#L26).
 
 ### Configuration
 There are several components that are configurable, as we already are using play framework, it is very simple to integrate the [typesafe-config](https://github.com/lightbend/config) which loads the configuration from the `application.conf` file (hopefully we will switch to more typesafe configuration library in the future).
@@ -99,7 +92,7 @@ We are creating a base trait that could be easily extended for testing, and impl
 See [JWTConfig](app/com/alexitc/coinalerts/config/JWTConfig.scala).
 
 ### Controllers
-For building the HTTP API, we use the [controllers package](app/controllers), the controller classes make extensive use of the [AbstractJsonController](app/com/alexitc/coinalerts/commons/AbstractJsonController.scala) that help us to build a controllers that receives JSON and produces JSON (it handles application errors as well), it is still experimental and improving frequently.
+For building the HTTP API, we use the [controllers package](app/controllers), the controller classes make extensive use of the [AbstractJsonController](https://github.com/AlexITC/playsonify/blob/master/playsonify/src/com/alexitc/playsonify/AbstractJsonController.scala) (from [playsonify](https://github.com/AlexITC/playsonify)), it help us to build a controllers that receives JSON and produces JSON (it handles application errors as well).
 
 The controllers could receive a model (that should be deserializable using play-json) and produce model (that is serializable using play-json).
 
