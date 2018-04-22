@@ -2,6 +2,15 @@
 @import '~bootstrap/dist/css/bootstrap.min.css';
 @import "~ngx-toastr/toastr.css";
 
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 150px;
+}
+
 .app-content {
   padding-top: 70px;
 }
