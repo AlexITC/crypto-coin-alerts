@@ -23,6 +23,8 @@ export class AppNavbarComponent implements OnInit {
     { label: 'label.newCurrencyAlerts', path: '/new-currency-alerts', authRequired: true }
   ];
 
+  public collapsed = true;
+
   constructor(
     private authService: AuthService,
     private navigatorService: NavigatorService,
@@ -34,6 +36,10 @@ export class AppNavbarComponent implements OnInit {
     private location: Location) { }
 
   ngOnInit() {
+  }
+
+  toggleCollapse() {
+    this.collapsed = !this.collapsed;
   }
 
   /* tabs */
