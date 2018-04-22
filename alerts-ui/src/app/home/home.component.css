@@ -1,4 +1,3 @@
-
 .home-description {
   font-weight: bold;
 }
@@ -15,4 +14,12 @@
 
 #home-supported-exchanges {
   font-size: 20px;
+}
+
+.max-width {
+  max-width: 100%;
+}
+
+.container {
+  padding-top: 70px;
 }

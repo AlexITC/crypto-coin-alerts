@@ -1,6 +1,13 @@
-<nav class="navbar navbar-default">
+<nav class="navbar navbar-default navbar-fixed-top">
   <div class="container-fluid">
     <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" [attr.aria-expanded]="!collapsed"
+        (click)="toggleCollapse()" [ngClass]="{'collapsed': collapsed}">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
       <a routerLink="/" class="navbar-brand">
         <img src="assets/bitcoin.png" alt="Logo">
       </a>
@@ -9,7 +16,7 @@
       </a>
     </div>
 
-    <div class="collapse navbar-collapse">
+    <div class="collapse navbar-collapse" id="navbar-collapse" [ngClass]="{'in': !collapsed}">
       <ul class="nav navbar-nav">
         <li *ngFor="let tab of tabs" [ngClass]="{ 'active': isSelected(tab.path) }">
           <!-- TODO: check why [hidden] attribute is not working -->
@@ -19,7 +26,7 @@
 
       <ul class="nav navbar-nav navbar-right">
         <li *ngIf="isAuthenticated()">
-          <p class="navbar-text">{{getAuthenticatedUser()}}</p>
+          <p class="navbar-text left-padding">{{getAuthenticatedUser()}}</p>
         </li>
         <li *ngIf="isAuthenticated()">
           <a href="#" (click)="logout()">{{'label.logout' | translate}}</a>
@@ -32,7 +39,7 @@
           <a routerLink="/login">{{'label.login' | translate}}</a>
         </li>
         <!-- language -->
-        <li class="dropdown" dropdown>
+        <li class="dropdown left-padding" dropdown>
           <div class="navbar-form">
             <div class="btn-group" dropdown>
               <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
