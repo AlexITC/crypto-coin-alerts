@@ -120,6 +120,7 @@ Still can't find it? Just send us an email to support@cryptocoinalerts.net from 
       'label.emailNotReceived': 'Already registered? Haven\'t received the verification email?',
       'label.yourAlerts': 'Your alerts',
       'label.createFixedPriceAlert': 'Create a fixed price alert',
+      'label.navigation': 'Toggle navigation',
       // messages
       'message.serverUnavailable': 'Server unavailable, please try again in a minute',
       'message.welcome': 'Welcome',
@@ -220,6 +221,7 @@ Si aún así, no lo encuentras? envianos un email a support@cryptocoinalerts.net
       'label.emailNotReceived': '¿Ya te has registrado?, ¿Aún no has recibido el email para verificar tu cuenta?',
       'label.yourAlerts': 'Tus alertas',
       'label.createFixedPriceAlert': 'Crear alerta',
+      'label.navigation': 'Activar navegación',
       // messages
       'message.serverUnavailable': 'El servidor no esta disponible, por favor, intenta de nuevo en un minuto',
       'message.welcome': 'Bienvenido',
