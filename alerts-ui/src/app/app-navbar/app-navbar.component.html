@@ -8,52 +8,51 @@
         <span class="navbar-brand">Crypto Coin Alerts</span>
       </a>
     </div>
-    <ul class="nav navbar-nav">
-      <li *ngFor="let tab of tabs" [ngClass]="{ 'active': isSelected(tab.path) }">
-        <!-- TODO: check why [hidden] attribute is not working -->
-        <a *ngIf="isDisplayable(tab)" routerLink="{{tab.path}}">{{tab.label | translate}}</a>
-      </li>
-    </ul>
 
-    <!-- user -->
-    <ul [hidden]="isAuthenticated()" class="nav navbar-nav navbar-right">
-      <li>
-        <a routerLink="/new-account">{{'label.newAccount' | translate}}</a>
-      </li>
-      <li>
-        <a routerLink="/login">{{'label.login' | translate}}</a>
-      </li>
-    </ul>
+    <div class="collapse navbar-collapse">
+      <ul class="nav navbar-nav">
+        <li *ngFor="let tab of tabs" [ngClass]="{ 'active': isSelected(tab.path) }">
+          <!-- TODO: check why [hidden] attribute is not working -->
+          <a href="#" *ngIf="isDisplayable(tab)" routerLink="{{tab.path}}">{{tab.label | translate}}</a>
+        </li>
+      </ul>
 
-    <ul [hidden]="!isAuthenticated()" class="nav navbar-nav navbar-right">
-      <li>
-        <button type="button" class="btn btn-link">{{getAuthenticatedUser()}}</button>
-      </li>
-      <li>
-        <button type="button" class="btn btn-link" (click)="logout()">{{'label.logout' | translate}}</button>
-      </li>
-    </ul>
-
-    <!-- TODO: Fix weird positioning issue, this component is placed before the user data -->
-    <!-- language -->
-    <ul class="nav navbar-nav navbar-right">
-      <div class="btn-group" dropdown>
-        <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
-          <!-- TODO: Display current lang -->
-          {{'label.language' | translate}}
-          <span class="caret"></span>
-        </button>
-
-        <!-- TODO: load langs dynamically -->
-        <ul *dropdownMenu class="dropdown-menu" role="menu">
-          <li>
-            <button type="button" class="dropdown-item" (click)="setLang('en')">{{'en' | translate}}</button>
-          </li>
-          <li>
-            <button type="button" class="dropdown-item" (click)="setLang('es')">{{'es' | translate}}</button>
-          </li>
-        </ul>
-      </div>
-    </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li *ngIf="isAuthenticated()">
+          <p class="navbar-text">{{getAuthenticatedUser()}}</p>
+        </li>
+        <li *ngIf="isAuthenticated()">
+          <a href="#" (click)="logout()">{{'label.logout' | translate}}</a>
+        </li>
+        <!-- user -->
+        <li *ngIf="!isAuthenticated()">
+          <a href="#" routerLink="/new-account">{{'label.newAccount' | translate}}</a>
+        </li>
+        <li *ngIf="!isAuthenticated()">
+          <a routerLink="/login">{{'label.login' | translate}}</a>
+        </li>
+        <!-- language -->
+        <li class="dropdown" dropdown>
+          <div class="navbar-form">
+            <div class="btn-group" dropdown>
+              <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
+                <!-- TODO: Display current lang -->
+                {{'label.language' | translate}}
+                <span class="caret"></span>
+              </button>
+              <!-- TODO: load langs dynamically -->
+              <ul *dropdownMenu class="dropdown-menu">
+                <li>
+                  <a href="#" (click)="setLang('en')">{{'en' | translate}}</a>
+                </li>
+                <li>
+                  <a href="#" (click)="setLang('es')">{{'es' | translate}}</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
   </div>
 </nav>
