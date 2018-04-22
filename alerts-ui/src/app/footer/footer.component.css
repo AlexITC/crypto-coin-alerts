@@ -1,3 +1,10 @@
+#main-footer {
+  border-top: solid #DCDCDC 1px;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 35px 0;
+}
 
 #main-footer p {
   font-size: 20px;

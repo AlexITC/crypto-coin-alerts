@@ -19,3 +19,7 @@
 .max-width {
   max-width: 100%;
 }
+
+#home-alertTypes {
+  padding: 2em 0 1em;
+}

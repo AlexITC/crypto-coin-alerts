@@ -49,10 +49,10 @@
               </button>
               <!-- TODO: load langs dynamically -->
               <ul *dropdownMenu class="dropdown-menu">
-                <li>
+                <li [ngClass] = "{'disabled': languageService.getLang() === 'en'}">
                   <a href="#" (click)="setLang('en')">{{'en' | translate}}</a>
                 </li>
-                <li>
+                <li [ngClass]="{'disabled': languageService.getLang() === 'es'}">
                   <a href="#" (click)="setLang('es')">{{'es' | translate}}</a>
                 </li>
               </ul>
