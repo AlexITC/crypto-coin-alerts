@@ -6,8 +6,9 @@ import com.alexitc.coinalerts.data.FixedPriceAlertBlockingDataHandler
 import com.alexitc.coinalerts.data.anorm.dao.{ExchangeCurrencyPostgresDAO, FixedPriceAlertPostgresDAO}
 import com.alexitc.coinalerts.errors._
 import com.alexitc.coinalerts.models._
+import com.alexitc.coinalerts.models.fields.FixedPriceAlertField
 import com.alexitc.playsonify.core.ApplicationResult
-import com.alexitc.playsonify.models.{Count, PaginatedQuery, PaginatedResult}
+import com.alexitc.playsonify.models.{Count, FieldOrdering, PaginatedQuery, PaginatedResult}
 import org.scalactic.{Bad, Good, One, Or}
 import play.api.db.Database
 
@@ -58,7 +59,7 @@ class FixedPriceAlertPostgresDataHandler @Inject() (
 
   override def getAlerts(
       filterConditions: FixedPriceAlertFilter.Conditions,
-      orderByConditions: FixedPriceAlertOrderBy.Conditions,
+      orderByConditions: FieldOrdering[FixedPriceAlertField],
       query: PaginatedQuery): ApplicationResult[PaginatedResult[FixedPriceAlertWithCurrency]] = withConnection { implicit conn =>
 
     val alerts = alertPostgresDAO.getAlerts(filterConditions, orderByConditions, query)

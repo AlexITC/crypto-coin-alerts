@@ -2,7 +2,7 @@ package com.alexitc.coinalerts.commons
 
 import com.alexitc.coinalerts.core._
 import com.alexitc.coinalerts.models._
-import com.alexitc.playsonify.models.{Limit, Offset, PaginatedQuery}
+import com.alexitc.playsonify.models.{Limit, Offset, OrderingQuery, PaginatedQuery}
 import play.api.mvc.{PathBindable, QueryStringBindable}
 
 object PlayBinders {
@@ -108,17 +108,17 @@ object PlayBinders {
     }
   }
 
-  implicit def orderByQueryBinder(implicit binder: QueryStringBindable[String]) = new QueryStringBindable[OrderByQuery] {
-    override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, OrderByQuery]] = {
+  implicit def orderingQueryBinder(implicit binder: QueryStringBindable[String]) = new QueryStringBindable[OrderingQuery] {
+    override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, OrderingQuery]] = {
       val result = for {
         // the orderBy query is optional
         string <- binder.bind("orderBy", params).getOrElse(Right(""))
-      } yield OrderByQuery(string)
+      } yield OrderingQuery(string)
 
       Some(result)
     }
 
-    override def unbind(key: String, value: OrderByQuery): String = {
+    override def unbind(key: String, value: OrderingQuery): String = {
       binder.unbind("orderBy", value.string)
     }
   }

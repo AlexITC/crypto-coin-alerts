@@ -7,7 +7,7 @@ import com.alexitc.coinalerts.data.async.FixedPriceAlertFutureDataHandler
 import com.alexitc.coinalerts.data.{FixedPriceAlertBlockingDataHandler, FixedPriceAlertInMemoryDataHandler}
 import com.alexitc.coinalerts.errors.TooManyFixedPriceAlertsError
 import com.alexitc.coinalerts.models.UserId
-import com.alexitc.coinalerts.parsers.{FixedPriceAlertFilterParser, FixedPriceAlertOrderByParser}
+import com.alexitc.coinalerts.parsers.{FixedPriceAlertFilterParser, FixedPriceAlertOrderingParser}
 import com.alexitc.coinalerts.services.validators.FixedPriceAlertValidator
 import com.alexitc.playsonify.models.Count
 import com.alexitc.playsonify.validators.PaginatedQueryValidator
@@ -89,7 +89,7 @@ class FixedPriceAlertServiceSpec extends WordSpec with MustMatchers with ScalaFu
       paginatedQueryValidator,
       config,
       new FixedPriceAlertFilterParser,
-      new FixedPriceAlertOrderByParser,
+      new FixedPriceAlertOrderingParser,
       futureDataHandler)(globalEC)
   }
 }

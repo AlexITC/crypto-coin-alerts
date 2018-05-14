@@ -8,11 +8,11 @@ import com.alexitc.coinalerts.data.async.FixedPriceAlertFutureDataHandler
 import com.alexitc.coinalerts.errors.TooManyFixedPriceAlertsError
 import com.alexitc.coinalerts.models.FixedPriceAlertFilter.{HasNotBeenTriggeredCondition, JustThisUserCondition}
 import com.alexitc.coinalerts.models._
-import com.alexitc.coinalerts.parsers.{FixedPriceAlertFilterParser, FixedPriceAlertOrderByParser}
+import com.alexitc.coinalerts.parsers.{FixedPriceAlertFilterParser, FixedPriceAlertOrderingParser}
 import com.alexitc.coinalerts.services.validators.FixedPriceAlertValidator
 import com.alexitc.playsonify.core.FutureOr.Implicits.{FutureOps, OrOps}
 import com.alexitc.playsonify.core.{FutureApplicationResult, FuturePaginatedResult}
-import com.alexitc.playsonify.models.{Count, PaginatedQuery}
+import com.alexitc.playsonify.models.{Count, OrderingQuery, PaginatedQuery}
 import com.alexitc.playsonify.validators.PaginatedQueryValidator
 import org.scalactic.{Bad, Good}
 
@@ -23,7 +23,7 @@ class FixedPriceAlertService @Inject() (
     paginatedQueryValidator: PaginatedQueryValidator,
     config: FixedPriceAlertConfig,
     alertFilterParser: FixedPriceAlertFilterParser,
-    alertOrderByParser: FixedPriceAlertOrderByParser,
+    alertOrderByParser: FixedPriceAlertOrderingParser,
     alertFutureDataHandler: FixedPriceAlertFutureDataHandler)(
     implicit ec: ExecutionContext) {
 
@@ -44,7 +44,7 @@ class FixedPriceAlertService @Inject() (
       userId: UserId,
       query: PaginatedQuery,
       filterQuery: FilterQuery,
-      orderByQuery: OrderByQuery): FuturePaginatedResult[FixedPriceAlertWithCurrency] = {
+      orderByQuery: OrderingQuery): FuturePaginatedResult[FixedPriceAlertWithCurrency] = {
 
     val result = for {
       validatedQuery <- paginatedQueryValidator.validate(query, 100).toFutureOr

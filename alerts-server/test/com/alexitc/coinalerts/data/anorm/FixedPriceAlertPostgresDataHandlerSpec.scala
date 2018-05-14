@@ -3,12 +3,12 @@ package com.alexitc.coinalerts.data.anorm
 import com.alexitc.coinalerts.commons.DataHelper._
 import com.alexitc.coinalerts.commons.{PostgresDataHandlerSpec, RandomDataGenerator}
 import com.alexitc.coinalerts.data.anorm.dao.{ExchangeCurrencyPostgresDAO, FixedPriceAlertPostgresDAO}
-import com.alexitc.coinalerts.data.anorm.interpreters.{FixedPriceAlertFilterSQLInterpreter, FixedPriceAlertOrderBySQLInterpreter}
+import com.alexitc.coinalerts.data.anorm.interpreters.{FieldOrderingSQLInterpreter, FixedPriceAlertFilterSQLInterpreter}
 import com.alexitc.coinalerts.errors.{FixedPriceAlertNotFoundError, InvalidPriceError, UnknownExchangeCurrencyIdError, VerifiedUserNotFound}
 import com.alexitc.coinalerts.models.FixedPriceAlertFilter._
 import com.alexitc.coinalerts.models._
-import com.alexitc.coinalerts.parsers.FixedPriceAlertOrderByParser
-import com.alexitc.playsonify.models.{Count, Limit, Offset, PaginatedQuery}
+import com.alexitc.coinalerts.models.fields.FixedPriceAlertField
+import com.alexitc.playsonify.models._
 import org.scalactic.{Bad, Good}
 
 class FixedPriceAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
@@ -18,7 +18,7 @@ class FixedPriceAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
     new ExchangeCurrencyPostgresDAO,
     new FixedPriceAlertPostgresDAO(
       new FixedPriceAlertFilterSQLInterpreter,
-      new FixedPriceAlertOrderBySQLInterpreter)
+      new FieldOrderingSQLInterpreter)
   )
 
   lazy val verifiedUser = createVerifiedUser()
@@ -27,7 +27,7 @@ class FixedPriceAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
   lazy val createDefaultAlertModel = CreateFixedPriceAlertModel(RandomDataGenerator.item(currencies).id, true, BigDecimal("5000.00"), None)
   lazy val createBasePriceAlertModel = createDefaultAlertModel.copy(basePrice = Some(BigDecimal("4000.00")))
 
-  val defaultOrderByConditions = FixedPriceAlertOrderByParser.DefaultConditions
+  val defaultOrderByConditions = FieldOrdering[FixedPriceAlertField](FixedPriceAlertField.CreatedOn, OrderingCondition.DescendingOrder)
 
   def justThisUserCondition(userId: UserId) = {
     Conditions(AnyTriggeredCondition, JustThisUserCondition(userId))
@@ -238,7 +238,7 @@ class FixedPriceAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
       val alert2 = alertPostgresDataHandler.create(createDefaultAlertModel, user.id).get
 
       val query = PaginatedQuery(Offset(0), Limit(10))
-      val orderBy = FixedPriceAlertOrderBy.Conditions(FixedPriceAlertOrderBy.OrderByCreatedOn, FixedPriceAlertOrderBy.AscendingOrderCondition)
+      val orderBy = FieldOrdering[FixedPriceAlertField](FixedPriceAlertField.CreatedOn, OrderingCondition.AscendingOrder)
       val result = alertPostgresDataHandler.getAlerts(justThisUserCondition(user.id), orderBy, query).get.data
 
       result.head.id mustEqual alert1.id
@@ -255,9 +255,7 @@ class FixedPriceAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
       val alert1 = alertPostgresDataHandler.create(createDefaultAlertModel.copy(exchangeCurrencyId = currency1.id), user.id).get
 
       val query = PaginatedQuery(Offset(0), Limit(10))
-      val orderBy = FixedPriceAlertOrderBy.Conditions(
-        FixedPriceAlertOrderBy.OrderByCurrency,
-        FixedPriceAlertOrderBy.AscendingOrderCondition)
+      val orderBy = FieldOrdering[FixedPriceAlertField](FixedPriceAlertField.Currency, OrderingCondition.AscendingOrder)
       val result = alertPostgresDataHandler.getAlerts(justThisUserCondition(user.id), orderBy, query).get.data
 
       result.head.id mustEqual alert1.id
@@ -276,9 +274,7 @@ class FixedPriceAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
       val alert1 = alertPostgresDataHandler.create(createDefaultAlertModel.copy(exchangeCurrencyId = currency1.id), user.id).get
 
       val query = PaginatedQuery(Offset(0), Limit(10))
-      val orderBy = FixedPriceAlertOrderBy.Conditions(
-        FixedPriceAlertOrderBy.OrderByExchange,
-        FixedPriceAlertOrderBy.DescendingOrderCondition)
+      val orderBy = FieldOrdering[FixedPriceAlertField](FixedPriceAlertField.Exchange, OrderingCondition.DescendingOrder)
       val result = alertPostgresDataHandler.getAlerts(justThisUserCondition(user.id), orderBy, query).get.data
 
       result.head.id mustEqual alert1.id

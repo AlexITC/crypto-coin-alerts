@@ -5,8 +5,10 @@ import java.time.OffsetDateTime
 import com.alexitc.coinalerts.commons.RandomDataGenerator
 import com.alexitc.coinalerts.errors.{FixedPriceAlertNotFoundError, UnknownExchangeCurrencyIdError}
 import com.alexitc.coinalerts.models._
+import com.alexitc.coinalerts.models.fields.FixedPriceAlertField
 import com.alexitc.playsonify.core.ApplicationResult
-import com.alexitc.playsonify.models.{Count, PaginatedQuery, PaginatedResult}
+import com.alexitc.playsonify.models.OrderingCondition.{AscendingOrder, DescendingOrder}
+import com.alexitc.playsonify.models.{Count, FieldOrdering, PaginatedQuery, PaginatedResult}
 import org.scalactic.{Bad, Good, One, Or}
 
 import scala.collection.mutable
@@ -91,7 +93,7 @@ trait FixedPriceAlertInMemoryDataHandler extends FixedPriceAlertBlockingDataHand
 
   override def getAlerts(
       filterConditions: FixedPriceAlertFilter.Conditions,
-      orderByConditions: FixedPriceAlertOrderBy.Conditions,
+      orderByConditions: FieldOrdering[FixedPriceAlertField],
       query: PaginatedQuery): ApplicationResult[PaginatedResult[FixedPriceAlertWithCurrency]] = alertList.synchronized {
 
     val filteredAlerts = filterBy(filterConditions)
@@ -146,19 +148,17 @@ trait FixedPriceAlertInMemoryDataHandler extends FixedPriceAlertBlockingDataHand
     }
   }
 
-  private def sortBy(alerts: List[FixedPriceAlertWithCurrency], conditions: FixedPriceAlertOrderBy.Conditions) = {
+  private def sortBy(alerts: List[FixedPriceAlertWithCurrency], conditions: FieldOrdering[FixedPriceAlertField]) = {
 
-    import FixedPriceAlertOrderBy._
-
-    val sorted = conditions.orderBy match {
-      case OrderByCreatedOn => alerts.sortBy(_.createdOn)
-      case OrderByExchange => alerts.sortBy(_.exchange.string)
-      case OrderByCurrency => alerts.sortBy(_.currency.string)
+    val sorted = conditions.field match {
+      case FixedPriceAlertField.CreatedOn => alerts.sortBy(_.createdOn)
+      case FixedPriceAlertField.Exchange => alerts.sortBy(_.exchange.string)
+      case FixedPriceAlertField.Currency => alerts.sortBy(_.currency.string)
     }
 
-    conditions.orderCondition match {
-      case AscendingOrderCondition => sorted
-      case DescendingOrderCondition => sorted.reverse
+    conditions.orderingCondition match {
+      case AscendingOrder => sorted
+      case DescendingOrder => sorted.reverse
     }
   }
 }

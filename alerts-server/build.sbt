@@ -51,6 +51,10 @@ libraryDependencies += "com.github.bitsoex" % "bitso-java" % "v3.0.5"
 
 libraryDependencies += "com.pauldijou" %% "jwt-core" % "0.14.1"
 
+libraryDependencies ++= Seq(
+  "com.beachape" %% "enumeratum" % "1.5.13"
+)
+
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.0" % Test
 libraryDependencies += "com.alexitc" %% "playsonifytest" % "1.2.0" % Test
 

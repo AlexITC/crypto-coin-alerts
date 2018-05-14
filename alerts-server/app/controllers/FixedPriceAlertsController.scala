@@ -2,10 +2,10 @@ package controllers
 
 import javax.inject.Inject
 
-import com.alexitc.coinalerts.core.{FilterQuery, OrderByQuery}
+import com.alexitc.coinalerts.core.FilterQuery
 import com.alexitc.coinalerts.models.{CreateFixedPriceAlertModel, FixedPriceAlertId}
 import com.alexitc.coinalerts.services.FixedPriceAlertService
-import com.alexitc.playsonify.models.PaginatedQuery
+import com.alexitc.playsonify.models.{OrderingQuery, PaginatedQuery}
 
 class FixedPriceAlertsController @Inject() (
     components: MyJsonControllerComponents,
@@ -19,7 +19,7 @@ class FixedPriceAlertsController @Inject() (
   def getAlerts(
       query: PaginatedQuery,
       filterQuery: FilterQuery,
-      orderByQuery: OrderByQuery) = authenticatedNoInput { context: AuthCtx =>
+      orderByQuery: OrderingQuery) = authenticatedNoInput { context: AuthCtx =>
 
     alertService.getAlerts(context.auth, query, filterQuery, orderByQuery)
   }

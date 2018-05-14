@@ -4,14 +4,15 @@ import java.sql.Connection
 import javax.inject.Inject
 
 import anorm._
-import com.alexitc.coinalerts.data.anorm.interpreters.{FixedPriceAlertFilterSQLInterpreter, FixedPriceAlertOrderBySQLInterpreter}
+import com.alexitc.coinalerts.data.anorm.interpreters.{FieldOrderingSQLInterpreter, FixedPriceAlertFilterSQLInterpreter}
 import com.alexitc.coinalerts.data.anorm.parsers.FixedPriceAlertParsers
 import com.alexitc.coinalerts.models._
-import com.alexitc.playsonify.models.{Count, PaginatedQuery}
+import com.alexitc.coinalerts.models.fields.FixedPriceAlertField
+import com.alexitc.playsonify.models.{Count, FieldOrdering, PaginatedQuery}
 
 class FixedPriceAlertPostgresDAO @Inject() (
     sqlFilterInterpreter: FixedPriceAlertFilterSQLInterpreter,
-    sqlOrderByInterpreter: FixedPriceAlertOrderBySQLInterpreter) {
+    fieldOrderingSQLInterpreter: FieldOrderingSQLInterpreter) {
 
   import FixedPriceAlertParsers._
 
@@ -72,7 +73,7 @@ class FixedPriceAlertPostgresDAO @Inject() (
 
   def getAlerts(
       filterConditions: FixedPriceAlertFilter.Conditions,
-      orderByConditions: FixedPriceAlertOrderBy.Conditions,
+      orderByConditions: FieldOrdering[FixedPriceAlertField],
       query: PaginatedQuery)(
       implicit conn: Connection): List[FixedPriceAlertWithCurrency] = {
 
@@ -80,7 +81,7 @@ class FixedPriceAlertPostgresDAO @Inject() (
     val namedParams = NamedParameter.string("offset" -> query.offset.int) ::
         NamedParameter.string("limit" -> query.limit.int) ::
         whereClause.params.map(param => NamedParameter.string(param))
-    val orderBySQL = sqlOrderByInterpreter.toSQL(orderByConditions)
+    val orderBySQL = fieldOrderingSQLInterpreter.toOrderByClause(orderByConditions)
 
     SQL(
       s"""
