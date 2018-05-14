@@ -14,7 +14,9 @@ case class ExchangeCurrency(
     id: ExchangeCurrencyId,
     exchange: Exchange,
     market: Market,
-    currency: Currency, currencyName: Option[CurrencyName])
+    currency: Currency,
+    currencyName: Option[CurrencyName])
+
 object ExchangeCurrency {
   implicit val writes: Writes[ExchangeCurrency] = Json.writes[ExchangeCurrency]
 }
