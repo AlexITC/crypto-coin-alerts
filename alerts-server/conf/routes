@@ -12,11 +12,11 @@ GET    /users/me/preferences            controllers.UsersController.getPreferenc
 PUT    /users/me/preferences            controllers.UsersController.setPreferences()
 
 POST   /fixed-price-alerts              controllers.FixedPriceAlertsController.create()
-GET    /fixed-price-alerts              controllers.FixedPriceAlertsController.getAlerts(query: com.alexitc.coinalerts.core.PaginatedQuery, filterQuery: com.alexitc.coinalerts.core.FilterQuery, orderByQuery: com.alexitc.coinalerts.core.OrderByQuery)
+GET    /fixed-price-alerts              controllers.FixedPriceAlertsController.getAlerts(query: com.alexitc.playsonify.models.PaginatedQuery, filterQuery: com.alexitc.coinalerts.core.FilterQuery, orderByQuery: com.alexitc.coinalerts.core.OrderByQuery)
 DELETE /fixed-price-alerts/:id          controllers.FixedPriceAlertsController.delete(id: com.alexitc.coinalerts.models.FixedPriceAlertId)
 
 POST   /daily-price-alerts              controllers.DailyPriceAlertsController.create()
-GET    /daily-price-alerts              controllers.DailyPriceAlertsController.getAlerts(query: com.alexitc.coinalerts.core.PaginatedQuery)
+GET    /daily-price-alerts              controllers.DailyPriceAlertsController.getAlerts(query: com.alexitc.playsonify.models.PaginatedQuery)
 
 GET    /currencies/:id                                 controllers.ExchangeCurrenciesController.getCurrency(id: com.alexitc.coinalerts.models.ExchangeCurrencyId)
 GET    /exchanges/:exchange/markets                    controllers.ExchangeCurrenciesController.getMarkets(exchange: com.alexitc.coinalerts.models.Exchange)

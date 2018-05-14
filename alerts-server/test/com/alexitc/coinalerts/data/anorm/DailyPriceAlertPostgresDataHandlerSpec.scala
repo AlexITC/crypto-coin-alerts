@@ -2,10 +2,10 @@ package com.alexitc.coinalerts.data.anorm
 
 import com.alexitc.coinalerts.commons.DataHelper.createUnverifiedUser
 import com.alexitc.coinalerts.commons.{DataHelper, PostgresDataHandlerSpec, RandomDataGenerator}
-import com.alexitc.coinalerts.core.{Count, Limit, Offset, PaginatedQuery}
 import com.alexitc.coinalerts.data.anorm.dao.DailyPriceAlertPostgresDAO
 import com.alexitc.coinalerts.errors.{RepeatedDailyPriceAlertError, UnknownExchangeCurrencyIdError}
 import com.alexitc.coinalerts.models.{CreateDailyPriceAlertModel, ExchangeCurrencyId, UserId}
+import com.alexitc.playsonify.models.{Count, Limit, Offset, PaginatedQuery}
 import org.scalactic.Bad
 
 class DailyPriceAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {

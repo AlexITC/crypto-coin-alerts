@@ -4,10 +4,10 @@ import java.sql.Connection
 import javax.inject.Inject
 
 import anorm._
-import com.alexitc.coinalerts.core.{Count, PaginatedQuery}
 import com.alexitc.coinalerts.data.anorm.interpreters.{FixedPriceAlertFilterSQLInterpreter, FixedPriceAlertOrderBySQLInterpreter}
 import com.alexitc.coinalerts.data.anorm.parsers.FixedPriceAlertParsers
 import com.alexitc.coinalerts.models._
+import com.alexitc.playsonify.models.{Count, PaginatedQuery}
 
 class FixedPriceAlertPostgresDAO @Inject() (
     sqlFilterInterpreter: FixedPriceAlertFilterSQLInterpreter,

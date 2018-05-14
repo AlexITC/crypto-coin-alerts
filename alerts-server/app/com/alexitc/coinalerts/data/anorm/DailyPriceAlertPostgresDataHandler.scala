@@ -2,12 +2,12 @@ package com.alexitc.coinalerts.data.anorm
 
 import javax.inject.Inject
 
-import com.alexitc.coinalerts.core.{PaginatedQuery, PaginatedResult}
 import com.alexitc.coinalerts.data.DailyPriceAlertBlockingDataHandler
 import com.alexitc.coinalerts.data.anorm.dao.DailyPriceAlertPostgresDAO
 import com.alexitc.coinalerts.errors.{PostgresIntegrityViolationError, UnknownExchangeCurrencyIdError}
 import com.alexitc.coinalerts.models.{CreateDailyPriceAlertModel, DailyPriceAlert, UserId}
 import com.alexitc.playsonify.core.ApplicationResult
+import com.alexitc.playsonify.models.{PaginatedQuery, PaginatedResult}
 import org.scalactic.Good
 import play.api.db.Database
 

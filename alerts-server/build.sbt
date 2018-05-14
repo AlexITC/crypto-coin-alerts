@@ -35,7 +35,7 @@ coverageExcludedPackages := "<empty>;Reverse.*;router\\.*"
 libraryDependencies ++= Seq(guice, evolutions, jdbc, ws, specs2 % Test)
 libraryDependencies += "com.typesafe.play" %% "anorm" % "2.5.3"
 
-libraryDependencies += "com.alexitc" %% "playsonify" % "1.0.0"
+libraryDependencies += "com.alexitc" %% "playsonify" % "1.2.0"
 libraryDependencies += "com.google.inject" % "guice" % "4.1.0"
 libraryDependencies += "org.scalactic" %% "scalactic" % "3.0.4"
 libraryDependencies += "org.postgresql" % "postgresql" % "9.4.1212" // docker-it-scala has issues with 42.1.4
@@ -52,7 +52,7 @@ libraryDependencies += "com.github.bitsoex" % "bitso-java" % "v3.0.5"
 libraryDependencies += "com.pauldijou" %% "jwt-core" % "0.14.1"
 
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.0" % Test
-libraryDependencies += "com.alexitc" %% "playsonifytest" % "1.0.0" % Test
+libraryDependencies += "com.alexitc" %% "playsonifytest" % "1.2.0" % Test
 
 libraryDependencies ++= Seq(
   "com.spotify" % "docker-client" % "8.9.1",

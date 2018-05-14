@@ -1,9 +1,9 @@
 package com.alexitc.coinalerts.data
 
-import com.alexitc.coinalerts.core.{Count, PaginatedQuery, PaginatedResult}
 import com.alexitc.coinalerts.models.FixedPriceAlertFilter.Conditions
 import com.alexitc.coinalerts.models._
 import com.alexitc.playsonify.core.ApplicationResult
+import com.alexitc.playsonify.models.{Count, PaginatedQuery, PaginatedResult}
 
 import scala.language.higherKinds
 

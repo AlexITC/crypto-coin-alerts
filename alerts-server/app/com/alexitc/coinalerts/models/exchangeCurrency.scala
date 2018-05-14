@@ -1,6 +1,6 @@
 package com.alexitc.coinalerts.models
 
-import com.alexitc.coinalerts.core.{WrappedInt, WrappedString}
+import com.alexitc.playsonify.models.{WrappedInt, WrappedString}
 import play.api.libs.json.{JsPath, Json, Reads, Writes}
 
 /**

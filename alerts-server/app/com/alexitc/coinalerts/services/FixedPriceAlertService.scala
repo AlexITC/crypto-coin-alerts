@@ -3,16 +3,17 @@ package com.alexitc.coinalerts.services
 import javax.inject.Inject
 
 import com.alexitc.coinalerts.config.FixedPriceAlertConfig
-import com.alexitc.playsonify.core.FutureOr.Implicits.{FutureOps, OrOps}
 import com.alexitc.coinalerts.core._
 import com.alexitc.coinalerts.data.async.FixedPriceAlertFutureDataHandler
 import com.alexitc.coinalerts.errors.TooManyFixedPriceAlertsError
 import com.alexitc.coinalerts.models.FixedPriceAlertFilter.{HasNotBeenTriggeredCondition, JustThisUserCondition}
 import com.alexitc.coinalerts.models._
 import com.alexitc.coinalerts.parsers.{FixedPriceAlertFilterParser, FixedPriceAlertOrderByParser}
-import com.alexitc.coinalerts.services.validators.{FixedPriceAlertValidator, PaginatedQueryValidator}
-import com.alexitc.playsonify.core.FutureApplicationResult
+import com.alexitc.coinalerts.services.validators.FixedPriceAlertValidator
 import com.alexitc.playsonify.core.FutureOr.Implicits.{FutureOps, OrOps}
+import com.alexitc.playsonify.core.{FutureApplicationResult, FuturePaginatedResult}
+import com.alexitc.playsonify.models.{Count, PaginatedQuery}
+import com.alexitc.playsonify.validators.PaginatedQueryValidator
 import org.scalactic.{Bad, Good}
 
 import scala.concurrent.ExecutionContext
@@ -46,7 +47,7 @@ class FixedPriceAlertService @Inject() (
       orderByQuery: OrderByQuery): FuturePaginatedResult[FixedPriceAlertWithCurrency] = {
 
     val result = for {
-      validatedQuery <- paginatedQueryValidator.validate(query).toFutureOr
+      validatedQuery <- paginatedQueryValidator.validate(query, 100).toFutureOr
       filterConditions <- alertFilterParser.from(filterQuery, userId).toFutureOr
       orderByConditions <- alertOrderByParser.from(orderByQuery).toFutureOr
       paginatedResult <- alertFutureDataHandler.getAlerts(filterConditions, orderByConditions, validatedQuery).toFutureOr

@@ -2,6 +2,7 @@ package com.alexitc.coinalerts.commons
 
 import com.alexitc.coinalerts.core._
 import com.alexitc.coinalerts.models._
+import com.alexitc.playsonify.models.{Limit, Offset, PaginatedQuery}
 import play.api.mvc.{PathBindable, QueryStringBindable}
 
 object PlayBinders {

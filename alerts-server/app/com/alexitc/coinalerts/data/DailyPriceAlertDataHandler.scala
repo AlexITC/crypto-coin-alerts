@@ -1,8 +1,8 @@
 package com.alexitc.coinalerts.data
 
-import com.alexitc.coinalerts.core.{PaginatedQuery, PaginatedResult}
 import com.alexitc.coinalerts.models.{CreateDailyPriceAlertModel, DailyPriceAlert, UserId}
 import com.alexitc.playsonify.core.ApplicationResult
+import com.alexitc.playsonify.models.{PaginatedQuery, PaginatedResult}
 
 import scala.language.higherKinds
 

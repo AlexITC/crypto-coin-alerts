@@ -2,9 +2,10 @@ package controllers
 
 import javax.inject.Inject
 
-import com.alexitc.coinalerts.core.{FilterQuery, OrderByQuery, PaginatedQuery}
+import com.alexitc.coinalerts.core.{FilterQuery, OrderByQuery}
 import com.alexitc.coinalerts.models.{CreateFixedPriceAlertModel, FixedPriceAlertId}
 import com.alexitc.coinalerts.services.FixedPriceAlertService
+import com.alexitc.playsonify.models.PaginatedQuery
 
 class FixedPriceAlertsController @Inject() (
     components: MyJsonControllerComponents,

@@ -1,6 +1,6 @@
 package com.alexitc.coinalerts.models
 
-import com.alexitc.coinalerts.core.WrappedString
+import com.alexitc.playsonify.models.WrappedString
 import play.api.libs.json.{JsPath, Reads}
 
 case class ReCaptchaResponse(string: String) extends AnyVal with WrappedString

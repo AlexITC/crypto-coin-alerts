@@ -2,13 +2,13 @@ package com.alexitc.coinalerts.data.anorm
 
 import com.alexitc.coinalerts.commons.DataHelper._
 import com.alexitc.coinalerts.commons.{PostgresDataHandlerSpec, RandomDataGenerator}
-import com.alexitc.coinalerts.core.{Count, Limit, Offset, PaginatedQuery}
 import com.alexitc.coinalerts.data.anorm.dao.{ExchangeCurrencyPostgresDAO, FixedPriceAlertPostgresDAO}
 import com.alexitc.coinalerts.data.anorm.interpreters.{FixedPriceAlertFilterSQLInterpreter, FixedPriceAlertOrderBySQLInterpreter}
 import com.alexitc.coinalerts.errors.{FixedPriceAlertNotFoundError, InvalidPriceError, UnknownExchangeCurrencyIdError, VerifiedUserNotFound}
 import com.alexitc.coinalerts.models.FixedPriceAlertFilter._
 import com.alexitc.coinalerts.models._
 import com.alexitc.coinalerts.parsers.FixedPriceAlertOrderByParser
+import com.alexitc.playsonify.models.{Count, Limit, Offset, PaginatedQuery}
 import org.scalactic.{Bad, Good}
 
 class FixedPriceAlertPostgresDataHandlerSpec extends PostgresDataHandlerSpec {

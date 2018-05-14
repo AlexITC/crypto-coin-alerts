@@ -3,13 +3,14 @@ package com.alexitc.coinalerts.services
 import com.alexitc.coinalerts.commons.ExecutionContexts._
 import com.alexitc.coinalerts.commons.RandomDataGenerator
 import com.alexitc.coinalerts.config.FixedPriceAlertConfig
-import com.alexitc.coinalerts.core.Count
 import com.alexitc.coinalerts.data.async.FixedPriceAlertFutureDataHandler
 import com.alexitc.coinalerts.data.{FixedPriceAlertBlockingDataHandler, FixedPriceAlertInMemoryDataHandler}
 import com.alexitc.coinalerts.errors.TooManyFixedPriceAlertsError
 import com.alexitc.coinalerts.models.UserId
 import com.alexitc.coinalerts.parsers.{FixedPriceAlertFilterParser, FixedPriceAlertOrderByParser}
-import com.alexitc.coinalerts.services.validators.{FixedPriceAlertValidator, PaginatedQueryValidator}
+import com.alexitc.coinalerts.services.validators.FixedPriceAlertValidator
+import com.alexitc.playsonify.models.Count
+import com.alexitc.playsonify.validators.PaginatedQueryValidator
 import org.scalactic.Bad
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{MustMatchers, WordSpec}

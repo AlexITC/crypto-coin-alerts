@@ -1,10 +1,11 @@
 package com.alexitc.coinalerts.commons
 
-import com.alexitc.coinalerts.core.{AuthorizationToken, PaginatedQuery}
+import com.alexitc.coinalerts.core.AuthorizationToken
 import com.alexitc.coinalerts.data._
 import com.alexitc.coinalerts.modules.{ExchangeCurrencySeederTaskModule, FixedPriceAlertsTaskModule}
 import com.alexitc.coinalerts.services.external.ReCaptchaService
 import com.alexitc.coinalerts.services.{EmailServiceTrait, JWTService}
+import com.alexitc.playsonify.models.PaginatedQuery
 import com.alexitc.playsonify.test.PlayAPISpec
 import org.slf4j.LoggerFactory
 import play.api.db.{DBApi, Database, Databases}

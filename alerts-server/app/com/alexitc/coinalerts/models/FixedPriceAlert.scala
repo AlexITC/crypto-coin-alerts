@@ -2,7 +2,7 @@ package com.alexitc.coinalerts.models
 
 import java.time.OffsetDateTime
 
-import com.alexitc.coinalerts.core.WrappedLong
+import com.alexitc.playsonify.models.WrappedLong
 import play.api.libs.json._
 
 case class FixedPriceAlert(

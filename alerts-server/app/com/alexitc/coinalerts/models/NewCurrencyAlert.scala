@@ -1,6 +1,6 @@
 package com.alexitc.coinalerts.models
 
-import com.alexitc.coinalerts.core.WrappedInt
+import com.alexitc.playsonify.models.WrappedInt
 import play.api.libs.json.{Json, Reads, Writes}
 
 case class NewCurrencyAlert(

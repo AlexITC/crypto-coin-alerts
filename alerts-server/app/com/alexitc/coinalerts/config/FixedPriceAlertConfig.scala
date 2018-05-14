@@ -2,7 +2,7 @@ package com.alexitc.coinalerts.config
 
 import javax.inject.Inject
 
-import com.alexitc.coinalerts.core.Count
+import com.alexitc.playsonify.models.Count
 import play.api.Configuration
 
 trait FixedPriceAlertConfig {

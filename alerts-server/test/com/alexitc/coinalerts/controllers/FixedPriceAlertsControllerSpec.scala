@@ -4,9 +4,9 @@ import java.time.OffsetDateTime
 
 import com.alexitc.coinalerts.commons.DataHelper._
 import com.alexitc.coinalerts.commons.{CustomPlayAPISpec, RandomDataGenerator}
-import com.alexitc.coinalerts.core.{Limit, Offset, PaginatedQuery}
 import com.alexitc.coinalerts.data.{FixedPriceAlertBlockingDataHandler, FixedPriceAlertInMemoryDataHandler}
 import com.alexitc.coinalerts.models.FixedPriceAlertId
+import com.alexitc.playsonify.models.{Limit, Offset, PaginatedQuery}
 import play.api.Application
 import play.api.inject.bind
 import play.api.libs.json.JsValue
