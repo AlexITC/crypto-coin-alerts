@@ -71,7 +71,7 @@ object RandomDataGenerator {
 
   def market = {
     val marketList = "BTC ETH XRP MXN USD USDT".split(" ")
-    Market(item(marketList))
+    Market.from(item(marketList)).get
   }
 
   def currency = {

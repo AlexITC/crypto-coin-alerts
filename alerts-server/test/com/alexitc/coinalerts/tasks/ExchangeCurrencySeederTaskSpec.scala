@@ -37,7 +37,7 @@ class ExchangeCurrencySeederTaskSpec extends WordSpec with MustMatchers with Sca
     "ignored existing currencies" in {
       val bitsoBooks = "BTC_LTC".split(" ").flatMap(Book.fromString)
       val currencyDataHandler = new ExchangeCurrencyInMemoryDataHandler {}
-      val createModel = CreateExchangeCurrencyModel(Exchange.BITSO, Market("BTC"), Currency("LTC"), None)
+      val createModel = CreateExchangeCurrencyModel(Exchange.BITSO, Market.BTC, Currency("LTC"), None)
       currencyDataHandler.create(createModel)
 
       val task = seederTask(

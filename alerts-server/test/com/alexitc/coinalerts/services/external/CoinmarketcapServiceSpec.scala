@@ -74,9 +74,9 @@ class CoinmarketcapServiceSpec  extends WordSpec with MustMatchers with ScalaFut
         books.size mustEqual 3
 
         val expectedBooks = List(
-          Book(Market("USD"), Currency("BTC"), Some(CurrencyName("Bitcoin"))),
-          Book(Market("USD"), Currency("ETH"), Some(CurrencyName("Ethereum"))),
-          Book(Market("BTC"), Currency("ETH"), Some(CurrencyName("Ethereum")))
+          Book(Market.USD, Currency("BTC"), Some(CurrencyName("Bitcoin"))),
+          Book(Market.USD, Currency("ETH"), Some(CurrencyName("Ethereum"))),
+          Book(Market.BTC, Currency("ETH"), Some(CurrencyName("Ethereum")))
         )
 
         expectedBooks.foreach { expectedBook =>
@@ -101,9 +101,9 @@ class CoinmarketcapServiceSpec  extends WordSpec with MustMatchers with ScalaFut
         tickerList.size mustEqual 3
 
         val expectedTickerList = List(
-          Ticker(Book(Market("USD"), Currency("BTC"), Some(CurrencyName("Bitcoin"))), BigDecimal("11053.8")),
-          Ticker(Book(Market("USD"), Currency("ETH"), Some(CurrencyName("Ethereum"))), BigDecimal("1013.98")),
-          Ticker(Book(Market("BTC"), Currency("ETH"), Some(CurrencyName("Ethereum"))), BigDecimal("0.0920443"))
+          Ticker(Book(Market.USD, Currency("BTC"), Some(CurrencyName("Bitcoin"))), BigDecimal("11053.8")),
+          Ticker(Book(Market.USD, Currency("ETH"), Some(CurrencyName("Ethereum"))), BigDecimal("1013.98")),
+          Ticker(Book(Market.BTC, Currency("ETH"), Some(CurrencyName("Ethereum"))), BigDecimal("0.0920443"))
         )
 
         expectedTickerList.foreach { expectedTicker =>

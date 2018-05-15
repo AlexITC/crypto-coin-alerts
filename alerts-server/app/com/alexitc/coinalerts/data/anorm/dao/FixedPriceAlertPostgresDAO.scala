@@ -68,7 +68,7 @@ class FixedPriceAlertPostgresDAO @Inject() (
     ).on(
       "currency_id" -> currencyId.int,
       "current_price" -> currentPrice
-    ).as(parseFixedPriceAlertWithCurrency.*)
+    ).as(parseFixedPriceAlertWithCurrency.*).flatten
   }
 
   def getAlerts(
@@ -95,7 +95,7 @@ class FixedPriceAlertPostgresDAO @Inject() (
        """.stripMargin
     ).on(
       namedParams: _*
-    ).as(parseFixedPriceAlertWithCurrency.*)
+    ).as(parseFixedPriceAlertWithCurrency.*).flatten
   }
 
   def countBy(conditions: FixedPriceAlertFilter.Conditions)(implicit conn: Connection): Count = {

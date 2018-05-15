@@ -33,7 +33,7 @@ class BittrexService @Inject() (
                     .as[List[JsValue]]
 
                 resultList.flatMap { result =>
-                  val marketMaybe = (result \ "BaseCurrency").asOpt[String].map(Market.apply)
+                  val marketMaybe = (result \ "BaseCurrency").asOpt[String].flatMap(Market.from)
                   val currencyMaybe = (result \ "MarketCurrency").asOpt[String].map(Currency.apply)
                   for (market <- marketMaybe; currency <- currencyMaybe)
                     yield Book(market, currency)

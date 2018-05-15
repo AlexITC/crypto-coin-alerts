@@ -28,7 +28,7 @@ class ExchangeCurrencyPostgresDAO {
       "market" -> createModel.market.string,
       "currency" -> createModel.currency.string,
       "currency_name" -> createModel.currencyName.map(_.string).getOrElse("")
-    ).as(parseExchangeCurrency.singleOpt)
+    ).as(parseExchangeCurrency.singleOpt).flatten
   }
 
   def getBy(
@@ -43,7 +43,7 @@ class ExchangeCurrencyPostgresDAO {
       """.stripMargin
     ).on(
       "currency_id" -> exchangeCurrencyId.int
-    ).as(parseExchangeCurrency.singleOpt)
+    ).as(parseExchangeCurrency.singleOpt).flatten
   }
 
   def getBy(
@@ -65,7 +65,7 @@ class ExchangeCurrencyPostgresDAO {
       "exchange" -> exchange.string,
       "market" -> market.string,
       "currency" -> currency.string
-    ).as(parseExchangeCurrency.singleOpt)
+    ).as(parseExchangeCurrency.singleOpt).flatten
   }
 
   def getBy(
@@ -83,7 +83,7 @@ class ExchangeCurrencyPostgresDAO {
     ).on(
       "exchange" -> exchange.string,
       "market" -> market.string,
-    ).as(parseExchangeCurrency.*)
+    ).as(parseExchangeCurrency.*).flatten
   }
 
   def getMarkets(exchange: Exchange)(implicit conn: Connection): List[Market] = {
@@ -95,7 +95,7 @@ class ExchangeCurrencyPostgresDAO {
       """.stripMargin
     ).on(
       "exchange" -> exchange.string
-    ).as(parseMarket.*)
+    ).as(parseMarket.*).flatten
   }
 
   /**
@@ -109,6 +109,6 @@ class ExchangeCurrencyPostgresDAO {
         |SELECT currency_id, exchange, market, currency, currency_name
         |FROM currencies
       """.stripMargin
-    ).as(parseExchangeCurrency.*)
+    ).as(parseExchangeCurrency.*).flatten
   }
 }

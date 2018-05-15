@@ -27,7 +27,7 @@ class BinanceService @Inject() (
    *
    * Then, we need to know the supported markets in advance to perform this parsing.
    */
-  private val KnownMarkets = "BTC ETH USDT BNB".split(" ").map(Market.apply).toList
+  private val KnownMarkets = "BTC ETH USDT BNB".split(" ").flatMap(Market.from).toList
 
   override def availableBooks(): Future[List[Book]] = {
     getTickerList()

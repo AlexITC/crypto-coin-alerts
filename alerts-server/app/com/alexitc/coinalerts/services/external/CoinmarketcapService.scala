@@ -14,8 +14,8 @@ class CoinmarketcapService @Inject() (ws: WSClient)(implicit ec: ExecutionContex
 
   private val logger = LoggerFactory.getLogger(this.getClass)
 
-  private val BTCMarket = Market("BTC")
-  private val USDMarket = Market("USD")
+  private val BTCMarket = Market.BTC
+  private val USDMarket = Market.USD
 
   private val BaseURL = "https://api.coinmarketcap.com"
 

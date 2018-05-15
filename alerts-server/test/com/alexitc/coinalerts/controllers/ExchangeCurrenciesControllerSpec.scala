@@ -16,7 +16,7 @@ class ExchangeCurrenciesControllerSpec extends CustomPlayAPISpec {
 
     "retrieve a currency by id" in {
       val exchange = Exchange.HITBTC
-      val market = Market("BTC")
+      val market = Market.BTC
       val currency = Currency("BTG")
       val currencyName = Some(CurrencyName("Bitcoin gold"))
       val exchangeCurrency = exchangeCurrencyDataHandler.create(CreateExchangeCurrencyModel(exchange, market, currency, currencyName)).get
@@ -65,7 +65,7 @@ class ExchangeCurrenciesControllerSpec extends CustomPlayAPISpec {
 
     "retrieve the list of currencies for a market" in {
       val exchange = Exchange.BITSO
-      val market = Market("BTC")
+      val market = Market.BTC
       val response = GET(url(exchange, market))
       status(response) mustEqual OK
 
@@ -80,7 +80,7 @@ class ExchangeCurrenciesControllerSpec extends CustomPlayAPISpec {
     }
 
     "retrieve no currencies for an unknown market" in {
-      val response = GET(url(Exchange.BITSO, Market("TX")))
+      val response = GET(url(Exchange.BITSO, Market.from("TX").get))
       status(response) mustEqual OK
 
       val list = contentAsJson(response).as[List[JsValue]]

@@ -28,7 +28,6 @@ object ExchangeCurrencyId {
   }
 }
 
-case class Market(string: String) extends AnyVal with WrappedString
 case class Currency(string: String) extends AnyVal with WrappedString
 case class CurrencyName(string: String) extends AnyVal with WrappedString
 

@@ -8,10 +8,11 @@ object Book {
   def fromString(string: String): Option[Book] = {
     Option(string.toUpperCase.split("_"))
         .filter(_.length == 2)
-        .map { parts =>
-          val market = Market(parts(0))
-          val currency = Currency(parts(1))
-          Book(market, currency)
+        .flatMap { parts =>
+          for {
+            market <- Market.from(parts(0))
+            currency = Currency(parts(1))
+          } yield Book(market, currency)
         }
   }
 }
@@ -22,10 +23,11 @@ object BitsoBook {
    * BITSO represents a book in the reversed order than us
    */
   def fromString(string: String): Option[Book] = {
-    Book.fromString(string).map { reversedBook =>
-      val market = Market(reversedBook.currency.string)
-      val currency = Currency(reversedBook.market.string)
-      Book(market, currency)
+    Book.fromString(string).flatMap { reversedBook =>
+      for {
+        market <- Market.from(reversedBook.currency.string)
+        currency = Currency(reversedBook.market.string)
+      } yield Book(market, currency)
     }
   }
 }

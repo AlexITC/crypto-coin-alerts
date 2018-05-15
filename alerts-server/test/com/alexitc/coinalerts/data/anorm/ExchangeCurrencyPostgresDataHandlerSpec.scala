@@ -12,7 +12,7 @@ class ExchangeCurrencyPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
   "Creating a currency" should {
     "succeed with a new currency" in {
       val exchange = Exchange.BITTREX
-      val market = Market("BTC")
+      val market = Market.BTC
       val currency = Currency("XRP")
       val createModel = CreateExchangeCurrencyModel(exchange, market, currency, None)
       val result = exchangeCurrencyDataHandler.create(createModel).get
@@ -24,7 +24,7 @@ class ExchangeCurrencyPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
 
     "be able to create a currency having 1 character" in {
       val exchange = Exchange.BITTREX
-      val market = Market("BTC")
+      val market = Market.BTC
       val currency = Currency("R") // Revain
       val createModel = CreateExchangeCurrencyModel(exchange, market, currency, None)
       val result = exchangeCurrencyDataHandler.create(createModel).get
@@ -36,7 +36,7 @@ class ExchangeCurrencyPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
 
     "be able to create the same currency with different name" in {
       val exchange = Exchange.BITTREX
-      val market = Market("BTC")
+      val market = Market.BTC
       val currency = Currency("BTG")
       val currencyName1 = Some(CurrencyName("Bitcoin Gold"))
       val currencyName2 = Some(CurrencyName("Bitgem"))
@@ -54,7 +54,7 @@ class ExchangeCurrencyPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
 
     "the currencyName accepts symbols from coinmarketcap" in {
       val exchange = Exchange.BITTREX
-      val market = Market("BTC")
+      val market = Market.BTC
       val currency = Currency("BTG")
       val currencyName = Some(CurrencyName(".+/-'() []"))
       val createModel = CreateExchangeCurrencyModel(exchange, market, currency, currencyName)
@@ -66,7 +66,7 @@ class ExchangeCurrencyPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
 
     "fail to create a repeated currency" in {
       val exchange = Exchange.BITTREX
-      val market = Market("BTC")
+      val market = Market.BTC
       val currency = Currency("LTC")
       val createModel = CreateExchangeCurrencyModel(exchange, market, currency, None)
 
@@ -80,7 +80,7 @@ class ExchangeCurrencyPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
   "Retrieving a currency by id" should {
     "return the currency" in {
       val exchange = Exchange.BITTREX
-      val market = Market("BTC")
+      val market = Market.BTC
       val currency = Currency("MXN")
       val createModel = CreateExchangeCurrencyModel(exchange, market, currency, None)
 
@@ -102,7 +102,7 @@ class ExchangeCurrencyPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
   "Retrieving a currency by exchange, market and currency" should {
     "return the currency" in {
       val exchange = Exchange.BITTREX
-      val market = Market("BTC")
+      val market = Market.BTC
       val currency = Currency("ADA")
       val createModel = CreateExchangeCurrencyModel(exchange, market, currency, None)
 
@@ -114,7 +114,7 @@ class ExchangeCurrencyPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
 
     "return None when the currency doesn't exist" in {
       val exchange = Exchange.BITSO
-      val market = Market("BTC")
+      val market = Market.BTC
       val currency = Currency("USD")
 
       val result = exchangeCurrencyDataHandler.getBy(exchange, market, currency).get
@@ -125,7 +125,7 @@ class ExchangeCurrencyPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
   "Retrieving the currencies by exchange and market" should {
     "return the currencies" in {
       val exchange = Exchange.BITTREX
-      val market = Market("USD")
+      val market = Market.USD
       val currencies = "BTC ETH ADA XRP".split(" ").map(Currency.apply)
       currencies.foreach { currency =>
         val createModel = CreateExchangeCurrencyModel(exchange, market, currency, None)
@@ -140,7 +140,7 @@ class ExchangeCurrencyPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
   "Retrieving the markets by exchange" should {
     "retrieve unique the markets" in {
       val exchange = Exchange.BITTREX
-      val market = Market("USD")
+      val market = Market.USD
       val currencies = "BTC ETH ADA XRP".split(" ").map(Currency.apply)
       currencies.foreach { currency =>
         val createModel = CreateExchangeCurrencyModel(exchange, market, currency, None)

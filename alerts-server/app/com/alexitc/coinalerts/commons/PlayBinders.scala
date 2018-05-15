@@ -52,7 +52,10 @@ object PlayBinders {
     override def bind(key: String, value: String): Either[String, Market] = {
       for {
         string <- binder.bind(key, value).right
-      } yield Market(string)
+        market <- Market.from(string)
+            .map(Right(_))
+            .getOrElse(Left("market.invalid.format"))
+      } yield market
     }
 
     override def unbind(key: String, value: Market): String = {
