@@ -58,7 +58,7 @@ class CoinmarketcapService @Inject() (ws: WSClient)(implicit ec: ExecutionContex
   private def toTickerList(json: JsValue): List[Ticker] = {
     val result = for {
       // while symbol field would be preferred, there are collisions
-      currencyString <- (json \ "symbol").asOpt[String]
+      currency <- (json \ "symbol").asOpt[String].flatMap(Currency.from)
       priceUSD <- (json \ "price_usd").asOpt[BigDecimal]
       priceBTC <- (json \ "price_btc").asOpt[BigDecimal]
       currencyName <- (json \ "name").asOpt[String]
@@ -66,10 +66,9 @@ class CoinmarketcapService @Inject() (ws: WSClient)(implicit ec: ExecutionContex
           .filter(_.nonEmpty)
           .map(CurrencyName.apply)
     } yield {
-      val currency = Currency(currencyString)
       val tickerUSD = Ticker(Book(USDMarket, currency, Some(currencyName)), priceUSD)
 
-      if ("BTC" equalsIgnoreCase currencyString) {
+      if ("BTC" equalsIgnoreCase currency.string) {
         // there is no need to match BTC price against BTC
         List(tickerUSD)
       } else {

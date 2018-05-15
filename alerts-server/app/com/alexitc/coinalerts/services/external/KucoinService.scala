@@ -35,7 +35,7 @@ class KucoinService @Inject() (
 
                 resultList.flatMap { result =>
                   val marketMaybe = (result \ "coinTypePair").asOpt[String].flatMap(Market.from)
-                  val currencyMaybe = (result \ "coinType").asOpt[String].map(Currency.apply)
+                  val currencyMaybe = (result \ "coinType").asOpt[String].flatMap(Currency.from)
                   for (market <- marketMaybe; currency <- currencyMaybe)
                     yield Book(market, currency)
                 }

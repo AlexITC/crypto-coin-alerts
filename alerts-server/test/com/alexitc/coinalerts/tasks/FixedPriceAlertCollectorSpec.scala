@@ -27,8 +27,8 @@ class FixedPriceAlertCollectorSpec extends WordSpec with MustMatchers with Scala
       // create currencies
       val exchange = Exchange.BITSO
       val market = Market.BTC
-      val BTC_MXN = exchangeCurrencyDataHandler.create(CreateExchangeCurrencyModel(exchange, market, Currency("MXN"), None)).get
-      val BTC_ADA = exchangeCurrencyDataHandler.create(CreateExchangeCurrencyModel(exchange, market, Currency("ADA"), None)).get
+      val BTC_MXN = exchangeCurrencyDataHandler.create(CreateExchangeCurrencyModel(exchange, market, Currency.from("MXN").get, None)).get
+      val BTC_ADA = exchangeCurrencyDataHandler.create(CreateExchangeCurrencyModel(exchange, market, Currency.from("ADA").get, None)).get
 
       // create alerts
       val trigger1 = fixedPriceAlertBlockingDataHandler.create(

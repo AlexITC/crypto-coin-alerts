@@ -11,7 +11,7 @@ object Book {
         .flatMap { parts =>
           for {
             market <- Market.from(parts(0))
-            currency = Currency(parts(1))
+            currency <- Currency.from(parts(1))
           } yield Book(market, currency)
         }
   }
@@ -26,7 +26,7 @@ object BitsoBook {
     Book.fromString(string).flatMap { reversedBook =>
       for {
         market <- Market.from(reversedBook.currency.string)
-        currency = Currency(reversedBook.market.string)
+        currency <- Currency.from(reversedBook.market.string)
       } yield Book(market, currency)
     }
   }

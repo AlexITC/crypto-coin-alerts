@@ -80,10 +80,11 @@ class BinanceService @Inject() (
   private def createBook(string: String): Option[Book] = {
     KnownMarkets
         .find { market => string.endsWith(market.string) }
-        .map { market =>
+        .flatMap { market =>
           val currencyStr = string.substring(0, string.length - market.string.length)
-          val currency = Currency(currencyStr)
-          Book(market, currency)
+          for {
+            currency <- Currency.from(currencyStr)
+          } yield Book(market, currency)
         }
         .orElse {
           logger.warn(s"Unable to create book from string = [$string]")

@@ -52,7 +52,7 @@ object FixedPriceAlertParsers {
         exchangeCurrencyId ~
         exchange ~
         marketMaybe ~
-        currency ~
+        currencyMaybe ~
         currencyName ~
         isGreaterThan ~
         price ~
@@ -62,6 +62,7 @@ object FixedPriceAlertParsers {
 
       for {
         market <- marketMaybe
+        currency <- currencyMaybe
       } yield FixedPriceAlertWithCurrency(
         alertId,
         userId,

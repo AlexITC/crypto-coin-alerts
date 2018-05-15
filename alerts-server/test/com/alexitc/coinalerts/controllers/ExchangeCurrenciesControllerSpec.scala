@@ -17,7 +17,7 @@ class ExchangeCurrenciesControllerSpec extends CustomPlayAPISpec {
     "retrieve a currency by id" in {
       val exchange = Exchange.HITBTC
       val market = Market.BTC
-      val currency = Currency("BTG")
+      val currency = Currency.from("BTG").get
       val currencyName = Some(CurrencyName("Bitcoin gold"))
       val exchangeCurrency = exchangeCurrencyDataHandler.create(CreateExchangeCurrencyModel(exchange, market, currency, currencyName)).get
 

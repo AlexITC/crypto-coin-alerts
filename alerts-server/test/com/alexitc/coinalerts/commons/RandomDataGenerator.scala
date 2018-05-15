@@ -76,7 +76,7 @@ object RandomDataGenerator {
 
   def currency = {
     val currencyList = "ADA XMR SC RDD LTC BCH LUN DGB XDN MONA THC VTC".split(" ")
-    Currency(item(currencyList))
+    Currency.from(item(currencyList)).get
   }
 
   def exchangeCurrency(id: ExchangeCurrencyId) = {
