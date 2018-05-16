@@ -13,5 +13,14 @@ class BookSpec extends WordSpec with MustMatchers {
 
       actualBook.string mustEqual expectedBookString
     }
+
+    "allow creating a book where the currency has 1 character" in {
+      val bookString = "R_BTC"
+      val expectedBookString = "BTC_R"
+
+      val actualBook = BitsoBook.fromString(bookString).get
+
+      actualBook.string mustEqual expectedBookString
+    }
   }
 }
