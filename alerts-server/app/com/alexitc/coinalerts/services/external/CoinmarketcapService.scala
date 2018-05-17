@@ -68,7 +68,7 @@ class CoinmarketcapService @Inject() (ws: WSClient)(implicit ec: ExecutionContex
     } yield {
       val tickerUSD = Ticker(Book(USDMarket, currency, Some(currencyName)), priceUSD)
 
-      if ("BTC" equalsIgnoreCase currency.string) {
+      if (Market.BTC.string equalsIgnoreCase currency.string) {
         // there is no need to match BTC price against BTC
         List(tickerUSD)
       } else {
@@ -78,7 +78,8 @@ class CoinmarketcapService @Inject() (ws: WSClient)(implicit ec: ExecutionContex
     }
 
     result.getOrElse {
-      logger.warn(s"There was an error while mapping a value to a ticker, json = [$json]")
+      // NOTE: there are plenty of dirty values on CMC, avoid polluting logs
+      //  logger.warn(s"There was an error while mapping a value to a ticker, json = [$json]")
       List.empty
     }
   }
