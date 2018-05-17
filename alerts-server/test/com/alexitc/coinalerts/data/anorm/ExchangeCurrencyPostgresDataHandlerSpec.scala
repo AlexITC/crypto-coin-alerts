@@ -99,7 +99,7 @@ class ExchangeCurrencyPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
     }
   }
 
-  "Retrieving a currency by exchange, market and currency" should {
+  "Retrieving a currency by exchange, market, currency and currency_name" should {
     "return the currency" in {
       val exchange = Exchange.BITTREX
       val market = Market.BTC
@@ -107,7 +107,7 @@ class ExchangeCurrencyPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
       val createModel = CreateExchangeCurrencyModel(exchange, market, currency, None)
 
       val exchangeCurrency = exchangeCurrencyDataHandler.create(createModel).get
-      val result = exchangeCurrencyDataHandler.getBy(exchange, market, currency).get
+      val result = exchangeCurrencyDataHandler.getBy(exchange, market, currency, CurrencyName("")).get
 
       result mustEqual Some(exchangeCurrency)
     }
@@ -117,7 +117,7 @@ class ExchangeCurrencyPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
       val market = Market.BTC
       val currency = Currency.from("USD").get
 
-      val result = exchangeCurrencyDataHandler.getBy(exchange, market, currency).get
+      val result = exchangeCurrencyDataHandler.getBy(exchange, market, currency, CurrencyName("")).get
       result mustEqual Option.empty[ExchangeCurrency]
     }
   }

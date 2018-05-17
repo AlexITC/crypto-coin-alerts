@@ -27,10 +27,11 @@ class FixedPriceAlertCollector @Inject()(
       val alertListFuture = Future
           .sequence {
             tickerList.map { ticker =>
+              val currencyName = ticker.book.currencyName.getOrElse(CurrencyName.apply(""))
               val result = for {
                 // TODO: the data handler now returns the currency, we could omit this call
                 currencyMaybe <- exchangeCurrencyFutureDataHandler
-                    .getBy(tickerCollector.exchange, ticker.book.market, ticker.book.currency)
+                    .getBy(tickerCollector.exchange, ticker.book.market, ticker.book.currency, currencyName)
                     .toFutureOr
               } yield {
                 val futureListMaybe = for (currency <- currencyMaybe)

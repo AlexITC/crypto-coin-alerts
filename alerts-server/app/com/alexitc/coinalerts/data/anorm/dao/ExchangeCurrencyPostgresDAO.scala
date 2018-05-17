@@ -49,7 +49,8 @@ class ExchangeCurrencyPostgresDAO {
   def getBy(
       exchange: Exchange,
       market: Market,
-      currency: Currency)(
+      currency: Currency,
+      currencyName: CurrencyName)(
       implicit conn: Connection): Option[ExchangeCurrency] = {
 
     SQL(
@@ -59,12 +60,14 @@ class ExchangeCurrencyPostgresDAO {
         |WHERE exchange = {exchange} AND
         |      market = {market} AND
         |      currency = {currency} AND
+        |      currency_name = {currency_name} AND
         |      deleted_on IS NULL
       """.stripMargin
     ).on(
       "exchange" -> exchange.string,
       "market" -> market.string,
-      "currency" -> currency.string
+      "currency" -> currency.string,
+      "currency_name" -> currencyName.string
     ).as(parseExchangeCurrency.singleOpt).flatten
   }
 

@@ -26,10 +26,10 @@ class ExchangeCurrencySeederTaskSpec extends WordSpec with MustMatchers with Sca
 
       whenReady(task.execute()) { _ =>
         bitsoBooks.foreach { book =>
-          currencyDataHandler.getBy(Exchange.BITSO, book.market, book.currency).get.isDefined mustEqual true
+          currencyDataHandler.getBy(Exchange.BITSO, book.market, book.currency, book.currencyName.getOrElse(CurrencyName(""))).get.isDefined mustEqual true
         }
         bittrexBooks.foreach { book =>
-          currencyDataHandler.getBy(Exchange.BITTREX, book.market, book.currency).get.isDefined mustEqual true
+          currencyDataHandler.getBy(Exchange.BITTREX, book.market, book.currency, book.currencyName.getOrElse(CurrencyName(""))).get.isDefined mustEqual true
         }
       }
     }
@@ -47,7 +47,7 @@ class ExchangeCurrencySeederTaskSpec extends WordSpec with MustMatchers with Sca
 
       whenReady(task.execute()) { _ =>
         bitsoBooks.foreach { book =>
-          currencyDataHandler.getBy(Exchange.BITSO, book.market, book.currency).get.isDefined mustEqual true
+          currencyDataHandler.getBy(Exchange.BITSO, book.market, book.currency, book.currencyName.getOrElse(CurrencyName(""))).get.isDefined mustEqual true
         }
       }
     }

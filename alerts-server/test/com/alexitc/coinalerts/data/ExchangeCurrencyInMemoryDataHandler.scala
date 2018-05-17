@@ -14,7 +14,7 @@ trait ExchangeCurrencyInMemoryDataHandler extends ExchangeCurrencyBlockingDataHa
   override def create(
       createModel: CreateExchangeCurrencyModel): ApplicationResult[ExchangeCurrency] = currencyList.synchronized {
 
-    if (getBy(createModel.exchange, createModel.market, createModel.currency).get.isDefined) {
+    if (getBy(createModel.exchange, createModel.market, createModel.currency, createModel.currencyName.getOrElse(CurrencyName(""))).get.isDefined) {
       Bad(RepeatedExchangeCurrencyError).accumulating
     } else {
       val newCurrency = ExchangeCurrency(
@@ -38,10 +38,11 @@ trait ExchangeCurrencyInMemoryDataHandler extends ExchangeCurrencyBlockingDataHa
   override def getBy(
       exchange: Exchange,
       market: Market,
-      currency: Currency): ApplicationResult[Option[ExchangeCurrency]] = currencyList.synchronized {
+      currency: Currency,
+      currencyName: CurrencyName): ApplicationResult[Option[ExchangeCurrency]] = currencyList.synchronized {
 
     val result = currencyList.find { c =>
-      c.exchange == exchange && c.market == market && c.currency == currency
+      c.exchange == exchange && c.market == market && c.currency == currency && c.currencyName.getOrElse("") == currencyName.string
     }
 
     Good(result)
