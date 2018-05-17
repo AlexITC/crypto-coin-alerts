@@ -4,4 +4,5 @@ export class ExchangeCurrency {
   exchange: string;
   market: string;
   currency: string;
+  currencyName: string;
 }

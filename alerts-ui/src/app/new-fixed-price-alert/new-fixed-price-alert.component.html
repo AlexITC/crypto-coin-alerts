@@ -44,7 +44,7 @@
               [(ngModel)]="selectedCurrency"
               id="currency"
               class="form-control">
-        <option *ngFor="let currency of availableCurrencies | async" [ngValue]="currency">{{currency.currency}}</option>
+        <option *ngFor="let currency of availableCurrencies | async" [ngValue]="currency">{{getCurrencyText(currency)}}</option>
       </select>
     </div>
 

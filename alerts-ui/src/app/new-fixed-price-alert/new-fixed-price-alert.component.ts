@@ -170,4 +170,12 @@ export class NewFixedPriceAlertComponent implements OnInit {
 
     return params;
   }
+
+  getCurrencyText(currency: ExchangeCurrency): string {
+    if ((currency.currencyName || '').length > 0) {
+      return `${currency.currency} (${currency.currencyName})`;
+    } else {
+      return currency.currency;
+    }
+  }
 }
