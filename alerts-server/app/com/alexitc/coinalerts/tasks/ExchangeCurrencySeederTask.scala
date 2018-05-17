@@ -88,7 +88,8 @@ class ExchangeCurrencySeederTask @Inject() (
       currencies.exists { currency =>
         exchange === currency.exchange &&
           book.market === currency.market &&
-          book.currency === currency.currency
+          book.currency === currency.currency &&
+          book.currencyName === currency.currencyName
       }
     }
 
@@ -99,7 +100,7 @@ class ExchangeCurrencySeederTask @Inject() (
     }
 
     for (book <- newBooks) yield {
-      val createModel = CreateExchangeCurrencyModel(exchange, book.market, book.currency, None)
+      val createModel = CreateExchangeCurrencyModel(exchange, book.market, book.currency, book.currencyName)
       
       exchangeCurrencyBlockingDataHandler.create(createModel) match {
         case Good(_) => ()
