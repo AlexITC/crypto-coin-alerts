@@ -1,4 +1,7 @@
 # Crypto Coin Alerts
+
+[![Join the chat at https://gitter.im/crypto-coin-alerts/Lobby](https://badges.gitter.im/crypto-coin-alerts/Lobby.svg)](https://gitter.im/crypto-coin-alerts/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Crypto coin alerts (https://cryptocoinalerts.net) is a web application that let you set alerts for the prices of several crypto currencies.
 
 ## Uptime status
