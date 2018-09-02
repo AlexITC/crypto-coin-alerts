@@ -37,9 +37,11 @@
   </div>
 
   <div class="form-group">
-    <re-captcha site_key="{{reCaptchaService.siteKey}}"
-                (captchaResponse)="onCaptchaResolved($event)"
-                (captchaExpired)="onCaptchaExpired()"></re-captcha>
+    <div class="col-xs-3 col-xs-offset-3 col-sm-3 col-sm-offset-3 col-md-2 col-md-offset-2 col-lg-2 col-lg-offset-2">
+        <re-captcha site_key="{{reCaptchaService.siteKey}}"
+        (captchaResponse)="onCaptchaResolved($event)"
+        (captchaExpired)="onCaptchaExpired()"></re-captcha>
+    </div>
   </div>
 
   <div class="text-left col-sm-offset-2">
