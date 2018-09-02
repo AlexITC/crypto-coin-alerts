@@ -23,10 +23,12 @@
     </div>
   </div>
 
-  <div class="form-group col-xs-offset-1 col-sm-offset-1 col-md-offset-1 col-lg-offset-1">
-    <re-captcha site_key="{{reCaptchaService.siteKey}}"
-                (captchaResponse)="onCaptchaResolved($event)"
-                (captchaExpired)="onCaptchaExpired()"></re-captcha>
+  <div class="form-group">
+      <div class="col-xs-3 col-xs-offset-3 col-sm-3 col-sm-offset-3 col-md-2 col-md-offset-2 col-lg-2 col-lg-offset-2">
+          <re-captcha site_key="{{reCaptchaService.siteKey}}"
+          (captchaResponse)="onCaptchaResolved($event)"
+          (captchaExpired)="onCaptchaExpired()"></re-captcha>
+      </div>
   </div>
 
   <div class="text-left col-sm-offset-2">
