@@ -1,0 +1,16 @@
+---
+galaxy_info:
+  author: Malk’Zameth
+  description: Java8 from Oracle, using the webupd8 ppa
+  license: GPLv3
+  min_ansible_version: 1.9
+  platforms:
+    - name: Ubuntu
+      versions:
+        - saucy
+        - trusty
+  categories:
+    - development
+    - system
+
+dependencies: []

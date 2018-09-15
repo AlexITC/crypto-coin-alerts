@@ -1,0 +1,15 @@
+[Unit]
+Description=Alerts Server
+
+[Service]
+Type=simple
+WorkingDirectory=/home/play/app/crypto-coin-alerts-0.1-SNAPSHOT
+StandardOutput=tty
+StandardError=tty
+EnvironmentFile=/home/play/app/.env
+User=play
+ExecStart=/home/play/app/crypto-coin-alerts-0.1-SNAPSHOT/bin/crypto-coin-alerts -Dhttp.port=9000 -Dpidfile.path=/dev/null
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
