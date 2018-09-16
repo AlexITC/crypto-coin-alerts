@@ -1,4 +1,4 @@
-
+---
 - hosts: alerts-server
   gather_facts: no
   roles:
@@ -36,12 +36,6 @@
         state: directory
         owner: play
         group: play
-
-    - name: Install unzip tool
-      become: yes
-      apt:
-        name: unzip
-        state: latest
 
     - name: Unpack the application
       become: yes

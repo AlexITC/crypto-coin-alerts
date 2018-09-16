@@ -1,0 +1,24 @@
+server {
+  listen 80 default_server;
+
+  root /var/www/html;
+
+  index index.html;
+
+  server_name cryptocoinalerts.net;
+
+  # the backend api
+  location /api {
+    rewrite ^/api/(.*) /$1 break;
+    proxy_pass http://127.0.0.1:9000;
+  }
+
+  # caching static assets
+  location ~* \.(jpg|jpeg|png|gif|ico|css|js)$ {
+    expires 7d;
+  }
+
+  location / {
+    try_files $uri $uri/ /index.html;
+  }
+}
