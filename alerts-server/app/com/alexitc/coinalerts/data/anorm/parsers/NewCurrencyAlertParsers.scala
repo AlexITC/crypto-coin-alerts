@@ -2,7 +2,8 @@ package com.alexitc.coinalerts.data.anorm.parsers
 
 import anorm.SqlParser._
 import anorm._
-import com.alexitc.coinalerts.models.{NewCurrencyAlert, NewCurrencyAlertId}
+import com.alexitc.coinalerts.models.NewCurrencyAlert
+import com.alexitc.coinalerts.models.NewCurrencyAlert.NewCurrencyAlertId
 
 object NewCurrencyAlertParsers {
 
