@@ -1,12 +1,13 @@
 package com.alexitc.coinalerts.tasks
 
 import java.math.MathContext
-import javax.inject.Inject
 
+import javax.inject.Inject
 import com.alexitc.coinalerts.config.TaskExecutionContext
 import com.alexitc.coinalerts.data.async.{FixedPriceAlertFutureDataHandler, UserFutureDataHandler}
 import com.alexitc.coinalerts.models._
-import com.alexitc.coinalerts.services.{EmailMessagesProvider, EmailServiceTrait, EmailText}
+import com.alexitc.coinalerts.services.EmailMessagesProvider.EmailText
+import com.alexitc.coinalerts.services.{EmailMessagesProvider, EmailServiceTrait}
 import com.alexitc.coinalerts.tasks.collectors._
 import com.alexitc.coinalerts.tasks.models.FixedPriceAlertEvent
 import com.alexitc.playsonify.core.FutureOr.Implicits.FutureOps

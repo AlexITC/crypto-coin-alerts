@@ -1,7 +1,8 @@
 package com.alexitc.coinalerts.commons
 
 import com.alexitc.coinalerts.models.UserEmail
-import com.alexitc.coinalerts.services.{EmailServiceTrait, EmailSubject, EmailText}
+import com.alexitc.coinalerts.services.EmailMessagesProvider.{EmailSubject, EmailText}
+import com.alexitc.coinalerts.services.EmailServiceTrait
 import com.alexitc.playsonify.core.FutureApplicationResult
 import org.scalactic.Good
 import org.slf4j.LoggerFactory
