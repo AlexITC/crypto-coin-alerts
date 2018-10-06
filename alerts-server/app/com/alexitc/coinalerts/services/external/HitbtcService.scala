@@ -68,12 +68,11 @@ class HitbtcService @Inject() (
 
   private implicit val tickerReads: Reads[Option[Ticker]] = {
     val builder = (JsPath \ "symbol").read[String].map(_.toUpperCase).map(createBook) and
-        (JsPath \ "last").read[BigDecimal]
+        (JsPath \ "last").readNullable[BigDecimal]
 
-    builder.apply { (bookMaybe, currentPrice) =>
-      bookMaybe.map { book =>
-        Ticker(book, currentPrice)
-      }
+    builder.apply { (bookMaybe, currentPriceMaybe) =>
+      for (book <- bookMaybe; currentPrice <- currentPriceMaybe)
+        yield Ticker(book, currentPrice)
     }
   }
 

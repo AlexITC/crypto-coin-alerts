@@ -113,15 +113,52 @@ class HitbtcServiceSpec extends WordSpec with MustMatchers with ScalaFutures wit
     "retrieve available books" in {
       val expectedBooks = "BTC_LTC ETH_LTC USD_LTC USDT_XRP EOS_XMR DAI_LTC EURS_XMR".split(" ").map(Book.fromString).map(_.get).toList
 
-      val request = mock[WSRequest]
-      val response = mock[WSResponse]
-      val json = Json.parse(responseBody)
+      mockRequest(responseBody)
+      whenReady(service.availableBooks()) { books =>
+        books.size mustEqual expectedBooks.size
 
-      when(ws.url(anyString)).thenReturn(request)
-      when(response.status).thenReturn(200)
-      when(response.json).thenReturn(json)
-      when(request.get()).thenReturn(Future.successful(response))
+        books.sortBy(_.string) mustEqual expectedBooks.sortBy(_.string)
+      }
+    }
 
+    "ignore entries having null on the last price" in {
+      val responseBody =
+        """
+          |[
+          |  {
+          |    "ask": "99.38",
+          |    "bid": "98.92",
+          |    "last": "99.83",
+          |    "open": "99.31",
+          |    "low": "99.83",
+          |    "high": "99.89",
+          |    "volume": "3.287",
+          |    "volumeQuote": "328.26862",
+          |    "timestamp": "2018-10-06T14:50:42.915Z",
+          |    "symbol": "XMREURS"
+          |  },
+          |  {
+          |    "ask": null,
+          |    "bid": "98.92",
+          |    "last": null,
+          |    "open": null,
+          |    "low": "99.83",
+          |    "high": "99.89",
+          |    "volume": "3.287",
+          |    "volumeQuote": "328.26862",
+          |    "timestamp": "2018-10-06T14:50:42.915Z",
+          |    "symbol": "LTCEURS"
+          |  }
+          |]
+        """.stripMargin
+
+      val expectedBooks = "EURS_XMR"
+          .split(" ")
+          .map(Book.fromString)
+          .map(_.get)
+          .toList
+
+      mockRequest(responseBody)
       whenReady(service.availableBooks()) { books =>
         books.size mustEqual expectedBooks.size
 
@@ -142,20 +179,23 @@ class HitbtcServiceSpec extends WordSpec with MustMatchers with ScalaFutures wit
         "EURS_XMR" -> BigDecimal("99.83")
       ).map { case (string, price) => Ticker(Book.fromString(string).get, price) }
 
-      val request = mock[WSRequest]
-      val response = mock[WSResponse]
-      val json = Json.parse(responseBody)
-
-      when(ws.url(anyString)).thenReturn(request)
-      when(response.status).thenReturn(200)
-      when(response.json).thenReturn(json)
-      when(request.get()).thenReturn(Future.successful(response))
-
+      mockRequest(responseBody)
       whenReady(service.getTickerList()) { tickerList =>
         tickerList.size mustEqual expectedTickers.size
 
         tickerList.sortBy(_.book.string) mustEqual expectedTickers.sortBy(_.book.string)
       }
     }
+  }
+
+  private def mockRequest(result: String) = {
+    val request = mock[WSRequest]
+    val response = mock[WSResponse]
+    val json = Json.parse(result)
+
+    when(ws.url(anyString)).thenReturn(request)
+    when(response.status).thenReturn(200)
+    when(response.json).thenReturn(json)
+    when(request.get()).thenReturn(Future.successful(response))
   }
 }
