@@ -27,7 +27,7 @@ class HitbtcService @Inject() (
    *
    * Then, we need to know the supported markets in advance to perform this parsing.
    */
-  private val KnownMarkets = "BTC ETH USDT USD".split(" ").flatMap(Market.from).toList
+  private val KnownMarkets = "BTC ETH USDT USD EOS DAI EURS".split(" ").flatMap(Market.from).toList
 
   override def availableBooks(): Future[List[Book]] = {
     getTickerList()
