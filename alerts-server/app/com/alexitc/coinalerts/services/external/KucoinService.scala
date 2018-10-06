@@ -3,7 +3,7 @@ package com.alexitc.coinalerts.services.external
 import javax.inject.Inject
 
 import com.alexitc.coinalerts.config.ExternalServiceExecutionContext
-import com.alexitc.coinalerts.models.{BitsoBook, Book, Currency, Market}
+import com.alexitc.coinalerts.models.{Book, Currency, Market}
 import com.alexitc.coinalerts.tasks.models.Ticker
 import org.slf4j.LoggerFactory
 import play.api.libs.functional.syntax._
@@ -92,7 +92,7 @@ class KucoinService @Inject() (
 
   private def createBook(string: String): Option[Book] = {
     // the book format is reversed to the one in our app
-    BitsoBook.fromString(string.replace("-", "_"))
+    Book.fromBitsoString(string.replace("-", "_"))
         .orElse {
           logger.warn(s"Unable to create book from string = [$string]")
           None

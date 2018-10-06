@@ -13,6 +13,6 @@ class BitsoTickerCollector @Inject() (bitsoService: BitsoService) extends Ticker
   override val exchange: Exchange = Exchange.BITSO
 
   override def getTickerList: Future[List[Ticker]] = {
-    bitsoService.getTickerList
+    bitsoService.getTickerList()
   }
 }

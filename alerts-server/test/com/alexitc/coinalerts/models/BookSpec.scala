@@ -9,7 +9,7 @@ class BookSpec extends WordSpec with MustMatchers {
       val bookString = "LTC_BTC"
       val expectedBookString = "BTC_LTC"
 
-      val actualBook = BitsoBook.fromString(bookString).get
+      val actualBook = Book.fromBitsoString(bookString).get
 
       actualBook.string mustEqual expectedBookString
     }
@@ -18,7 +18,7 @@ class BookSpec extends WordSpec with MustMatchers {
       val bookString = "R_BTC"
       val expectedBookString = "BTC_R"
 
-      val actualBook = BitsoBook.fromString(bookString).get
+      val actualBook = Book.fromBitsoString(bookString).get
 
       actualBook.string mustEqual expectedBookString
     }
