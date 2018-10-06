@@ -1,9 +1,9 @@
 package com.alexitc.coinalerts.services
 
 import javax.inject.Inject
-
 import com.alexitc.coinalerts.config.AppConfig
 import com.alexitc.coinalerts.models.{Book, Exchange, UserVerificationToken}
+import com.alexitc.coinalerts.services.EmailMessagesProvider.{EmailSubject, EmailText}
 import play.api.i18n.{Lang, MessagesApi}
 
 class EmailMessagesProvider @Inject() (messagesApi: MessagesApi, appConfig: AppConfig) {
@@ -53,5 +53,7 @@ class EmailMessagesProvider @Inject() (messagesApi: MessagesApi, appConfig: AppC
   }
 }
 
-class EmailSubject(val string: String) extends AnyVal
-class EmailText(val string: String) extends AnyVal
+object EmailMessagesProvider {
+  class EmailSubject(val string: String) extends AnyVal
+  class EmailText(val string: String) extends AnyVal
+}

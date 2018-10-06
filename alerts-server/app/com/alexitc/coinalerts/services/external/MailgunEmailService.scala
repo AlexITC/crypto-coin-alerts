@@ -1,11 +1,12 @@
 package com.alexitc.coinalerts.services.external
 
 import javax.inject.Inject
-
 import com.alexitc.coinalerts.config.{ExternalServiceExecutionContext, MailgunConfig}
 import com.alexitc.coinalerts.errors.MailgunSendEmailError
 import com.alexitc.coinalerts.models.UserEmail
-import com.alexitc.coinalerts.services.{EmailServiceTrait, EmailSubject, EmailText}
+import com.alexitc.coinalerts.services.EmailMessagesProvider.{EmailSubject, EmailText}
+import com.alexitc.coinalerts.services.EmailServiceTrait
+import com.alexitc.coinalerts.services.external.MailgunEmailService.SendEmailResponse
 import com.alexitc.playsonify.core.FutureApplicationResult
 import org.scalactic.{Bad, Good}
 import org.slf4j.LoggerFactory
@@ -44,7 +45,7 @@ class MailgunEmailService @Inject() (
               .filter(_.status == 200)
               .map(_.json)
               .flatMap { json =>
-                json.validate[MailgunSendEmailResponse]
+                json.validate[SendEmailResponse]
                     .map(Some(_))
                     .getOrElse(None)
               }
@@ -62,12 +63,16 @@ class MailgunEmailService @Inject() (
   }
 }
 
-case class MailgunSendEmailResponse(id: String, message: String)
-object MailgunSendEmailResponse {
-  implicit val reads: Reads[MailgunSendEmailResponse] = {
-    val builder = (JsPath \ "id").read[String] and
+object MailgunEmailService{
+
+  case class SendEmailResponse(id: String, message: String)
+
+  object SendEmailResponse {
+    implicit val reads: Reads[SendEmailResponse] = {
+      val builder = (JsPath \ "id").read[String] and
         (JsPath \ "message").read[String]
 
-    builder( (id, message) => MailgunSendEmailResponse.apply(id, message) )
+      builder((id, message) => SendEmailResponse.apply(id, message))
+    }
   }
 }
