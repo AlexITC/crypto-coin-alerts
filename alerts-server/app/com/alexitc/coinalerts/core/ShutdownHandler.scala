@@ -44,17 +44,15 @@ class ShutdownHandler @Inject() (application: ApplicationLifecycle) {
   private def callShutdownHooks() = {
     logger.info("Calling shutdown hooks")
 
-    val result = shutdownHooks.foldLeft(Future.unit) { (tmp, hook) =>
-      val f = hook().recover {
+    val calledHooks = shutdownHooks.map { hook =>
+      hook().recover {
         case NonFatal(ex) =>
           logger.error("Shutdown hook failed", ex)
       }
-
-      tmp.flatMap { _ => f }
     }
 
     // wait for hooks to complete
-    Await.result(result, 1.minute)
+    Await.result(Future.sequence(calledHooks), 1.minute)
   }
 
   private def shutdownPlay() = {
