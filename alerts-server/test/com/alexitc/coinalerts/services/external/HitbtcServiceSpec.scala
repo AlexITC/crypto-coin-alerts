@@ -69,13 +69,49 @@ class HitbtcServiceSpec extends WordSpec with MustMatchers with ScalaFutures wit
       |    "volumeQuote": "4205623.0490",
       |    "timestamp": "2018-01-27T23:50:55.462Z",
       |    "symbol": "XRPUSDT"
+      |  },
+      |  {
+      |    "ask": "19.934",
+      |    "bid": "19.828",
+      |    "last": "19.777",
+      |    "open": "19.868",
+      |    "low": "19.777",
+      |    "high": "19.777",
+      |    "volume": "0.05",
+      |    "volumeQuote": "0.98885",
+      |    "timestamp": "2018-10-06T14:49:19.400Z",
+      |    "symbol": "XMREOS"
+      |  },
+      |  {
+      |    "ask": "57.38",
+      |    "bid": "57.00",
+      |    "last": "57.25",
+      |    "open": "58.36",
+      |    "low": "57.24",
+      |    "high": "58.69",
+      |    "volume": "1.27",
+      |    "volumeQuote": "72.9492",
+      |    "timestamp": "2018-10-06T14:50:51.632Z",
+      |    "symbol": "LTCDAI"
+      |  },
+      |  {
+      |    "ask": "99.38",
+      |    "bid": "98.92",
+      |    "last": "99.83",
+      |    "open": "99.31",
+      |    "low": "99.83",
+      |    "high": "99.89",
+      |    "volume": "3.287",
+      |    "volumeQuote": "328.26862",
+      |    "timestamp": "2018-10-06T14:50:42.915Z",
+      |    "symbol": "XMREURS"
       |  }
       |]
     """.stripMargin
 
   "availableBooks" should {
     "retrieve available books" in {
-      val expectedBooks = "BTC_LTC ETH_LTC USD_LTC USDT_XRP".split(" ").map(Book.fromString).map(_.get).toList
+      val expectedBooks = "BTC_LTC ETH_LTC USD_LTC USDT_XRP EOS_XMR DAI_LTC EURS_XMR".split(" ").map(Book.fromString).map(_.get).toList
 
       val request = mock[WSRequest]
       val response = mock[WSResponse]
@@ -100,7 +136,10 @@ class HitbtcServiceSpec extends WordSpec with MustMatchers with ScalaFutures wit
         "BTC_LTC" -> BigDecimal("0.01588"),
         "ETH_LTC" -> BigDecimal("0.165"),
         "USD_LTC" -> BigDecimal("181.199"),
-        "USDT_XRP" -> BigDecimal("1.2130")
+        "USDT_XRP" -> BigDecimal("1.2130"),
+        "EOS_XMR" -> BigDecimal("19.777"),
+        "DAI_LTC" -> BigDecimal("57.25"),
+        "EURS_XMR" -> BigDecimal("99.83")
       ).map { case (string, price) => Ticker(Book.fromString(string).get, price) }
 
       val request = mock[WSRequest]
