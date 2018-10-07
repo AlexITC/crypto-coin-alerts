@@ -13,8 +13,7 @@ trait ExchangeCurrencySeederTaskConfig {
   def interval: FiniteDuration
 }
 
-class PlayExchangeCurrencySeederTaskConfig @Inject() (
-    configuration: Configuration)
+class PlayExchangeCurrencySeederTaskConfig @Inject()(configuration: Configuration)
     extends ExchangeCurrencySeederTaskConfig {
 
   override def initialDelay: FiniteDuration = {

@@ -15,10 +15,7 @@ import play.api.libs.json.{JsPath, Reads}
 import play.api.libs.ws.{WSAuthScheme, WSClient}
 import play.utils.UriEncoding
 
-class MailgunEmailService @Inject() (
-    ws: WSClient,
-    config: MailgunConfig)(
-    implicit ec: ExternalServiceExecutionContext)
+class MailgunEmailService @Inject()(ws: WSClient, config: MailgunConfig)(implicit ec: ExternalServiceExecutionContext)
     extends EmailServiceTrait {
 
   private val logger = LoggerFactory.getLogger(this.getClass)
@@ -31,39 +28,41 @@ class MailgunEmailService @Inject() (
     val domainEncoded = UriEncoding.encodePathSegment(config.domain.string, "UTF-8")
     val url = s"https://api.mailgun.net/v3/$domainEncoded/messages"
     val result = ws
-        .url(url)
-        .withAuth("api", config.apiSecretKey.string, WSAuthScheme.BASIC)
-        .addQueryStringParameters(
+      .url(url)
+      .withAuth("api", config.apiSecretKey.string, WSAuthScheme.BASIC)
+      .addQueryStringParameters(
           "from" -> config.from.string,
           "to" -> destination.string,
           "subject" -> subject.string,
           "text" -> text.string
-        )
-        .post("")
-        .map { response =>
-          Option(response)
-              .filter(_.status == 200)
-              .map(_.json)
-              .flatMap { json =>
-                json.validate[SendEmailResponse]
-                    .map(Some(_))
-                    .getOrElse(None)
-              }
-              .map { mailgunResponse =>
-                logger.info(s"Mailgun response for email = [${destination.string}], id = [${mailgunResponse.id}], message = [${mailgunResponse.message}]")
-                Good(())
-              }
-              .getOrElse {
-                logger.warn(s"Unexpected Mailgun response, status = ${response.status}, body = [${response.body}]")
-                Bad(MailgunSendEmailError).accumulating
-              }
-        }
+      )
+      .post("")
+      .map { response =>
+        Option(response)
+          .filter(_.status == 200)
+          .map(_.json)
+          .flatMap { json =>
+            json
+              .validate[SendEmailResponse]
+              .map(Some(_))
+              .getOrElse(None)
+          }
+          .map { mailgunResponse =>
+            logger.info(
+                s"Mailgun response for email = [${destination.string}], id = [${mailgunResponse.id}], message = [${mailgunResponse.message}]")
+            Good(())
+          }
+          .getOrElse {
+            logger.warn(s"Unexpected Mailgun response, status = ${response.status}, body = [${response.body}]")
+            Bad(MailgunSendEmailError).accumulating
+          }
+      }
 
     result
   }
 }
 
-object MailgunEmailService{
+object MailgunEmailService {
 
   case class SendEmailResponse(id: String, message: String)
 

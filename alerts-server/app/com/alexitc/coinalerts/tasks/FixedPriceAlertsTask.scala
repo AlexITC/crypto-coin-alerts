@@ -18,7 +18,7 @@ import play.api.i18n.{Lang, MessagesApi}
 import scala.concurrent.Future
 import scala.util.control.NonFatal
 
-class FixedPriceAlertsTask @Inject() (
+class FixedPriceAlertsTask @Inject()(
     alertCollector: FixedPriceAlertCollector,
     bitsoTickerCollector: BitsoTickerCollector,
     bittrexAlertCollector: BittrexTickerCollector,
@@ -30,34 +30,34 @@ class FixedPriceAlertsTask @Inject() (
     alertDataHandler: FixedPriceAlertFutureDataHandler,
     emailMessagesProvider: EmailMessagesProvider,
     messagesApi: MessagesApi,
-    emailServiceTrait: EmailServiceTrait)(
-    implicit ec: TaskExecutionContext) {
+    emailServiceTrait: EmailServiceTrait)(implicit ec: TaskExecutionContext) {
 
   private val logger = LoggerFactory.getLogger(this.getClass)
 
   private val tickerCollectorList = List(
-    bitsoTickerCollector,
-    bittrexAlertCollector,
-    kucoinTickerCollector,
-    binanceTickerCollector,
-    hitbtcTickerCollector,
-    coinmarketcapTickerCollector)
+      bitsoTickerCollector,
+      bittrexAlertCollector,
+      kucoinTickerCollector,
+      binanceTickerCollector,
+      hitbtcTickerCollector,
+      coinmarketcapTickerCollector)
 
   def execute(): Future[Unit] = {
     val futures = tickerCollectorList.map { tickerCollector =>
       alertCollector.collect(tickerCollector)
     }
 
-    Future.sequence(futures)
-        .map(_.flatten)
-        .map(groupByUser)
-        .flatMap { userAlerts =>
-          userAlerts.foreach {
-            case (userId, eventList) => triggerAlerts(userId, eventList)
-          }
-
-          Future.unit
+    Future
+      .sequence(futures)
+      .map(_.flatten)
+      .map(groupByUser)
+      .flatMap { userAlerts =>
+        userAlerts.foreach {
+          case (userId, eventList) => triggerAlerts(userId, eventList)
         }
+
+        Future.unit
+      }
   }
 
   private def groupByUser(eventList: List[FixedPriceAlertEvent]): Map[UserId, List[FixedPriceAlertEvent]] = {
@@ -73,19 +73,22 @@ class FixedPriceAlertsTask @Inject() (
         val emailText = createEmailText(eventList)(preferences.lang)
         emailServiceTrait.sendEmail(user.email, emailSubject, emailText).toFutureOr
       }
-    } yield eventList.foreach { event =>
-      alertDataHandler.markAsTriggered(event.alert.id)
-    }
+    } yield
+      eventList.foreach { event =>
+        alertDataHandler.markAsTriggered(event.alert.id)
+      }
 
-    result.toFuture.map {
-      case Good(_) => ()
-      case Bad(errors) =>
-        logger.error(s"Error while trying to send alerts by email to user = [${userId.string}], errors = [$errors]")
+    result.toFuture
+      .map {
+        case Good(_) => ()
+        case Bad(errors) =>
+          logger.error(s"Error while trying to send alerts by email to user = [${userId.string}], errors = [$errors]")
 
-    }.recover {
-      case NonFatal(ex) =>
-        logger.error(s"Error while trying to send alerts by email to user = [${userId.string}]", ex)
-    }
+      }
+      .recover {
+        case NonFatal(ex) =>
+          logger.error(s"Error while trying to send alerts by email to user = [${userId.string}]", ex)
+      }
   }
 
   private def groupByMarket(eventList: List[FixedPriceAlertEvent]): Map[Exchange, List[FixedPriceAlertEvent]] = {
@@ -94,12 +97,12 @@ class FixedPriceAlertsTask @Inject() (
 
   private def createEmailText(eventList: List[FixedPriceAlertEvent])(implicit lang: Lang): EmailText = {
     val text = groupByMarket(eventList)
-        .map {
-          case (market, marketEvents) =>
-            val marketLines = marketEvents.map(createText).mkString("\n")
-            s"${market.string}:\n$marketLines"
-        }
-        .mkString("\n\n\n")
+      .map {
+        case (market, marketEvents) =>
+          val marketLines = marketEvents.map(createText).mkString("\n")
+          s"${market.string}:\n$marketLines"
+      }
+      .mkString("\n\n\n")
 
     emailMessagesProvider.yourFixedPriceAlertsText(text)
   }
@@ -119,22 +122,20 @@ class FixedPriceAlertsTask @Inject() (
     }
 
     val readableCurrency = alert.currencyName
-        .map { name => s"${alert.currency.string} (${name.string})" }
-        .getOrElse(alert.currency.string)
+      .map { name =>
+        s"${alert.currency.string} (${name.string})"
+      }
+      .getOrElse(alert.currency.string)
 
-    val message = messagesApi(
-      messageKey,
-      readableCurrency,
-      event.currentPrice.toString,
-      event.alert.market.string)
+    val message = messagesApi(messageKey, readableCurrency, event.currentPrice.toString, event.alert.market.string)
 
     percentageDifferenceMaybe
-        .map { percent =>
-          val readablePercent = percent.round(new MathContext(4))
-          s"$message ($readablePercent %)"
-        }
-        .getOrElse {
-          message
-        }
+      .map { percent =>
+        val readablePercent = percent.round(new MathContext(4))
+        s"$message ($readablePercent %)"
+      }
+      .getOrElse {
+        message
+      }
   }
 }

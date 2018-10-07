@@ -27,17 +27,16 @@ import play.api.db.{Database, Databases}
  */
 trait PostgresDataHandlerSpec
     extends WordSpec
-        with MustMatchers
-        with DockerTestKit
-        with DockerPostgresService
-        with BeforeAndAfterAll {
+    with MustMatchers
+    with DockerTestKit
+    with DockerPostgresService
+    with BeforeAndAfterAll {
 
   import DockerPostgresService._
 
   implicit val pc = PatienceConfig(Span(20, Seconds), Span(1, Second))
 
-  override implicit val dockerFactory: DockerFactory = new SpotifyDockerFactory(
-    DefaultDockerClient.fromEnv().build())
+  override implicit val dockerFactory: DockerFactory = new SpotifyDockerFactory(DefaultDockerClient.fromEnv().build())
 
   override def beforeAll(): Unit = {
     super.beforeAll()
@@ -48,13 +47,13 @@ trait PostgresDataHandlerSpec
 
   def database: Database = {
     val database = Databases(
-      driver = "org.postgresql.Driver",
-      url = s"jdbc:postgresql://localhost:$PostgresExposedPort/$DatabaseName",
-      name = "default",
-      config = Map(
-        "username" -> PostgresUsername,
-        "password" -> PostgresPassword
-      )
+        driver = "org.postgresql.Driver",
+        url = s"jdbc:postgresql://localhost:$PostgresExposedPort/$DatabaseName",
+        name = "default",
+        config = Map(
+            "username" -> PostgresUsername,
+            "password" -> PostgresPassword
+        )
     )
 
     Evolutions.applyEvolutions(database)
@@ -62,13 +61,13 @@ trait PostgresDataHandlerSpec
     // currencies is a core feature required by most tests
     // the data handler is created here to avoid a cyclic dependency
     if (seedCurrencies) {
-      CurrencySeeder.seed(
-        new ExchangeCurrencyPostgresDataHandler(database, new ExchangeCurrencyPostgresDAO))
+      CurrencySeeder.seed(new ExchangeCurrencyPostgresDataHandler(database, new ExchangeCurrencyPostgresDAO))
     }
 
     database
   }
 
   implicit lazy val userDataHandler = new UserPostgresDataHandler(database, new UserPostgresDAO)
-  implicit lazy val exchangeCurrencyDataHandler = new ExchangeCurrencyPostgresDataHandler(database, new ExchangeCurrencyPostgresDAO)
+  implicit lazy val exchangeCurrencyDataHandler =
+    new ExchangeCurrencyPostgresDataHandler(database, new ExchangeCurrencyPostgresDAO)
 }

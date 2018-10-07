@@ -10,11 +10,10 @@ import play.api.inject.{SimpleModule, bind}
 
 import scala.concurrent.duration.FiniteDuration
 
-class ExchangeCurrencySeederTaskModule
-    extends SimpleModule(bind[ExchangeCurrencySeederTaskRunner].toSelf.eagerly())
+class ExchangeCurrencySeederTaskModule extends SimpleModule(bind[ExchangeCurrencySeederTaskRunner].toSelf.eagerly())
 
 @Singleton
-class ExchangeCurrencySeederTaskRunner @Inject() (
+class ExchangeCurrencySeederTaskRunner @Inject()(
     protected val shutdownHandler: ShutdownHandler,
     protected val actorSystem: ActorSystem,
     config: ExchangeCurrencySeederTaskConfig,

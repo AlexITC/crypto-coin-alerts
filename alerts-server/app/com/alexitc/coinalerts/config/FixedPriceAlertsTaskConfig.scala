@@ -13,7 +13,7 @@ trait FixedPriceAlertsTaskConfig {
   def interval: FiniteDuration
 }
 
-class PlayFixedPriceAlertsTaskConfig @Inject() (configuration: Configuration) extends FixedPriceAlertsTaskConfig {
+class PlayFixedPriceAlertsTaskConfig @Inject()(configuration: Configuration) extends FixedPriceAlertsTaskConfig {
 
   override def initialDelay: FiniteDuration = {
     configuration.getOptional[FiniteDuration]("fixedPriceAlertsTask.initialDelay").getOrElse(1.minute)

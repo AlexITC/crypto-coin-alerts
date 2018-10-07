@@ -18,63 +18,60 @@ object FixedPriceAlertParsers {
   val parseBasePrice = get[BigDecimal]("base_price")
   val parseTriggeredOn = get[OffsetDateTime]("triggered_on")(timestamptzToOffsetDateTime)
 
-
-  val parseFixedPriceAlert = (
-      parseFixedPriceAlertId ~
-          parseUserId ~
-          parseCurrencyId ~
-          parseisGreaterThan ~
-          parsePrice ~
-          parseBasePrice.? ~
-          parseCreatedOn ~
-          parseTriggeredOn.?).map {
+  val parseFixedPriceAlert = (parseFixedPriceAlertId ~
+    parseUserId ~
+    parseCurrencyId ~
+    parseisGreaterThan ~
+    parsePrice ~
+    parseBasePrice.? ~
+    parseCreatedOn ~
+    parseTriggeredOn.?).map {
 
     case alertId ~ userId ~ currencyId ~ isGreaterThan ~ price ~ basePrice ~ createdOn ~ triggeredOn =>
       FixedPriceAlert(alertId, userId, currencyId, isGreaterThan, price, basePrice, createdOn, triggeredOn)
   }
 
-  val parseFixedPriceAlertWithCurrency = (
-      parseFixedPriceAlertId ~
-          parseUserId ~
-          parseCurrencyId ~
-          parseExchange ~
-          parseMarket ~
-          parseCurrency ~
-          parseCurrencyName ~
-          parseisGreaterThan ~
-          parsePrice ~
-          parseBasePrice.? ~
-          parseCreatedOn ~
-          parseTriggeredOn.?).map {
+  val parseFixedPriceAlertWithCurrency = (parseFixedPriceAlertId ~
+    parseUserId ~
+    parseCurrencyId ~
+    parseExchange ~
+    parseMarket ~
+    parseCurrency ~
+    parseCurrencyName ~
+    parseisGreaterThan ~
+    parsePrice ~
+    parseBasePrice.? ~
+    parseCreatedOn ~
+    parseTriggeredOn.?).map {
 
     case alertId ~
-        userId ~
-        exchangeCurrencyId ~
-        exchange ~
-        marketMaybe ~
-        currencyMaybe ~
-        currencyName ~
-        isGreaterThan ~
-        price ~
-        basePrice ~
-        createdOn ~
-        triggeredOn =>
-
+          userId ~
+          exchangeCurrencyId ~
+          exchange ~
+          marketMaybe ~
+          currencyMaybe ~
+          currencyName ~
+          isGreaterThan ~
+          price ~
+          basePrice ~
+          createdOn ~
+          triggeredOn =>
       for {
         market <- marketMaybe
         currency <- currencyMaybe
-      } yield FixedPriceAlertWithCurrency(
-        alertId,
-        userId,
-        exchangeCurrencyId,
-        exchange,
-        market,
-        currency,
-        currencyName,
-        isGreaterThan,
-        price,
-        basePrice,
-        createdOn,
-        triggeredOn)
+      } yield
+        FixedPriceAlertWithCurrency(
+            alertId,
+            userId,
+            exchangeCurrencyId,
+            exchange,
+            market,
+            currency,
+            currencyName,
+            isGreaterThan,
+            price,
+            basePrice,
+            createdOn,
+            triggeredOn)
   }
 }

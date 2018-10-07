@@ -10,12 +10,18 @@ import org.scalactic.{Bad, Good}
 
 import scala.collection.mutable
 
-class DailyPriceAlertInMemoryDataHandler extends DailyPriceAlertBlockingDataHandler  {
+class DailyPriceAlertInMemoryDataHandler extends DailyPriceAlertBlockingDataHandler {
 
   private val alertList = mutable.ListBuffer[DailyPriceAlert]()
 
-  override def create(userId: UserId, createDailyPriceAlert: CreateDailyPriceAlertModel): ApplicationResult[DailyPriceAlert] = alertList.synchronized {
-    val alert = DailyPriceAlert(RandomDataGenerator.dailyPriceAlertId, userId, createDailyPriceAlert.exchangeCurrencyId, OffsetDateTime.now())
+  override def create(
+      userId: UserId,
+      createDailyPriceAlert: CreateDailyPriceAlertModel): ApplicationResult[DailyPriceAlert] = alertList.synchronized {
+    val alert = DailyPriceAlert(
+        RandomDataGenerator.dailyPriceAlertId,
+        userId,
+        createDailyPriceAlert.exchangeCurrencyId,
+        OffsetDateTime.now())
     val exists = alertList.toList.exists { existingAlert =>
       existingAlert.userId == userId &&
       existingAlert.exchangeCurrencyId == alert.exchangeCurrencyId
@@ -29,15 +35,16 @@ class DailyPriceAlertInMemoryDataHandler extends DailyPriceAlertBlockingDataHand
     }
   }
 
-  override def getAlerts(userId: UserId, query: PaginatedQuery): ApplicationResult[PaginatedResult[DailyPriceAlert]] = alertList.synchronized {
-    val userAlertList = alertList.toList.filter(_.userId == userId)
+  override def getAlerts(userId: UserId, query: PaginatedQuery): ApplicationResult[PaginatedResult[DailyPriceAlert]] =
+    alertList.synchronized {
+      val userAlertList = alertList.toList.filter(_.userId == userId)
 
-    val result = PaginatedResult(
-      total = Count(userAlertList.length),
-      offset = query.offset,
-      limit = query.limit,
-      data = userAlertList.slice(query.offset.int, query.offset.int + query.limit.int))
+      val result = PaginatedResult(
+          total = Count(userAlertList.length),
+          offset = query.offset,
+          limit = query.limit,
+          data = userAlertList.slice(query.offset.int, query.offset.int + query.limit.int))
 
-    Good(result)
-  }
+      Good(result)
+    }
 }

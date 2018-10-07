@@ -8,7 +8,7 @@ import com.alexitc.coinalerts.tasks.models.Ticker
 
 import scala.concurrent.Future
 
-class BittrexTickerCollector @Inject() (bittrexService: BittrexService) extends TickerCollector {
+class BittrexTickerCollector @Inject()(bittrexService: BittrexService) extends TickerCollector {
 
   override val exchange: Exchange = Exchange.BITTREX
 

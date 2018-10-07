@@ -13,7 +13,8 @@ object CurrencySeeder {
     seedExchangeCurrencyList(Exchange.BITTREX, bittrexBookList)
   }
 
-  private def seedExchangeCurrencyList(exchange: Exchange, books: Seq[Book])(implicit exchangeCurrencyDataHandler: ExchangeCurrencyBlockingDataHandler) = {
+  private def seedExchangeCurrencyList(exchange: Exchange, books: Seq[Book])(
+      implicit exchangeCurrencyDataHandler: ExchangeCurrencyBlockingDataHandler) = {
     books.map { book =>
       val createModel = CreateExchangeCurrencyModel(exchange, book.market, book.currency, None)
       exchangeCurrencyDataHandler.create(createModel)

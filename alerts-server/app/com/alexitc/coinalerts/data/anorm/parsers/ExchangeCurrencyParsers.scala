@@ -13,15 +13,15 @@ object ExchangeCurrencyParsers {
   val parseMarket = str("market").map(Market.from)
   val parseCurrency = str("currency").map(Currency.from)
   val parseCurrencyName = str("currency_name")(citextToString)
-      .map(CurrencyName.apply).?
-      .map { _.filter(_.string.nonEmpty) }
+    .map(CurrencyName.apply)
+    .?
+    .map { _.filter(_.string.nonEmpty) }
 
-  val parseExchangeCurrency = (
-      parseCurrencyId ~
-          parseExchange ~
-          parseMarket ~
-          parseCurrency ~
-          parseCurrencyName).map {
+  val parseExchangeCurrency = (parseCurrencyId ~
+    parseExchange ~
+    parseMarket ~
+    parseCurrency ~
+    parseCurrencyName).map {
 
     case id ~ exchange ~ marketMaybe ~ currencyMaybe ~ currencyName =>
       for {

@@ -3,7 +3,12 @@ package com.alexitc.coinalerts.tasks
 import com.alexitc.coinalerts.commons.ExecutionContexts._
 import com.alexitc.coinalerts.commons.FakeEmailService
 import com.alexitc.coinalerts.data.async.{NewCurrencyAlertFutureDataHandler, UserFutureDataHandler}
-import com.alexitc.coinalerts.data.{ExchangeCurrencyBlockingDataHandler, ExchangeCurrencyInMemoryDataHandler, NewCurrencyAlertInMemoryDataHandler, UserInMemoryDataHandler}
+import com.alexitc.coinalerts.data.{
+  ExchangeCurrencyBlockingDataHandler,
+  ExchangeCurrencyInMemoryDataHandler,
+  NewCurrencyAlertInMemoryDataHandler,
+  UserInMemoryDataHandler
+}
 import com.alexitc.coinalerts.models._
 import com.alexitc.coinalerts.services.external._
 import org.scalatest.concurrent.ScalaFutures
@@ -19,17 +24,20 @@ class ExchangeCurrencySeederTaskSpec extends WordSpec with MustMatchers with Sca
       val bittrexBooks = "ETH_XRP ETH_ADA ETH_XMR".split(" ").flatMap(Book.fromString)
       val currencyDataHandler = new ExchangeCurrencyInMemoryDataHandler {}
 
-      val task = seederTask(
-        bitsoService(bitsoBooks),
-        bittrexService(bittrexBooks),
-        currencyDataHandler)
+      val task = seederTask(bitsoService(bitsoBooks), bittrexService(bittrexBooks), currencyDataHandler)
 
       whenReady(task.execute()) { _ =>
         bitsoBooks.foreach { book =>
-          currencyDataHandler.getBy(Exchange.BITSO, book.market, book.currency, book.currencyName.getOrElse(CurrencyName(""))).get.isDefined mustEqual true
+          currencyDataHandler
+            .getBy(Exchange.BITSO, book.market, book.currency, book.currencyName.getOrElse(CurrencyName("")))
+            .get
+            .isDefined mustEqual true
         }
         bittrexBooks.foreach { book =>
-          currencyDataHandler.getBy(Exchange.BITTREX, book.market, book.currency, book.currencyName.getOrElse(CurrencyName(""))).get.isDefined mustEqual true
+          currencyDataHandler
+            .getBy(Exchange.BITTREX, book.market, book.currency, book.currencyName.getOrElse(CurrencyName("")))
+            .get
+            .isDefined mustEqual true
         }
       }
     }
@@ -40,14 +48,14 @@ class ExchangeCurrencySeederTaskSpec extends WordSpec with MustMatchers with Sca
       val createModel = CreateExchangeCurrencyModel(Exchange.BITSO, Market.BTC, Currency.from("LTC").get, None)
       currencyDataHandler.create(createModel)
 
-      val task = seederTask(
-        bitsoService(bitsoBooks),
-        bittrexService(List.empty),
-        currencyDataHandler)
+      val task = seederTask(bitsoService(bitsoBooks), bittrexService(List.empty), currencyDataHandler)
 
       whenReady(task.execute()) { _ =>
         bitsoBooks.foreach { book =>
-          currencyDataHandler.getBy(Exchange.BITSO, book.market, book.currency, book.currencyName.getOrElse(CurrencyName(""))).get.isDefined mustEqual true
+          currencyDataHandler
+            .getBy(Exchange.BITSO, book.market, book.currency, book.currencyName.getOrElse(CurrencyName("")))
+            .get
+            .isDefined mustEqual true
         }
       }
     }
@@ -98,15 +106,17 @@ class ExchangeCurrencySeederTaskSpec extends WordSpec with MustMatchers with Sca
     val userFutureDataHandler = new UserFutureDataHandler(new UserInMemoryDataHandler {})
 
     new ExchangeCurrencySeederTask(
-      bitsoService,
-      bittrexService,
-      kucoinService(List.empty),
-      binanceService(List.empty),
-      hitbtcService(List.empty),
-      coinmarketcapService(List.empty),
-      currencyDataHandler,
-      newCurrencyAlertDataHandler,
-      userFutureDataHandler,
-      new FakeEmailService, null)
+        bitsoService,
+        bittrexService,
+        kucoinService(List.empty),
+        binanceService(List.empty),
+        hitbtcService(List.empty),
+        coinmarketcapService(List.empty),
+        currencyDataHandler,
+        newCurrencyAlertDataHandler,
+        userFutureDataHandler,
+        new FakeEmailService,
+        null
+    )
   }
 }

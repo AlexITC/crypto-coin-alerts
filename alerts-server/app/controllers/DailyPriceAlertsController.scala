@@ -6,7 +6,7 @@ import com.alexitc.coinalerts.models.CreateDailyPriceAlertModel
 import com.alexitc.coinalerts.services.DailyPriceAlertService
 import com.alexitc.playsonify.models.PaginatedQuery
 
-class DailyPriceAlertsController @Inject() (
+class DailyPriceAlertsController @Inject()(
     dailyPriceAlertService: DailyPriceAlertService,
     components: MyJsonControllerComponents)
     extends MyJsonController(components) {

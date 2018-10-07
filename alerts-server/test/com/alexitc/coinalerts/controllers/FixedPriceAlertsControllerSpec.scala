@@ -21,8 +21,8 @@ class FixedPriceAlertsControllerSpec extends CustomPlayAPISpec {
   }
 
   val application: Application = guiceApplicationBuilder
-      .overrides(bind[FixedPriceAlertBlockingDataHandler].to(alertDataHandler))
-      .build()
+    .overrides(bind[FixedPriceAlertBlockingDataHandler].to(alertDataHandler))
+    .build()
 
   "POST /fixed-price-alerts" should {
     val url = "/fixed-price-alerts"

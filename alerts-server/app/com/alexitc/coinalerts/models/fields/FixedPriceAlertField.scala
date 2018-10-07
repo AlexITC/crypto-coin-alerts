@@ -13,8 +13,9 @@ object FixedPriceAlertField extends Enum[FixedPriceAlertField] {
   case object Currency extends FixedPriceAlertField("currency")
   case object Exchange extends FixedPriceAlertField("exchange")
 
-  implicit val columnNameResolver: ColumnNameResolver[FixedPriceAlertField] = (field) => field match {
-    case CreatedOn => "created_on"
-    case x => x.entryName
+  implicit val columnNameResolver: ColumnNameResolver[FixedPriceAlertField] = (field) =>
+    field match {
+      case CreatedOn => "created_on"
+      case x => x.entryName
   }
 }

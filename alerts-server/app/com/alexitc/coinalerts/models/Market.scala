@@ -13,8 +13,8 @@ object Market {
 
   def from(string: String): Option[Market] = {
     Option(string)
-        .map(_.toUpperCase)
-        .filter(_ matches pattern)
-        .map(new Market(_))
+      .map(_.toUpperCase)
+      .filter(_ matches pattern)
+      .map(new Market(_))
   }
 }

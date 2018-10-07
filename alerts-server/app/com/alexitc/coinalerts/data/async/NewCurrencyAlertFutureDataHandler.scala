@@ -9,8 +9,7 @@ import com.alexitc.playsonify.core.FutureApplicationResult
 
 import scala.concurrent.Future
 
-class NewCurrencyAlertFutureDataHandler @Inject() (
-    blockingDataHandler: NewCurrencyAlertBlockingDataHandler)(
+class NewCurrencyAlertFutureDataHandler @Inject()(blockingDataHandler: NewCurrencyAlertBlockingDataHandler)(
     implicit ec: DatabaseExecutionContext)
     extends NewCurrencyAlertDataHandler[FutureApplicationResult] {
 

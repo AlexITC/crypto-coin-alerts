@@ -8,10 +8,7 @@ import org.scalactic.{Accumulation, Bad, Good}
 class FixedPriceAlertValidator {
 
   def validateCreateModel(createModel: CreateFixedPriceAlertModel): ApplicationResult[CreateFixedPriceAlertModel] = {
-    Accumulation.withGood(
-      validatePrice(createModel.price),
-      validateBasePrice(createModel.basePrice)) { (_, _) =>
-
+    Accumulation.withGood(validatePrice(createModel.price), validateBasePrice(createModel.basePrice)) { (_, _) =>
       createModel
     }
   }
@@ -24,11 +21,12 @@ class FixedPriceAlertValidator {
     }
   }
 
-  private def validateBasePrice(basePriceMaybe: Option[BigDecimal]): ApplicationResult[Option[BigDecimal]] = basePriceMaybe match {
-    case Some(basePrice) if basePrice <= 0 =>
-      Bad(InvalidBasePriceError).accumulating
+  private def validateBasePrice(basePriceMaybe: Option[BigDecimal]): ApplicationResult[Option[BigDecimal]] =
+    basePriceMaybe match {
+      case Some(basePrice) if basePrice <= 0 =>
+        Bad(InvalidBasePriceError).accumulating
 
-    case _ =>
-      Good(basePriceMaybe)
-  }
+      case _ =>
+        Good(basePriceMaybe)
+    }
 }

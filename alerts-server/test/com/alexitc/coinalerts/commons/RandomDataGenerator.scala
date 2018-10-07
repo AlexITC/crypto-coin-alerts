@@ -20,8 +20,10 @@ object RandomDataGenerator {
 
   def str(charset: IndexedSeq[Char], length: Int) = {
     (0 until length)
-        .map { _ => char(charset) }
-        .mkString("")
+      .map { _ =>
+        char(charset)
+      }
+      .mkString("")
   }
 
   def char(charset: IndexedSeq[Char]) = {
@@ -86,7 +88,9 @@ object RandomDataGenerator {
   def createFixedPriceAlertModel(
       exchangeCurrencyId: ExchangeCurrencyId,
       isGreaterThan: Boolean = Random.nextBoolean(),
-      givenPrice: BigDecimal = BigDecimal(Math.abs(Random.nextDouble()))) = CreateFixedPriceAlertModel(exchangeCurrencyId, isGreaterThan, givenPrice, None)
+      givenPrice: BigDecimal = BigDecimal(Math.abs(Random.nextDouble()))) =
+    CreateFixedPriceAlertModel(exchangeCurrencyId, isGreaterThan, givenPrice, None)
 
-  def createDailyPriceAlertModel(exchangeCurrencyId: ExchangeCurrencyId) = CreateDailyPriceAlertModel(exchangeCurrencyId)
+  def createDailyPriceAlertModel(exchangeCurrencyId: ExchangeCurrencyId) =
+    CreateDailyPriceAlertModel(exchangeCurrencyId)
 }

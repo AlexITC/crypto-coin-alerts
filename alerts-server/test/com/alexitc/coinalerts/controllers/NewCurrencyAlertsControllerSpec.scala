@@ -15,8 +15,8 @@ class NewCurrencyAlertsControllerSpec extends CustomPlayAPISpec {
   val dataHandler = new NewCurrencyAlertInMemoryDataHandler {}
 
   val application: Application = guiceApplicationBuilder
-      .overrides(bind[NewCurrencyAlertBlockingDataHandler].to(dataHandler))
-      .build()
+    .overrides(bind[NewCurrencyAlertBlockingDataHandler].to(dataHandler))
+    .build()
 
   "POST /new-currency-alerts/:exchange" should {
     def url(exchange: Exchange) = s"/new-currency-alerts/${exchange.string}"

@@ -15,11 +15,12 @@ class DailyPriceAlertsControllerSpec extends CustomPlayAPISpec {
 
   import CustomPlayAPISpec._
 
-  implicit val dailyPriceAlertDataHandler: DailyPriceAlertBlockingDataHandler = new DailyPriceAlertInMemoryDataHandler {}
+  implicit val dailyPriceAlertDataHandler: DailyPriceAlertBlockingDataHandler =
+    new DailyPriceAlertInMemoryDataHandler {}
 
   val application: Application = guiceApplicationBuilder
-      .overrides(bind[DailyPriceAlertBlockingDataHandler].to(dailyPriceAlertDataHandler))
-      .build()
+    .overrides(bind[DailyPriceAlertBlockingDataHandler].to(dailyPriceAlertDataHandler))
+    .build()
 
   "POST /daily-price-alerts" should {
     val url = "/daily-price-alerts"

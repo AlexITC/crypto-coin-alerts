@@ -14,7 +14,9 @@ trait FixedPriceAlertDataHandler[F[_]] {
 
   def markAsTriggered(alertId: FixedPriceAlertId): F[Unit]
 
-  def findPendingAlertsForPrice(currencyId: ExchangeCurrencyId, currentPrice: BigDecimal): F[List[FixedPriceAlertWithCurrency]]
+  def findPendingAlertsForPrice(
+      currencyId: ExchangeCurrencyId,
+      currentPrice: BigDecimal): F[List[FixedPriceAlertWithCurrency]]
 
   def getAlerts(
       filterConditions: FixedPriceAlertFilter.Conditions,

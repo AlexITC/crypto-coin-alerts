@@ -15,30 +15,29 @@ import play.api.i18n.Lang
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class UserService @Inject() (
+class UserService @Inject()(
     emailMessagesProvider: EmailMessagesProvider,
     emailService: EmailServiceTrait,
     userDataHandler: UserFutureDataHandler,
     userValidator: UserValidator,
-    jwtService: JWTService)(
-    implicit ec: ExecutionContext) {
+    jwtService: JWTService)(implicit ec: ExecutionContext) {
 
   def create(createUserModel: CreateUserModel)(implicit lang: Lang): Future[User Or ApplicationErrors] = {
     val result = for {
       validatedModel <- userValidator
-          .validateCreateUserModel(createUserModel)
-          .toFutureOr
+        .validateCreateUserModel(createUserModel)
+        .toFutureOr
 
       user <- userDataHandler
-          .create(validatedModel.email, UserHiddenPassword.fromPassword(validatedModel.password))
-          .toFutureOr
+        .create(validatedModel.email, UserHiddenPassword.fromPassword(validatedModel.password))
+        .toFutureOr
 
       token <- userDataHandler.createVerificationToken(user.id).toFutureOr
 
       // send verification token by email
-      _ <- emailService.sendEmail(user.email,
-              emailMessagesProvider.verifyEmailSubject,
-              emailMessagesProvider.verifyEmailText(token)).toFutureOr
+      _ <- emailService
+        .sendEmail(user.email, emailMessagesProvider.verifyEmailSubject, emailMessagesProvider.verifyEmailText(token))
+        .toFutureOr
     } yield user
 
     result.toFuture
@@ -81,7 +80,9 @@ class UserService @Inject() (
     userDataHandler.getUserPreferences(userId)
   }
 
-  def setPreferences(userId: UserId, preferencesModel: SetUserPreferencesModel): FutureApplicationResult[UserPreferences] = {
+  def setPreferences(
+      userId: UserId,
+      preferencesModel: SetUserPreferencesModel): FutureApplicationResult[UserPreferences] = {
     val result = for {
       validatedPreferences <- userValidator.validateSetUserPreferencesModel(preferencesModel).toFutureOr
       userPreferences <- userDataHandler.setUserPreferences(userId, validatedPreferences).toFutureOr

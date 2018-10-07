@@ -10,7 +10,7 @@ import play.api.libs.ws.{WSClient, WSResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class CoinmarketcapService @Inject() (ws: WSClient)(implicit ec: ExecutionContext) extends ExchangeService {
+class CoinmarketcapService @Inject()(ws: WSClient)(implicit ec: ExecutionContext) extends ExchangeService {
 
   private val logger = LoggerFactory.getLogger(this.getClass)
 
@@ -29,20 +29,20 @@ class CoinmarketcapService @Inject() (ws: WSClient)(implicit ec: ExecutionContex
     val url = s"$BaseURL/v1/ticker/?limit=2000"
 
     ws.url(url)
-        .get()
-        .map { response =>
-          Option(response)
-              .flatMap(toJson)
-              .map { jsonList =>
-                jsonList.flatMap { json =>
-                  toTickerList(json)
-                }
-              }
-              .getOrElse {
-                logger.warn(s"Unexpected response from COINMARKETCAP, status = [${response.status}]")
-                List.empty
-              }
-        }
+      .get()
+      .map { response =>
+        Option(response)
+          .flatMap(toJson)
+          .map { jsonList =>
+            jsonList.flatMap { json =>
+              toTickerList(json)
+            }
+          }
+          .getOrElse {
+            logger.warn(s"Unexpected response from COINMARKETCAP, status = [${response.status}]")
+            List.empty
+          }
+      }
 
   }
 
@@ -61,10 +61,11 @@ class CoinmarketcapService @Inject() (ws: WSClient)(implicit ec: ExecutionContex
       currency <- (json \ "symbol").asOpt[String].flatMap(Currency.from)
       priceUSD <- (json \ "price_usd").asOpt[BigDecimal]
       priceBTC <- (json \ "price_btc").asOpt[BigDecimal]
-      currencyName <- (json \ "name").asOpt[String]
-          .map(_.trim)
-          .filter(_.nonEmpty)
-          .map(CurrencyName.apply)
+      currencyName <- (json \ "name")
+        .asOpt[String]
+        .map(_.trim)
+        .filter(_.nonEmpty)
+        .map(CurrencyName.apply)
     } yield {
       val tickerUSD = Ticker(Book(USDMarket, currency, Some(currencyName)), priceUSD)
 

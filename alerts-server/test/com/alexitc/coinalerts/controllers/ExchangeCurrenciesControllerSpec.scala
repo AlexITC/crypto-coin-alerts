@@ -9,7 +9,7 @@ import play.api.test.Helpers._
 class ExchangeCurrenciesControllerSpec extends CustomPlayAPISpec {
 
   val application: Application = guiceApplicationBuilder
-      .build()
+    .build()
 
   "GET /currencies/:id" should {
     def url(exchangeCurrencyId: ExchangeCurrencyId) = s"/currencies/${exchangeCurrencyId.int}"
@@ -19,7 +19,8 @@ class ExchangeCurrenciesControllerSpec extends CustomPlayAPISpec {
       val market = Market.BTC
       val currency = Currency.from("BTG").get
       val currencyName = Some(CurrencyName("Bitcoin gold"))
-      val exchangeCurrency = exchangeCurrencyDataHandler.create(CreateExchangeCurrencyModel(exchange, market, currency, currencyName)).get
+      val exchangeCurrency =
+        exchangeCurrencyDataHandler.create(CreateExchangeCurrencyModel(exchange, market, currency, currencyName)).get
 
       val response = GET(url(exchangeCurrency.id))
       status(response) mustEqual OK

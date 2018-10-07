@@ -111,7 +111,8 @@ class HitbtcServiceSpec extends WordSpec with MustMatchers with ScalaFutures wit
 
   "availableBooks" should {
     "retrieve available books" in {
-      val expectedBooks = "BTC_LTC ETH_LTC USD_LTC USDT_XRP EOS_XMR DAI_LTC EURS_XMR".split(" ").map(Book.fromString).map(_.get).toList
+      val expectedBooks =
+        "BTC_LTC ETH_LTC USD_LTC USDT_XRP EOS_XMR DAI_LTC EURS_XMR".split(" ").map(Book.fromString).map(_.get).toList
 
       mockRequest(responseBody)
       whenReady(service.availableBooks()) { books =>
@@ -153,10 +154,10 @@ class HitbtcServiceSpec extends WordSpec with MustMatchers with ScalaFutures wit
         """.stripMargin
 
       val expectedBooks = "EURS_XMR"
-          .split(" ")
-          .map(Book.fromString)
-          .map(_.get)
-          .toList
+        .split(" ")
+        .map(Book.fromString)
+        .map(_.get)
+        .toList
 
       mockRequest(responseBody)
       whenReady(service.availableBooks()) { books =>
@@ -170,13 +171,13 @@ class HitbtcServiceSpec extends WordSpec with MustMatchers with ScalaFutures wit
   "getTickerList" should {
     "retrieve the ticket" in {
       val expectedTickers = List(
-        "BTC_LTC" -> BigDecimal("0.01588"),
-        "ETH_LTC" -> BigDecimal("0.165"),
-        "USD_LTC" -> BigDecimal("181.199"),
-        "USDT_XRP" -> BigDecimal("1.2130"),
-        "EOS_XMR" -> BigDecimal("19.777"),
-        "DAI_LTC" -> BigDecimal("57.25"),
-        "EURS_XMR" -> BigDecimal("99.83")
+          "BTC_LTC" -> BigDecimal("0.01588"),
+          "ETH_LTC" -> BigDecimal("0.165"),
+          "USD_LTC" -> BigDecimal("181.199"),
+          "USDT_XRP" -> BigDecimal("1.2130"),
+          "EOS_XMR" -> BigDecimal("19.777"),
+          "DAI_LTC" -> BigDecimal("57.25"),
+          "EURS_XMR" -> BigDecimal("99.83")
       ).map { case (string, price) => Ticker(Book.fromString(string).get, price) }
 
       mockRequest(responseBody)

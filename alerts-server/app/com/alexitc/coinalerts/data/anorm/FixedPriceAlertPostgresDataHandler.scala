@@ -12,14 +12,16 @@ import com.alexitc.playsonify.models.{Count, FieldOrdering, PaginatedQuery, Pagi
 import org.scalactic.{Bad, Good, One, Or}
 import play.api.db.Database
 
-class FixedPriceAlertPostgresDataHandler @Inject() (
+class FixedPriceAlertPostgresDataHandler @Inject()(
     protected val database: Database,
     exchangeCurrencyPostgresDAO: ExchangeCurrencyPostgresDAO,
     alertPostgresDAO: FixedPriceAlertPostgresDAO)
     extends FixedPriceAlertBlockingDataHandler
-    with AnormPostgresDAL{
+    with AnormPostgresDAL {
 
-  override def create(createAlertModel: CreateFixedPriceAlertModel, userId: UserId): ApplicationResult[FixedPriceAlertWithCurrency] = {
+  override def create(
+      createAlertModel: CreateFixedPriceAlertModel,
+      userId: UserId): ApplicationResult[FixedPriceAlertWithCurrency] = {
     val result = withConnection { implicit conn =>
       val fixedPriceAlert = alertPostgresDAO.create(createAlertModel, userId)
 
@@ -48,39 +50,44 @@ class FixedPriceAlertPostgresDataHandler @Inject() (
     }
   }
 
-  override def findPendingAlertsForPrice(currencyId: ExchangeCurrencyId, currentPrice: BigDecimal): ApplicationResult[List[FixedPriceAlertWithCurrency]] = withConnection { implicit conn =>
-    if (currentPrice <= 0) {
-      Bad(InvalidPriceError).accumulating
-    } else {
-      val alertList = alertPostgresDAO.findPendingAlertsForPrice(currencyId, currentPrice)
-      Good(alertList)
-    }
+  override def findPendingAlertsForPrice(
+      currencyId: ExchangeCurrencyId,
+      currentPrice: BigDecimal): ApplicationResult[List[FixedPriceAlertWithCurrency]] = withConnection {
+    implicit conn =>
+      if (currentPrice <= 0) {
+        Bad(InvalidPriceError).accumulating
+      } else {
+        val alertList = alertPostgresDAO.findPendingAlertsForPrice(currencyId, currentPrice)
+        Good(alertList)
+      }
   }
 
   override def getAlerts(
       filterConditions: FixedPriceAlertFilter.Conditions,
       orderByConditions: FieldOrdering[FixedPriceAlertField],
-      query: PaginatedQuery): ApplicationResult[PaginatedResult[FixedPriceAlertWithCurrency]] = withConnection { implicit conn =>
+      query: PaginatedQuery): ApplicationResult[PaginatedResult[FixedPriceAlertWithCurrency]] = withConnection {
+    implicit conn =>
+      val alerts = alertPostgresDAO.getAlerts(filterConditions, orderByConditions, query)
+      val total = alertPostgresDAO.countBy(filterConditions)
+      val result = PaginatedResult(query.offset, query.limit, total, alerts)
 
-    val alerts = alertPostgresDAO.getAlerts(filterConditions, orderByConditions, query)
-    val total = alertPostgresDAO.countBy(filterConditions)
-    val result = PaginatedResult(query.offset, query.limit, total, alerts)
-
-    Good(result)
+      Good(result)
   }
 
-  override def countBy(conditions: FixedPriceAlertFilter.Conditions): ApplicationResult[Count] = withConnection { implicit conn =>
-    val result = alertPostgresDAO.countBy(conditions)
-    Good(result)
+  override def countBy(conditions: FixedPriceAlertFilter.Conditions): ApplicationResult[Count] = withConnection {
+    implicit conn =>
+      val result = alertPostgresDAO.countBy(conditions)
+      Good(result)
   }
 
-  override def delete(id: FixedPriceAlertId, userId: UserId): ApplicationResult[FixedPriceAlertWithCurrency] = withConnection { implicit conn =>
-    val deletedAlertMaybe = alertPostgresDAO.delete(id, userId).map { alert =>
-      // the alert has a FK to the currency, hence it must exist
-      val exchangeCurrency = exchangeCurrencyPostgresDAO.getBy(alert.exchangeCurrencyId).get
-      FixedPriceAlertWithCurrency.from(alert, exchangeCurrency)
+  override def delete(id: FixedPriceAlertId, userId: UserId): ApplicationResult[FixedPriceAlertWithCurrency] =
+    withConnection { implicit conn =>
+      val deletedAlertMaybe = alertPostgresDAO.delete(id, userId).map { alert =>
+        // the alert has a FK to the currency, hence it must exist
+        val exchangeCurrency = exchangeCurrencyPostgresDAO.getBy(alert.exchangeCurrencyId).get
+        FixedPriceAlertWithCurrency.from(alert, exchangeCurrency)
+      }
+
+      Or.from(deletedAlertMaybe, One(FixedPriceAlertNotFoundError))
     }
-
-    Or.from(deletedAlertMaybe, One(FixedPriceAlertNotFoundError))
-  }
 }

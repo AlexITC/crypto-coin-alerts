@@ -11,29 +11,34 @@ trait ExchangeCurrencyInMemoryDataHandler extends ExchangeCurrencyBlockingDataHa
 
   private val currencyList = new mutable.ListBuffer[ExchangeCurrency]()
 
-  override def create(
-      createModel: CreateExchangeCurrencyModel): ApplicationResult[ExchangeCurrency] = currencyList.synchronized {
+  override def create(createModel: CreateExchangeCurrencyModel): ApplicationResult[ExchangeCurrency] =
+    currencyList.synchronized {
 
-    if (getBy(createModel.exchange, createModel.market, createModel.currency, createModel.currencyName.getOrElse(CurrencyName(""))).get.isDefined) {
-      Bad(RepeatedExchangeCurrencyError).accumulating
-    } else {
-      val newCurrency = ExchangeCurrency(
-        ExchangeCurrencyId(currencyList.length),
-        createModel.exchange,
-        createModel.market,
-        createModel.currency,
-        createModel.currencyName)
+      if (getBy(
+              createModel.exchange,
+              createModel.market,
+              createModel.currency,
+              createModel.currencyName.getOrElse(CurrencyName(""))).get.isDefined) {
+        Bad(RepeatedExchangeCurrencyError).accumulating
+      } else {
+        val newCurrency = ExchangeCurrency(
+            ExchangeCurrencyId(currencyList.length),
+            createModel.exchange,
+            createModel.market,
+            createModel.currency,
+            createModel.currencyName)
 
-      currencyList += newCurrency
+        currencyList += newCurrency
 
-      Good(newCurrency)
+        Good(newCurrency)
+      }
     }
-  }
 
-  override def getBy(exchangeCurrencyId: ExchangeCurrencyId): ApplicationResult[Option[ExchangeCurrency]] = currencyList.synchronized {
-    val result = currencyList.find(_.id == exchangeCurrencyId)
-    Good(result)
-  }
+  override def getBy(exchangeCurrencyId: ExchangeCurrencyId): ApplicationResult[Option[ExchangeCurrency]] =
+    currencyList.synchronized {
+      val result = currencyList.find(_.id == exchangeCurrencyId)
+      Good(result)
+    }
 
   override def getBy(
       exchange: Exchange,
@@ -42,24 +47,26 @@ trait ExchangeCurrencyInMemoryDataHandler extends ExchangeCurrencyBlockingDataHa
       currencyName: CurrencyName): ApplicationResult[Option[ExchangeCurrency]] = currencyList.synchronized {
 
     val result = currencyList.find { c =>
-      c.exchange == exchange && c.market == market && c.currency == currency && c.currencyName.getOrElse("") == currencyName.string
+      c.exchange == exchange && c.market == market && c.currency == currency && c.currencyName
+        .getOrElse("") == currencyName.string
     }
 
     Good(result)
   }
 
-  override def getBy(exchange: Exchange, market: Market): ApplicationResult[List[ExchangeCurrency]] = currencyList.synchronized {
-    val result = currencyList.toList.filter { c =>
-      c.exchange == exchange && c.market == market
-    }
+  override def getBy(exchange: Exchange, market: Market): ApplicationResult[List[ExchangeCurrency]] =
+    currencyList.synchronized {
+      val result = currencyList.toList.filter { c =>
+        c.exchange == exchange && c.market == market
+      }
 
-    Good(result)
-  }
+      Good(result)
+    }
 
   override def getMarkets(exchange: Exchange): ApplicationResult[List[Market]] = currencyList.synchronized {
     val result = currencyList.toList
-        .filter(_.exchange == exchange)
-        .map(_.market)
+      .filter(_.exchange == exchange)
+      .map(_.market)
 
     Good(result)
   }

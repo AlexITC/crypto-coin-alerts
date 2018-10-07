@@ -1,6 +1,11 @@
 package com.alexitc.coinalerts.services.validators
 
-import com.alexitc.coinalerts.errors.{InvalidEmailFormatError, InvalidEmailLengthError, InvalidPasswordLengthError, UnsupportedLangError}
+import com.alexitc.coinalerts.errors.{
+  InvalidEmailFormatError,
+  InvalidEmailLengthError,
+  InvalidPasswordLengthError,
+  UnsupportedLangError
+}
 import com.alexitc.coinalerts.models._
 import com.alexitc.playsonify.core.ApplicationResult
 import org.apache.commons.validator.routines.EmailValidator
@@ -10,19 +15,16 @@ import org.scalactic.{Bad, Good, One, Or}
 class UserValidator {
 
   def validateCreateUserModel(createUserModel: CreateUserModel): ApplicationResult[CreateUserModel] = {
-    withGood(
-      validateEmailFormat(createUserModel.email),
-      validatePasswordFormat(createUserModel.password)) { (_, _) =>
-
+    withGood(validateEmailFormat(createUserModel.email), validatePasswordFormat(createUserModel.password)) { (_, _) =>
       createUserModel
     }
   }
 
-  def validateSetUserPreferencesModel(preferencesModel: SetUserPreferencesModel): ApplicationResult[SetUserPreferencesModel] = {
-    val preferencesMaybe = UserPreferences
-        .AvailableLangs
-        .find(_ == preferencesModel.lang)
-        .map(_ => preferencesModel)
+  def validateSetUserPreferencesModel(
+      preferencesModel: SetUserPreferencesModel): ApplicationResult[SetUserPreferencesModel] = {
+    val preferencesMaybe = UserPreferences.AvailableLangs
+      .find(_ == preferencesModel.lang)
+      .map(_ => preferencesModel)
 
     Or.from(preferencesMaybe, One(UnsupportedLangError))
   }

@@ -13,9 +13,7 @@ trait ReCaptchaService {
   def verify(reCaptchaResponse: ReCaptchaResponse): FutureApplicationResult[Unit]
 }
 
-class GoogleReCaptchaService @Inject() (
-    reCaptchaConfig: ReCaptchaConfig,
-    ws: WSClient)(
+class GoogleReCaptchaService @Inject()(reCaptchaConfig: ReCaptchaConfig, ws: WSClient)(
     implicit ec: ExternalServiceExecutionContext)
     extends ReCaptchaService {
 
@@ -23,19 +21,19 @@ class GoogleReCaptchaService @Inject() (
 
   def verify(recaptchaResponse: ReCaptchaResponse): FutureApplicationResult[Unit] = {
     val data = Map(
-      "secret" -> reCaptchaConfig.secretKey.string,
-      "response" -> recaptchaResponse.string
+        "secret" -> reCaptchaConfig.secretKey.string,
+        "response" -> recaptchaResponse.string
     ).mapValues(List(_))
 
     // TODO: log invalid key response
     ws.url(url).post(data).map { response =>
       (response.json \ "success")
-          .asOpt[Boolean]
-          .filter(identity)
-          .map(_ => Good(()))
-          .getOrElse {
-            Bad(ReCaptchaValidationError).accumulating
-          }
+        .asOpt[Boolean]
+        .filter(identity)
+        .map(_ => Good(()))
+        .getOrElse {
+          Bad(ReCaptchaValidationError).accumulating
+        }
     }
   }
 }

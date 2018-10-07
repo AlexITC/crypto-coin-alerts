@@ -65,10 +65,10 @@ class BinanceServiceSpec extends WordSpec with MustMatchers with ScalaFutures wi
   "getTickerList" should {
     "retrieve the ticket" in {
       val expectedTickers = List(
-        "BTC_DASH" -> BigDecimal("0.06732200"),
-        "ETH_DASH" -> BigDecimal("0.69579000"),
-        "USDT_LTC" -> BigDecimal("181.63000000"),
-        "BNB_LTC" -> BigDecimal("13.62000000")
+          "BTC_DASH" -> BigDecimal("0.06732200"),
+          "ETH_DASH" -> BigDecimal("0.69579000"),
+          "USDT_LTC" -> BigDecimal("181.63000000"),
+          "BNB_LTC" -> BigDecimal("13.62000000")
       ).map { case (string, price) => Ticker(Book.fromString(string).get, price) }
 
       val request = mock[WSRequest]

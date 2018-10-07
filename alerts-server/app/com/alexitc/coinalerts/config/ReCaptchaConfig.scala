@@ -11,7 +11,7 @@ trait ReCaptchaConfig {
 
 class ReCaptchaSecretKey(val string: String) extends AnyVal
 
-class PlayReCaptchaSecretKey @Inject() (config: Configuration) extends ReCaptchaConfig {
+class PlayReCaptchaSecretKey @Inject()(config: Configuration) extends ReCaptchaConfig {
 
   override def secretKey: ReCaptchaSecretKey = {
     val string = config.get[String]("recaptcha.secretKey")

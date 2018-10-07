@@ -41,5 +41,7 @@ object Exchange {
     JsPath.read[String].collect(JsonValidationError("error.exchange.unknown"))(fromStringPF)
   }
 
-  implicit val writes: Writes[Exchange] = Writes[Exchange] { market => JsString(market.string) }
+  implicit val writes: Writes[Exchange] = Writes[Exchange] { market =>
+    JsString(market.string)
+  }
 }

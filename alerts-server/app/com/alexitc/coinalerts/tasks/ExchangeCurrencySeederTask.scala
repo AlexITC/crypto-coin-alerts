@@ -17,7 +17,7 @@ import play.api.i18n.Lang
 import scala.concurrent.Future
 import scala.util.control.NonFatal
 
-class ExchangeCurrencySeederTask @Inject() (
+class ExchangeCurrencySeederTask @Inject()(
     bitsoService: BitsoService,
     bittrexService: BittrexService,
     kucoinService: KucoinService,
@@ -28,8 +28,7 @@ class ExchangeCurrencySeederTask @Inject() (
     newCurrencyAlertFutureDataHandler: NewCurrencyAlertFutureDataHandler,
     userFutureDataHandler: UserFutureDataHandler,
     emailServiceTrait: EmailServiceTrait,
-    emailMessagesProvider: EmailMessagesProvider)(
-    implicit val ec: TaskExecutionContext) {
+    emailMessagesProvider: EmailMessagesProvider)(implicit val ec: TaskExecutionContext) {
 
   private val logger = LoggerFactory.getLogger(this.getClass)
 
@@ -87,9 +86,9 @@ class ExchangeCurrencySeederTask @Inject() (
     val newBooks = books.filterNot { book =>
       currencies.exists { currency =>
         exchange === currency.exchange &&
-          book.market === currency.market &&
-          book.currency === currency.currency &&
-          book.currencyName === currency.currencyName
+        book.market === currency.market &&
+        book.currency === currency.currency &&
+        book.currencyName === currency.currencyName
       }
     }
 
@@ -101,7 +100,7 @@ class ExchangeCurrencySeederTask @Inject() (
 
     for (book <- newBooks) yield {
       val createModel = CreateExchangeCurrencyModel(exchange, book.market, book.currency, book.currencyName)
-      
+
       exchangeCurrencyBlockingDataHandler.create(createModel) match {
         case Good(_) => ()
         case Bad(errors) =>
@@ -112,21 +111,24 @@ class ExchangeCurrencySeederTask @Inject() (
   }
 
   private def triggerAlerts(books: List[Book], exchange: Exchange) = {
-    newCurrencyAlertFutureDataHandler.getBy(exchange).flatMap {
-      case Good(alerts) =>
-        val futures = alerts.map { alert =>
-          sendAlert(alert, books)
-        }
+    newCurrencyAlertFutureDataHandler
+      .getBy(exchange)
+      .flatMap {
+        case Good(alerts) =>
+          val futures = alerts.map { alert =>
+            sendAlert(alert, books)
+          }
 
-        Future.sequence(futures)
+          Future.sequence(futures)
 
-      case Bad(errors) =>
-        logger.error(s"Failed to retrieve alerts by $exchange, errors = $errors")
-        Future.unit
-    }.recover {
-      case NonFatal(ex) =>
-        logger.error("Failed to send alerts", ex)
-    }
+        case Bad(errors) =>
+          logger.error(s"Failed to retrieve alerts by $exchange, errors = $errors")
+          Future.unit
+      }
+      .recover {
+        case NonFatal(ex) =>
+          logger.error("Failed to send alerts", ex)
+      }
   }
 
   private def sendAlert(alert: NewCurrencyAlert, books: List[Book]): Future[Unit] = {
@@ -140,13 +142,17 @@ class ExchangeCurrencySeederTask @Inject() (
       emailServiceTrait.sendEmail(user.email, subject, text)
     }
 
-    result.toFuture.map {
-      case Good(_) => ()
-      case Bad(errors) =>
-        logger.error(s"Failed to send alerts to user = ${alert.userId}, exchange = ${alert.exchange}, books = $books, errors = $errors")
-    }.recover {
-      case NonFatal(ex) =>
-        logger.error(s"Failed to send alerts to user = ${alert.userId}, exchange = ${alert.exchange}, books = $books", ex)
-    }
+    result.toFuture
+      .map {
+        case Good(_) => ()
+        case Bad(errors) =>
+          logger.error(
+              s"Failed to send alerts to user = ${alert.userId}, exchange = ${alert.exchange}, books = $books, errors = $errors")
+      }
+      .recover {
+        case NonFatal(ex) =>
+          logger
+            .error(s"Failed to send alerts to user = ${alert.userId}, exchange = ${alert.exchange}, books = $books", ex)
+      }
   }
 }

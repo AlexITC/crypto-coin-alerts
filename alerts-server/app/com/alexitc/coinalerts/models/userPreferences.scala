@@ -3,7 +3,7 @@ package com.alexitc.coinalerts.models
 import play.api.i18n.Lang
 import play.api.libs.json.{Json, Reads, Writes}
 
-case class UserPreferences (userId: UserId, lang: Lang)
+case class UserPreferences(userId: UserId, lang: Lang)
 
 object UserPreferences {
 

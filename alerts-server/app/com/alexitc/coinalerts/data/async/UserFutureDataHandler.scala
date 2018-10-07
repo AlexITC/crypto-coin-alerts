@@ -9,8 +9,7 @@ import com.alexitc.playsonify.core.FutureApplicationResult
 
 import scala.concurrent.Future
 
-class UserFutureDataHandler @Inject() (
-    userBlockingDataHandler: UserBlockingDataHandler)(
+class UserFutureDataHandler @Inject()(userBlockingDataHandler: UserBlockingDataHandler)(
     implicit ec: DatabaseExecutionContext)
     extends UserDataHandler[FutureApplicationResult] {
 

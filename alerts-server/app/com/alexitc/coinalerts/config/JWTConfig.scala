@@ -11,7 +11,7 @@ trait JWTConfig {
 
 case class JWTSecretKey(string: String) extends AnyVal
 
-class PlayJWTConfig @Inject() (configuration: Configuration) extends JWTConfig {
+class PlayJWTConfig @Inject()(configuration: Configuration) extends JWTConfig {
 
   override def secretKey: JWTSecretKey = {
     val string = configuration.get[String]("jwt.secret")

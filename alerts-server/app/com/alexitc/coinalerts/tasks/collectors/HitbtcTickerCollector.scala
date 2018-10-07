@@ -8,7 +8,7 @@ import com.alexitc.coinalerts.tasks.models.Ticker
 
 import scala.concurrent.Future
 
-class HitbtcTickerCollector @Inject() (hitbtcService: HitbtcService) extends TickerCollector {
+class HitbtcTickerCollector @Inject()(hitbtcService: HitbtcService) extends TickerCollector {
 
   override val exchange: Exchange = Exchange.HITBTC
 
@@ -16,4 +16,3 @@ class HitbtcTickerCollector @Inject() (hitbtcService: HitbtcService) extends Tic
     hitbtcService.getTickerList()
   }
 }
-

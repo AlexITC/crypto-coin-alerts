@@ -10,8 +10,8 @@ object Currency {
 
   def from(string: String): Option[Currency] = {
     Option(string)
-        .map(_.toUpperCase)
-        .filter(_ matches pattern)
-        .map(new Currency(_))
+      .map(_.toUpperCase)
+      .filter(_ matches pattern)
+      .map(new Currency(_))
   }
 }

@@ -12,10 +12,7 @@ import play.api.libs.ws.{WSClient, WSResponse}
 
 import scala.concurrent.Future
 
-class KucoinService @Inject() (
-    ws: WSClient)(
-    implicit ec: ExternalServiceExecutionContext)
-    extends ExchangeService {
+class KucoinService @Inject()(ws: WSClient)(implicit ec: ExternalServiceExecutionContext) extends ExchangeService {
 
   private val logger = LoggerFactory.getLogger(this.getClass)
 
@@ -25,45 +22,46 @@ class KucoinService @Inject() (
     val url = s"$BaseURL/v1/open/tick"
 
     ws.url(url)
-        .get()
-        .map { response =>
-          Option(response)
-              .flatMap(toJson)
-              .map { json =>
-                val resultList = (json \ "data")
-                    .as[List[JsValue]]
+      .get()
+      .map { response =>
+        Option(response)
+          .flatMap(toJson)
+          .map { json =>
+            val resultList = (json \ "data")
+              .as[List[JsValue]]
 
-                resultList.flatMap { result =>
-                  val marketMaybe = (result \ "coinTypePair").asOpt[String].flatMap(Market.from)
-                  val currencyMaybe = (result \ "coinType").asOpt[String].flatMap(Currency.from)
-                  for (market <- marketMaybe; currency <- currencyMaybe)
-                    yield Book(market, currency)
-                }
-              }.getOrElse {
+            resultList.flatMap { result =>
+              val marketMaybe = (result \ "coinTypePair").asOpt[String].flatMap(Market.from)
+              val currencyMaybe = (result \ "coinType").asOpt[String].flatMap(Currency.from)
+              for (market <- marketMaybe; currency <- currencyMaybe)
+                yield Book(market, currency)
+            }
+          }
+          .getOrElse {
             logger.warn(s"Unexpected response from KUCOIN, status = [${response.status}]")
             List.empty
           }
-        }
+      }
   }
 
   override def getTickerList(): Future[List[Ticker]] = {
     val url = s"$BaseURL/v1/open/tick"
 
     ws.url(url)
-        .get()
-        .map { response =>
-          Option(response)
-              .flatMap(toJson)
-              .flatMap { json =>
-                (json \ "data")
-                    .asOpt[List[Option[Ticker]]]
-                    .map(_.flatten)
-              }
-              .getOrElse {
-                logger.warn(s"Unexpected response from KUCOIN, status = [${response.status}]")
-                List.empty
-              }
-        }
+      .get()
+      .map { response =>
+        Option(response)
+          .flatMap(toJson)
+          .flatMap { json =>
+            (json \ "data")
+              .asOpt[List[Option[Ticker]]]
+              .map(_.flatten)
+          }
+          .getOrElse {
+            logger.warn(s"Unexpected response from KUCOIN, status = [${response.status}]")
+            List.empty
+          }
+      }
 
   }
 
@@ -73,15 +71,15 @@ class KucoinService @Inject() (
     } else {
       val json = response.json
       (json \ "success")
-          .asOpt[Boolean]
-          .filter(identity)
-          .map(_ => json)
+        .asOpt[Boolean]
+        .filter(identity)
+        .map(_ => json)
     }
   }
 
   private implicit val tickerReads: Reads[Option[Ticker]] = {
     val builder = (JsPath \ "symbol").read[String].map(createBook) and
-        (JsPath \ "lastDealPrice").read[BigDecimal]
+      (JsPath \ "lastDealPrice").read[BigDecimal]
 
     builder.apply { (bookMaybe, currentPrice) =>
       bookMaybe.map { book =>
@@ -92,10 +90,11 @@ class KucoinService @Inject() (
 
   private def createBook(string: String): Option[Book] = {
     // the book format is reversed to the one in our app
-    Book.fromBitsoString(string.replace("-", "_"))
-        .orElse {
-          logger.warn(s"Unable to create book from string = [$string]")
-          None
-        }
+    Book
+      .fromBitsoString(string.replace("-", "_"))
+      .orElse {
+        logger.warn(s"Unable to create book from string = [$string]")
+        None
+      }
   }
 }

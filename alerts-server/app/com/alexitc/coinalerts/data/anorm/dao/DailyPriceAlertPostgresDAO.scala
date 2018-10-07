@@ -14,13 +14,11 @@ class DailyPriceAlertPostgresDAO {
 
   import DailyPriceAlertParsers._
 
-  def create(
-      userId: UserId,
-      createDailyPriceAlert: CreateDailyPriceAlertModel)(
+  def create(userId: UserId, createDailyPriceAlert: CreateDailyPriceAlertModel)(
       implicit conn: Connection): ApplicationResult[DailyPriceAlert] = {
 
     val alertMaybe = SQL(
-      """
+        """
         |INSERT INTO daily_price_alerts
         |  (user_id, currency_id)
         |VALUES
@@ -29,20 +27,18 @@ class DailyPriceAlertPostgresDAO {
         |RETURNING daily_price_alert_id, user_id, currency_id, created_on
       """.stripMargin
     ).on(
-      "user_id" -> userId.string,
-      "currency_id" -> createDailyPriceAlert.exchangeCurrencyId.int,
-    ).as(parseDailyPriceAlert.singleOpt)
+          "user_id" -> userId.string,
+          "currency_id" -> createDailyPriceAlert.exchangeCurrencyId.int,
+      )
+      .as(parseDailyPriceAlert.singleOpt)
 
     Or.from(alertMaybe, One(RepeatedDailyPriceAlertError))
   }
 
-  def getAlerts(
-      userId: UserId,
-      query: PaginatedQuery)(
-      implicit conn: Connection): List[DailyPriceAlert] = {
+  def getAlerts(userId: UserId, query: PaginatedQuery)(implicit conn: Connection): List[DailyPriceAlert] = {
 
     SQL(
-      """
+        """
         |SELECT daily_price_alert_id, user_id, currency_id, created_on
         |FROM daily_price_alerts
         |WHERE user_id = {user_id}
@@ -51,25 +47,25 @@ class DailyPriceAlertPostgresDAO {
         |LIMIT {limit}
       """.stripMargin
     ).on(
-      "user_id" -> userId.string,
-      "offset" -> query.offset.int,
-      "limit" -> query.limit.int
-    ).as(parseDailyPriceAlert.*)
+          "user_id" -> userId.string,
+          "offset" -> query.offset.int,
+          "limit" -> query.limit.int
+      )
+      .as(parseDailyPriceAlert.*)
   }
 
-  def countAlerts(
-      userId: UserId)(
-      implicit conn: Connection): Count = {
+  def countAlerts(userId: UserId)(implicit conn: Connection): Count = {
 
     val result: Int = SQL(
-      """
+        """
         |SELECT COUNT(*)
         |FROM daily_price_alerts
         |WHERE user_id = {user_id}
       """.stripMargin
     ).on(
-      "user_id" -> userId.string
-    ).as(SqlParser.scalar[Int].single)
+          "user_id" -> userId.string
+      )
+      .as(SqlParser.scalar[Int].single)
 
     Count(result)
   }

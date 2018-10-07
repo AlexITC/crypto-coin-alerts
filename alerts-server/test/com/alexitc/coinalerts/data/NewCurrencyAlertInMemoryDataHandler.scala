@@ -48,16 +48,16 @@ class NewCurrencyAlertInMemoryDataHandler extends NewCurrencyAlertBlockingDataHa
 
   override def delete(userId: UserId, exchange: Exchange): ApplicationResult[NewCurrencyAlert] = withLock {
     alerts
-        .find { alert =>
-          alert.userId == userId && alert.exchange == exchange
-        }
-        .map { alert =>
-          alerts -= alert
+      .find { alert =>
+        alert.userId == userId && alert.exchange == exchange
+      }
+      .map { alert =>
+        alerts -= alert
 
-          Good(alert)
-        }
-        .getOrElse {
-          Bad(NewCurrencyAlertNotFoundError).accumulating
-        }
+        Good(alert)
+      }
+      .getOrElse {
+        Bad(NewCurrencyAlertNotFoundError).accumulating
+      }
   }
 }

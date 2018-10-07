@@ -14,13 +14,12 @@ import play.api.mvc.Request
 
 import scala.concurrent.Future
 
-class JWTAuthenticatorService @Inject() (jwtService: JWTService) extends AbstractAuthenticatorService[UserId] {
+class JWTAuthenticatorService @Inject()(jwtService: JWTService) extends AbstractAuthenticatorService[UserId] {
 
   override def authenticate(request: Request[JsValue]): FutureApplicationResult[UserId] = {
     val result = for {
-      authorizationHeader <- Or.from(
-        request.headers.get(HeaderNames.AUTHORIZATION),
-        One(AuthorizationHeaderRequiredError))
+      authorizationHeader <- Or
+        .from(request.headers.get(HeaderNames.AUTHORIZATION), One(AuthorizationHeaderRequiredError))
 
       userId <- decodeAuthorizationHeader(authorizationHeader)
     } yield userId
@@ -33,13 +32,13 @@ class JWTAuthenticatorService @Inject() (jwtService: JWTService) extends Abstrac
     val headerParts = header.split(" ")
 
     Option(headerParts)
-        .filter(_.length == 2)
-        .filter(tokenType equalsIgnoreCase _.head)
-        .map(_.drop(1).head)
-        .map(AuthorizationToken.apply)
-        .map { token =>
-          jwtService.decodeToken(token).map(_.id)
-        }
-        .getOrElse(Bad(InvalidJWTError).accumulating)
+      .filter(_.length == 2)
+      .filter(tokenType equalsIgnoreCase _.head)
+      .map(_.drop(1).head)
+      .map(AuthorizationToken.apply)
+      .map { token =>
+        jwtService.decodeToken(token).map(_.id)
+      }
+      .getOrElse(Bad(InvalidJWTError).accumulating)
   }
 }

@@ -29,23 +29,22 @@ trait ShutdownableTaskRunner {
   protected def register() = {
     logger.info("Registering task")
 
-    shutdownHandler.addShutdownHook(() => Future {
+    shutdownHandler.addShutdownHook(() =>
+      Future {
 
-      if (running) {
-        logger.info("Waiting for task to complete")
-      }
-
-      // if we are shutting down, do we care no making a mess with threads? I hope we don't
-      scala.concurrent.blocking {
-        while (running) {
-          Thread.sleep(1000)
+        if (running) {
+          logger.info("Waiting for task to complete")
         }
-      }
+
+        // if we are shutting down, do we care no making a mess with threads? I hope we don't
+        scala.concurrent.blocking {
+          while (running) {
+            Thread.sleep(1000)
+          }
+        }
     })
 
-    val _ = actorSystem.scheduler.schedule(
-      initialDelay = initialDelay,
-      interval = interval) { execute() }
+    val _ = actorSystem.scheduler.schedule(initialDelay = initialDelay, interval = interval) { execute() }
   }
 
   private def execute() = {
@@ -55,13 +54,13 @@ trait ShutdownableTaskRunner {
       logger.info("Running task")
 
       run()
-          .recover {
-            case NonFatal(ex) =>
-              logger.error("Failed to run task", ex)
-          }
-          .foreach { _ =>
-            running = false
-          }
+        .recover {
+          case NonFatal(ex) =>
+            logger.error("Failed to run task", ex)
+        }
+        .foreach { _ =>
+          running = false
+        }
     }
   }
 }

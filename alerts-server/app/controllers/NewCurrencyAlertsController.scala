@@ -5,9 +5,7 @@ import javax.inject.Inject
 import com.alexitc.coinalerts.models.Exchange
 import com.alexitc.coinalerts.services.NewCurrencyAlertService
 
-class NewCurrencyAlertsController @Inject() (
-    components: MyJsonControllerComponents,
-    service: NewCurrencyAlertService)
+class NewCurrencyAlertsController @Inject()(components: MyJsonControllerComponents, service: NewCurrencyAlertService)
     extends MyJsonController(components) {
 
   def create(exchange: Exchange) = authenticatedNoInput(Created) { context =>

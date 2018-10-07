@@ -11,12 +11,13 @@ import com.alexitc.playsonify.validators.PaginatedQueryValidator
 
 import scala.concurrent.ExecutionContext
 
-class DailyPriceAlertService @Inject() (
+class DailyPriceAlertService @Inject()(
     queryValidator: PaginatedQueryValidator,
-    dailyPriceAlertsFutureDataHandler: DailyPriceAlertFutureDataHandler)(
-    implicit ec: ExecutionContext) {
+    dailyPriceAlertsFutureDataHandler: DailyPriceAlertFutureDataHandler)(implicit ec: ExecutionContext) {
 
-  def create(userId: UserId, createDailyPriceAlert: CreateDailyPriceAlertModel): FutureApplicationResult[DailyPriceAlert] = {
+  def create(
+      userId: UserId,
+      createDailyPriceAlert: CreateDailyPriceAlertModel): FutureApplicationResult[DailyPriceAlert] = {
     val result = for {
       // there is nothing to validate
       dailyPriceAlert <- dailyPriceAlertsFutureDataHandler.create(userId, createDailyPriceAlert).toFutureOr
@@ -30,8 +31,8 @@ class DailyPriceAlertService @Inject() (
       validatedQuery <- queryValidator.validate(query, 100).toFutureOr
 
       paginatedResult <- dailyPriceAlertsFutureDataHandler
-          .getAlerts(userId, validatedQuery)
-          .toFutureOr
+        .getAlerts(userId, validatedQuery)
+        .toFutureOr
     } yield paginatedResult
 
     result.toFuture

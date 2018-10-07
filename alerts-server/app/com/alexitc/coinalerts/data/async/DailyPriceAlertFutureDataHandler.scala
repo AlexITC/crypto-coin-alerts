@@ -10,12 +10,13 @@ import com.alexitc.playsonify.models.PaginatedQuery
 
 import scala.concurrent.Future
 
-class DailyPriceAlertFutureDataHandler @Inject() (
-    dailyPriceAlertBlockingDataHandler: DailyPriceAlertBlockingDataHandler)(
+class DailyPriceAlertFutureDataHandler @Inject()(dailyPriceAlertBlockingDataHandler: DailyPriceAlertBlockingDataHandler)(
     implicit ec: DatabaseExecutionContext)
     extends DailyPriceAlertDataHandler[FutureApplicationResult] {
 
-  override def create(userId: UserId, createDailyPriceAlert: CreateDailyPriceAlertModel): FutureApplicationResult[DailyPriceAlert] = Future {
+  override def create(
+      userId: UserId,
+      createDailyPriceAlert: CreateDailyPriceAlertModel): FutureApplicationResult[DailyPriceAlert] = Future {
     dailyPriceAlertBlockingDataHandler.create(userId, createDailyPriceAlert)
   }
 

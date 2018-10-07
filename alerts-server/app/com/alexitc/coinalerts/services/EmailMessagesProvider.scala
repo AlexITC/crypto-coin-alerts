@@ -6,7 +6,7 @@ import com.alexitc.coinalerts.models.{Book, Exchange, UserVerificationToken}
 import com.alexitc.coinalerts.services.EmailMessagesProvider.{EmailSubject, EmailText}
 import play.api.i18n.{Lang, MessagesApi}
 
-class EmailMessagesProvider @Inject() (messagesApi: MessagesApi, appConfig: AppConfig) {
+class EmailMessagesProvider @Inject()(messagesApi: MessagesApi, appConfig: AppConfig) {
 
   def verifyEmailSubject(implicit lang: Lang): EmailSubject = {
     val string = messagesApi("email.verificationToken.subject")
@@ -41,9 +41,11 @@ class EmailMessagesProvider @Inject() (messagesApi: MessagesApi, appConfig: AppC
   }
 
   def newCurrenciesAlertText(books: List[Book])(implicit lang: Lang): EmailText = {
-    val body = books.map { book =>
-      messagesApi("message.newCurrenciesAlert.new", book.currency.string, book.market.string)
-    }.mkString("\n")
+    val body = books
+      .map { book =>
+        messagesApi("message.newCurrenciesAlert.new", book.currency.string, book.market.string)
+      }
+      .mkString("\n")
 
     val suffixURL = "/new-fixed-price-alert"
     val url = appConfig.url.concat(suffixURL)

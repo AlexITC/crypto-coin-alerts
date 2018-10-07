@@ -13,7 +13,7 @@ import play.api.mvc._
 import scala.concurrent._
 
 @Singleton
-class PlayErrorHandler @Inject() (errorRenderer: PublicErrorRenderer) extends HttpErrorHandler {
+class PlayErrorHandler @Inject()(errorRenderer: PublicErrorRenderer) extends HttpErrorHandler {
 
   private val logger = LoggerFactory.getLogger(this.getClass)
 
@@ -21,7 +21,7 @@ class PlayErrorHandler @Inject() (errorRenderer: PublicErrorRenderer) extends Ht
     val publicError = PublicError.genericError(message)
     val error = errorRenderer.renderPublicError(publicError)
     val json = Json.obj(
-      "errors" -> Json.arr(error)
+        "errors" -> Json.arr(error)
     )
 
     val result = Status(statusCode)(json)
@@ -32,7 +32,7 @@ class PlayErrorHandler @Inject() (errorRenderer: PublicErrorRenderer) extends Ht
     val errorId = ErrorId.create
     val error = errorRenderer.renderPrivateError(errorId)
     val json = Json.obj(
-      "errors" -> Json.arr(error)
+        "errors" -> Json.arr(error)
     )
 
     logger.error(s"Server error, errorId = [${errorId.string}]", exception)

@@ -12,10 +12,7 @@ import play.api.libs.ws.{WSClient, WSResponse}
 
 import scala.concurrent.Future
 
-class HitbtcService @Inject() (
-    ws: WSClient)(
-    implicit ec: ExternalServiceExecutionContext)
-    extends ExchangeService {
+class HitbtcService @Inject()(ws: WSClient)(implicit ec: ExternalServiceExecutionContext) extends ExchangeService {
 
   private val logger = LoggerFactory.getLogger(this.getClass)
 
@@ -31,29 +28,29 @@ class HitbtcService @Inject() (
 
   override def availableBooks(): Future[List[Book]] = {
     getTickerList()
-        .map { tickerList =>
-          tickerList.map(_.book)
-        }
+      .map { tickerList =>
+        tickerList.map(_.book)
+      }
   }
 
   override def getTickerList(): Future[List[Ticker]] = {
     val url = s"$BaseURL/api/2/public/ticker"
 
     ws.url(url)
-        .get()
-        .map { response =>
-          Option(response)
-              .flatMap(toJson)
-              .flatMap { json =>
-                json
-                    .asOpt[List[Option[Ticker]]]
-                    .map(_.flatten)
-              }
-              .getOrElse {
-                logger.warn(s"Unexpected response from HITBTC, status = [${response.status}]")
-                List.empty
-              }
-        }
+      .get()
+      .map { response =>
+        Option(response)
+          .flatMap(toJson)
+          .flatMap { json =>
+            json
+              .asOpt[List[Option[Ticker]]]
+              .map(_.flatten)
+          }
+          .getOrElse {
+            logger.warn(s"Unexpected response from HITBTC, status = [${response.status}]")
+            List.empty
+          }
+      }
 
   }
 
@@ -68,7 +65,7 @@ class HitbtcService @Inject() (
 
   private implicit val tickerReads: Reads[Option[Ticker]] = {
     val builder = (JsPath \ "symbol").read[String].map(_.toUpperCase).map(createBook) and
-        (JsPath \ "last").readNullable[BigDecimal]
+      (JsPath \ "last").readNullable[BigDecimal]
 
     builder.apply { (bookMaybe, currentPriceMaybe) =>
       for (book <- bookMaybe; currentPrice <- currentPriceMaybe)
@@ -78,16 +75,18 @@ class HitbtcService @Inject() (
 
   private def createBook(string: String): Option[Book] = {
     KnownMarkets
-        .find { market => string.endsWith(market.string) }
-        .flatMap { market =>
-          val currencyStr = string.substring(0, string.length - market.string.length)
-          for {
-            currency <- Currency.from(currencyStr)
-          } yield Book(market, currency)
-        }
-        .orElse {
-          logger.warn(s"Unable to create book from string = [$string]")
-          None
-        }
+      .find { market =>
+        string.endsWith(market.string)
+      }
+      .flatMap { market =>
+        val currencyStr = string.substring(0, string.length - market.string.length)
+        for {
+          currency <- Currency.from(currencyStr)
+        } yield Book(market, currency)
+      }
+      .orElse {
+        logger.warn(s"Unable to create book from string = [$string]")
+        None
+      }
   }
 }

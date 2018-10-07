@@ -40,24 +40,23 @@ object FixedPriceAlertWithCurrency {
 
   def from(fixedPriceAlert: FixedPriceAlert, exchangeCurrency: ExchangeCurrency): FixedPriceAlertWithCurrency = {
     FixedPriceAlertWithCurrency(
-      fixedPriceAlert.id,
-      fixedPriceAlert.userId,
-      exchangeCurrency.id,
-      exchangeCurrency.exchange,
-      exchangeCurrency.market,
-      exchangeCurrency.currency,
-      exchangeCurrency.currencyName,
-      fixedPriceAlert.isGreaterThan,
-      fixedPriceAlert.price,
-      fixedPriceAlert.basePrice,
-      fixedPriceAlert.createdOn,
-      fixedPriceAlert.triggeredOn
+        fixedPriceAlert.id,
+        fixedPriceAlert.userId,
+        exchangeCurrency.id,
+        exchangeCurrency.exchange,
+        exchangeCurrency.market,
+        exchangeCurrency.currency,
+        exchangeCurrency.currencyName,
+        fixedPriceAlert.isGreaterThan,
+        fixedPriceAlert.price,
+        fixedPriceAlert.basePrice,
+        fixedPriceAlert.createdOn,
+        fixedPriceAlert.triggeredOn
     )
   }
 
   implicit val writes: Writes[FixedPriceAlertWithCurrency] = Json.writes[FixedPriceAlertWithCurrency]
 }
-
 
 case class FixedPriceAlertId(long: Long) extends AnyVal with WrappedLong
 

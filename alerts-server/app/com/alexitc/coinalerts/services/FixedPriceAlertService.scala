@@ -18,16 +18,17 @@ import org.scalactic.{Bad, Good}
 
 import scala.concurrent.ExecutionContext
 
-class FixedPriceAlertService @Inject() (
+class FixedPriceAlertService @Inject()(
     alertValidator: FixedPriceAlertValidator,
     paginatedQueryValidator: PaginatedQueryValidator,
     config: FixedPriceAlertConfig,
     alertFilterParser: FixedPriceAlertFilterParser,
     alertOrderByParser: FixedPriceAlertOrderingParser,
-    alertFutureDataHandler: FixedPriceAlertFutureDataHandler)(
-    implicit ec: ExecutionContext) {
+    alertFutureDataHandler: FixedPriceAlertFutureDataHandler)(implicit ec: ExecutionContext) {
 
-  def create(createAlertModel: CreateFixedPriceAlertModel, userId: UserId): FutureApplicationResult[FixedPriceAlertWithCurrency] = {
+  def create(
+      createAlertModel: CreateFixedPriceAlertModel,
+      userId: UserId): FutureApplicationResult[FixedPriceAlertWithCurrency] = {
     val result = for {
       validatedModel <- alertValidator.validateCreateModel(createAlertModel).toFutureOr
 
@@ -50,7 +51,9 @@ class FixedPriceAlertService @Inject() (
       validatedQuery <- paginatedQueryValidator.validate(query, 100).toFutureOr
       filterConditions <- alertFilterParser.from(filterQuery, userId).toFutureOr
       orderByConditions <- alertOrderByParser.from(orderByQuery).toFutureOr
-      paginatedResult <- alertFutureDataHandler.getAlerts(filterConditions, orderByConditions, validatedQuery).toFutureOr
+      paginatedResult <- alertFutureDataHandler
+        .getAlerts(filterConditions, orderByConditions, validatedQuery)
+        .toFutureOr
     } yield paginatedResult
 
     result.toFuture
@@ -60,23 +63,25 @@ class FixedPriceAlertService @Inject() (
     alertFutureDataHandler.delete(id, userId)
   }
 
-  private def enforceMaximunNumberOfAlerts(userId: UserId, maximumNumberOfAlerts: Count): FutureApplicationResult[Unit] = {
-    val conditions = FixedPriceAlertFilter.Conditions(
-      triggered = HasNotBeenTriggeredCondition,
-      user = JustThisUserCondition(userId))
+  private def enforceMaximunNumberOfAlerts(
+      userId: UserId,
+      maximumNumberOfAlerts: Count): FutureApplicationResult[Unit] = {
+    val conditions =
+      FixedPriceAlertFilter.Conditions(triggered = HasNotBeenTriggeredCondition, user = JustThisUserCondition(userId))
 
     val result = for {
       numberOfAlerts <- alertFutureDataHandler.countBy(conditions).toFutureOr
-    } yield numberOfAlerts.int match {
-      case x if x >= maximumNumberOfAlerts.int =>
-        Bad(TooManyFixedPriceAlertsError(maximumNumberOfAlerts)).accumulating
+    } yield
+      numberOfAlerts.int match {
+        case x if x >= maximumNumberOfAlerts.int =>
+          Bad(TooManyFixedPriceAlertsError(maximumNumberOfAlerts)).accumulating
 
-      case _ =>
-        Good(())
-    }
+        case _ =>
+          Good(())
+      }
 
     result
-        .mapWithError(identity)
-        .toFuture
+      .mapWithError(identity)
+      .toFuture
   }
 }

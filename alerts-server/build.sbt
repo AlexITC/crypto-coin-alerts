@@ -6,19 +6,20 @@ fork in Test := true
 
 scalacOptions ++= Seq(
 //  "-Xfatal-warnings",
-  "-unchecked",
-  "-deprecation",
-  "-feature",
-  "-target:jvm-1.8",
-  "-encoding", "UTF-8",
-  "-Xfuture",
-  "-Xlint:missing-interpolator",
-  "-Yno-adapted-args",
-  "-Ywarn-dead-code",
-  "-Ywarn-numeric-widen",
-  "-Ywarn-value-discard",
-  "-Ywarn-unused",
-  "-Ywarn-unused-import"
+    "-unchecked",
+    "-deprecation",
+    "-feature",
+    "-target:jvm-1.8",
+    "-encoding",
+    "UTF-8",
+    "-Xfuture",
+    "-Xlint:missing-interpolator",
+    "-Yno-adapted-args",
+    "-Ywarn-dead-code",
+    "-Ywarn-numeric-widen",
+    "-Ywarn-value-discard",
+    "-Ywarn-unused",
+    "-Ywarn-unused-import"
 )
 
 scalafmtOnCompile in ThisBuild := true
@@ -27,7 +28,7 @@ scalafmtTestOnCompile in ThisBuild := true
 resolvers += "jitpack" at "https://jitpack.io"
 
 lazy val root = (project in file("."))
-    .enablePlugins(PlayScala)
+  .enablePlugins(PlayScala)
 
 routesImport += "com.alexitc.coinalerts.commons.PlayBinders._"
 
@@ -54,13 +55,14 @@ libraryDependencies += "com.github.bitsoex" % "bitso-java" % "v3.0.5"
 libraryDependencies += "com.pauldijou" %% "jwt-core" % "0.14.1"
 
 libraryDependencies ++= Seq(
-  "com.beachape" %% "enumeratum" % "1.5.13"
+    "com.beachape" %% "enumeratum" % "1.5.13"
 )
 
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.0" % Test
 libraryDependencies += "com.alexitc" %% "playsonifytest" % "1.2.0" % Test
 
 libraryDependencies ++= Seq(
-  "com.spotify" % "docker-client" % "8.9.1",
-  "com.whisk" %% "docker-testkit-scalatest" % "0.9.5" % "test",
-  "com.whisk" %% "docker-testkit-impl-spotify" % "0.9.5" % "test")
+    "com.spotify" % "docker-client" % "8.9.1",
+    "com.whisk" %% "docker-testkit-scalatest" % "0.9.5" % "test",
+    "com.whisk" %% "docker-testkit-impl-spotify" % "0.9.5" % "test"
+)

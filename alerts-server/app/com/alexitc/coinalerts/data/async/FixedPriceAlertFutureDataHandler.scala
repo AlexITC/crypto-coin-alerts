@@ -11,12 +11,13 @@ import com.alexitc.playsonify.models.{Count, FieldOrdering, PaginatedQuery}
 
 import scala.concurrent.Future
 
-class FixedPriceAlertFutureDataHandler @Inject() (
-    blockingDataHandler: FixedPriceAlertBlockingDataHandler)(
+class FixedPriceAlertFutureDataHandler @Inject()(blockingDataHandler: FixedPriceAlertBlockingDataHandler)(
     implicit ec: DatabaseExecutionContext)
     extends FixedPriceAlertDataHandler[FutureApplicationResult] {
 
-  override def create(createAlertModel: CreateFixedPriceAlertModel, userId: UserId): FutureApplicationResult[FixedPriceAlertWithCurrency] = Future {
+  override def create(
+      createAlertModel: CreateFixedPriceAlertModel,
+      userId: UserId): FutureApplicationResult[FixedPriceAlertWithCurrency] = Future {
     blockingDataHandler.create(createAlertModel, userId)
   }
 
@@ -43,7 +44,8 @@ class FixedPriceAlertFutureDataHandler @Inject() (
     blockingDataHandler.countBy(conditions)
   }
 
-  override def delete(id: FixedPriceAlertId, userId: UserId): FutureApplicationResult[FixedPriceAlertWithCurrency] = Future {
-    blockingDataHandler.delete(id, userId)
-  }
+  override def delete(id: FixedPriceAlertId, userId: UserId): FutureApplicationResult[FixedPriceAlertWithCurrency] =
+    Future {
+      blockingDataHandler.delete(id, userId)
+    }
 }

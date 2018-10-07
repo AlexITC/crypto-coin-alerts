@@ -1,8 +1,8 @@
-
 import com.alexitc.coinalerts.models.UserId
 import com.alexitc.playsonify.models._
 
 package object controllers {
+
   /**
    * These type alias help to not type the long request context names in the controllers
    */

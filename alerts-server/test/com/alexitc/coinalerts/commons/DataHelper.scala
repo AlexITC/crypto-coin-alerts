@@ -1,6 +1,10 @@
 package com.alexitc.coinalerts.commons
 
-import com.alexitc.coinalerts.data.{DailyPriceAlertBlockingDataHandler, FixedPriceAlertBlockingDataHandler, UserBlockingDataHandler}
+import com.alexitc.coinalerts.data.{
+  DailyPriceAlertBlockingDataHandler,
+  FixedPriceAlertBlockingDataHandler,
+  UserBlockingDataHandler
+}
 import com.alexitc.coinalerts.models._
 
 object DataHelper {
@@ -23,24 +27,18 @@ object DataHelper {
     userDataHandler.create(email, UserHiddenPassword.fromPassword(password)).get
   }
 
-  def createFixedPriceAlert(
-      userId: UserId,
-      exchangeCurrencyId: ExchangeCurrencyId)(
+  def createFixedPriceAlert(userId: UserId, exchangeCurrencyId: ExchangeCurrencyId)(
       implicit alertDataHandler: FixedPriceAlertBlockingDataHandler) = {
 
     alertDataHandler.create(RandomDataGenerator.createFixedPriceAlertModel(exchangeCurrencyId), userId)
   }
-  def createFixedPriceAlert(
-      userId: UserId,
-      createAlertModel: CreateFixedPriceAlertModel)(
+  def createFixedPriceAlert(userId: UserId, createAlertModel: CreateFixedPriceAlertModel)(
       implicit alertDataHandler: FixedPriceAlertBlockingDataHandler) = {
 
     alertDataHandler.create(createAlertModel, userId)
   }
 
-  def createDailyPriceAlert(
-      userId: UserId,
-      exchangeCurrencyId: ExchangeCurrencyId)(
+  def createDailyPriceAlert(userId: UserId, exchangeCurrencyId: ExchangeCurrencyId)(
       implicit dataHandler: DailyPriceAlertBlockingDataHandler) = {
 
     val createModel = CreateDailyPriceAlertModel(exchangeCurrencyId)

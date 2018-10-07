@@ -21,17 +21,20 @@ trait FixedPriceAlertInMemoryDataHandler extends FixedPriceAlertBlockingDataHand
   private val alertList = mutable.ListBuffer[FixedPriceAlert]()
   private val triggeredAlertList = mutable.ListBuffer[FixedPriceAlertId]()
 
-  override def create(createAlertModel: CreateFixedPriceAlertModel, userId: UserId): ApplicationResult[FixedPriceAlertWithCurrency] = alertList.synchronized {
+  override def create(
+      createAlertModel: CreateFixedPriceAlertModel,
+      userId: UserId): ApplicationResult[FixedPriceAlertWithCurrency] = alertList.synchronized {
     if (allowCurrency(createAlertModel.exchangeCurrencyId)) {
       val fixedPriceAlert = FixedPriceAlert(
-        RandomDataGenerator.alertId,
-        userId,
-        createAlertModel.exchangeCurrencyId,
-        createAlertModel.isGreaterThan,
-        createAlertModel.price,
-        createAlertModel.basePrice,
-        OffsetDateTime.now,
-        None)
+          RandomDataGenerator.alertId,
+          userId,
+          createAlertModel.exchangeCurrencyId,
+          createAlertModel.isGreaterThan,
+          createAlertModel.price,
+          createAlertModel.basePrice,
+          OffsetDateTime.now,
+          None
+      )
 
       alertList += fixedPriceAlert
 
@@ -54,8 +57,8 @@ trait FixedPriceAlertInMemoryDataHandler extends FixedPriceAlertBlockingDataHand
    */
   private def getCurrency(id: ExchangeCurrencyId): ExchangeCurrency = {
     exchangeCurrencyBlocingDataHandler
-        .map(_.getBy(id).get.get)
-        .getOrElse(RandomDataGenerator.exchangeCurrency(id))
+      .map(_.getBy(id).get.get)
+      .getOrElse(RandomDataGenerator.exchangeCurrency(id))
   }
 
   override def markAsTriggered(alertId: FixedPriceAlertId): ApplicationResult[Unit] = alertList.synchronized {
@@ -73,20 +76,22 @@ trait FixedPriceAlertInMemoryDataHandler extends FixedPriceAlertBlockingDataHand
       }
 
       Or.from(maybe, One(FixedPriceAlertNotFoundError))
-          .map(_ => ())
+        .map(_ => ())
     }
   }
 
-  override def findPendingAlertsForPrice(currencyId: ExchangeCurrencyId, currentPrice: BigDecimal): ApplicationResult[List[FixedPriceAlertWithCurrency]] = alertList.synchronized {
+  override def findPendingAlertsForPrice(
+      currencyId: ExchangeCurrencyId,
+      currentPrice: BigDecimal): ApplicationResult[List[FixedPriceAlertWithCurrency]] = alertList.synchronized {
     val list = pendingAlertList
-        .filter(_.exchangeCurrencyId == currencyId)
-        .filter { alert =>
-          (alert.isGreaterThan && currentPrice >= alert.price) ||
-              (!alert.isGreaterThan && currentPrice <= alert.price)
-        }
-        .map { fixedPriceAlert =>
-          FixedPriceAlertWithCurrency.from(fixedPriceAlert, getCurrency(currencyId))
-        }
+      .filter(_.exchangeCurrencyId == currencyId)
+      .filter { alert =>
+        (alert.isGreaterThan && currentPrice >= alert.price) ||
+        (!alert.isGreaterThan && currentPrice <= alert.price)
+      }
+      .map { fixedPriceAlert =>
+        FixedPriceAlertWithCurrency.from(fixedPriceAlert, getCurrency(currencyId))
+      }
 
     Good(list)
   }
@@ -98,28 +103,30 @@ trait FixedPriceAlertInMemoryDataHandler extends FixedPriceAlertBlockingDataHand
 
     val filteredAlerts = filterBy(filterConditions)
     val filteredAlertsWithCurrency = filteredAlerts
-        .map { fixedPriceAlert =>
-          FixedPriceAlertWithCurrency.from(fixedPriceAlert, getCurrency(fixedPriceAlert.exchangeCurrencyId))
-        }
+      .map { fixedPriceAlert =>
+        FixedPriceAlertWithCurrency.from(fixedPriceAlert, getCurrency(fixedPriceAlert.exchangeCurrencyId))
+      }
 
     val data = sortBy(filteredAlertsWithCurrency, orderByConditions)
-        .slice(query.offset.int, query.offset.int + query.limit.int)
+      .slice(query.offset.int, query.offset.int + query.limit.int)
 
     val result = PaginatedResult(query.offset, query.limit, Count(filteredAlerts.length), data)
     Good(result)
   }
 
-  override def countBy(conditions: FixedPriceAlertFilter.Conditions): ApplicationResult[Count] = alertList.synchronized {
-    val result = Count(filterBy(conditions).length)
-    Good(result)
-  }
-
-  override def delete(id: FixedPriceAlertId, userId: UserId): ApplicationResult[FixedPriceAlertWithCurrency] = alertList.synchronized {
-    val index = alertList.indexWhere { alert =>
-      alert.id == id && alert.userId == userId
+  override def countBy(conditions: FixedPriceAlertFilter.Conditions): ApplicationResult[Count] =
+    alertList.synchronized {
+      val result = Count(filterBy(conditions).length)
+      Good(result)
     }
 
-    val alertMaybe = Option(index)
+  override def delete(id: FixedPriceAlertId, userId: UserId): ApplicationResult[FixedPriceAlertWithCurrency] =
+    alertList.synchronized {
+      val index = alertList.indexWhere { alert =>
+        alert.id == id && alert.userId == userId
+      }
+
+      val alertMaybe = Option(index)
         .filter(_ != -1)
         .map(idx => alertList.remove(idx))
         .map { alert =>
@@ -127,11 +134,13 @@ trait FixedPriceAlertInMemoryDataHandler extends FixedPriceAlertBlockingDataHand
           FixedPriceAlertWithCurrency.from(alert, currency)
         }
 
-    Or.from(alertMaybe, One(FixedPriceAlertNotFoundError))
-  }
+      Or.from(alertMaybe, One(FixedPriceAlertNotFoundError))
+    }
 
   private def pendingAlertList = {
-    alertList.toList.filter { alert => !triggeredAlertList.contains(alert.id) }
+    alertList.toList.filter { alert =>
+      !triggeredAlertList.contains(alert.id)
+    }
   }
 
   private def filterBy(conditions: FixedPriceAlertFilter.Conditions) = {

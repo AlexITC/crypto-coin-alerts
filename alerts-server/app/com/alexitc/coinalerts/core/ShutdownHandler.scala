@@ -13,7 +13,7 @@ import scala.concurrent.{Await, Future}
 import scala.util.control.NonFatal
 
 @Singleton
-class ShutdownHandler @Inject() (application: ApplicationLifecycle) {
+class ShutdownHandler @Inject()(application: ApplicationLifecycle) {
 
   private val logger = LoggerFactory.getLogger(this.getClass)
 

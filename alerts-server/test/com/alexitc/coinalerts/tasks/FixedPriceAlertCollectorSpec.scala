@@ -27,33 +27,49 @@ class FixedPriceAlertCollectorSpec extends WordSpec with MustMatchers with Scala
       // create currencies
       val exchange = Exchange.BITSO
       val market = Market.BTC
-      val BTC_MXN = exchangeCurrencyDataHandler.create(CreateExchangeCurrencyModel(exchange, market, Currency.from("MXN").get, None)).get
-      val BTC_ADA = exchangeCurrencyDataHandler.create(CreateExchangeCurrencyModel(exchange, market, Currency.from("ADA").get, None)).get
+      val BTC_MXN = exchangeCurrencyDataHandler
+        .create(CreateExchangeCurrencyModel(exchange, market, Currency.from("MXN").get, None))
+        .get
+      val BTC_ADA = exchangeCurrencyDataHandler
+        .create(CreateExchangeCurrencyModel(exchange, market, Currency.from("ADA").get, None))
+        .get
 
       // create alerts
-      val trigger1 = fixedPriceAlertBlockingDataHandler.create(
-        CreateFixedPriceAlertModel(BTC_MXN.id, true, BigDecimal("79999"), None),
-        DataHelper.createVerifiedUser().id).get
+      val trigger1 = fixedPriceAlertBlockingDataHandler
+        .create(
+            CreateFixedPriceAlertModel(BTC_MXN.id, true, BigDecimal("79999"), None),
+            DataHelper.createVerifiedUser().id)
+        .get
 
-      val trigger2 = fixedPriceAlertBlockingDataHandler.create(
-        CreateFixedPriceAlertModel(BTC_MXN.id, false, BigDecimal("80001"), None),
-        DataHelper.createVerifiedUser().id).get
+      val trigger2 = fixedPriceAlertBlockingDataHandler
+        .create(
+            CreateFixedPriceAlertModel(BTC_MXN.id, false, BigDecimal("80001"), None),
+            DataHelper.createVerifiedUser().id)
+        .get
 
-      val nonTrigger1 = fixedPriceAlertBlockingDataHandler.create(
-        CreateFixedPriceAlertModel(BTC_MXN.id, false, BigDecimal("79999"), None),
-        DataHelper.createVerifiedUser().id).get
+      val nonTrigger1 = fixedPriceAlertBlockingDataHandler
+        .create(
+            CreateFixedPriceAlertModel(BTC_MXN.id, false, BigDecimal("79999"), None),
+            DataHelper.createVerifiedUser().id)
+        .get
 
-      val nonTrigger2 = fixedPriceAlertBlockingDataHandler.create(
-        CreateFixedPriceAlertModel(BTC_ADA.id, true, BigDecimal("1001"), None),
-        DataHelper.createVerifiedUser().id).get
+      val nonTrigger2 = fixedPriceAlertBlockingDataHandler
+        .create(
+            CreateFixedPriceAlertModel(BTC_ADA.id, true, BigDecimal("1001"), None),
+            DataHelper.createVerifiedUser().id)
+        .get
 
-      val trigger3 = fixedPriceAlertBlockingDataHandler.create(
-        CreateFixedPriceAlertModel(BTC_ADA.id, false, BigDecimal("1000"), None),
-        DataHelper.createVerifiedUser().id).get
+      val trigger3 = fixedPriceAlertBlockingDataHandler
+        .create(
+            CreateFixedPriceAlertModel(BTC_ADA.id, false, BigDecimal("1000"), None),
+            DataHelper.createVerifiedUser().id)
+        .get
 
-      val trigger4 = fixedPriceAlertBlockingDataHandler.create(
-        CreateFixedPriceAlertModel(BTC_ADA.id, true, BigDecimal("1000"), None),
-        DataHelper.createVerifiedUser().id).get
+      val trigger4 = fixedPriceAlertBlockingDataHandler
+        .create(
+            CreateFixedPriceAlertModel(BTC_ADA.id, true, BigDecimal("1000"), None),
+            DataHelper.createVerifiedUser().id)
+        .get
 
       // group them
       val triggered = List(trigger1, trigger2, trigger3, trigger4)
@@ -61,8 +77,8 @@ class FixedPriceAlertCollectorSpec extends WordSpec with MustMatchers with Scala
 
       // the ticker collector
       val tickerList = List(
-        Ticker(Book(BTC_MXN.market, BTC_MXN.currency), BigDecimal("80000")),
-        Ticker(Book(BTC_ADA.market, BTC_ADA.currency), BigDecimal("1000")))
+          Ticker(Book(BTC_MXN.market, BTC_MXN.currency), BigDecimal("80000")),
+          Ticker(Book(BTC_ADA.market, BTC_ADA.currency), BigDecimal("1000")))
       val tickerCollector = createTicketCollector(exchange, tickerList)
 
       whenReady(alertCollector.collect(tickerCollector)) { events =>
@@ -94,15 +110,10 @@ class FixedPriceAlertCollectorSpec extends WordSpec with MustMatchers with Scala
       exchangeCurrencyDataHandler: ExchangeCurrencyBlockingDataHandler,
       fixedPriceAlertBlockingDataHandler: FixedPriceAlertBlockingDataHandler) = {
 
-    val exchangeCurrencyFutureDataHandler = new ExchangeCurrencyFutureDataHandler(
-      exchangeCurrencyDataHandler)
+    val exchangeCurrencyFutureDataHandler = new ExchangeCurrencyFutureDataHandler(exchangeCurrencyDataHandler)
 
-    val fixedPriceAlertFutureDataHandler = new FixedPriceAlertFutureDataHandler(
-      fixedPriceAlertBlockingDataHandler)
+    val fixedPriceAlertFutureDataHandler = new FixedPriceAlertFutureDataHandler(fixedPriceAlertBlockingDataHandler)
 
-    new FixedPriceAlertCollector(
-      fixedPriceAlertFutureDataHandler,
-      exchangeCurrencyFutureDataHandler)
+    new FixedPriceAlertCollector(fixedPriceAlertFutureDataHandler, exchangeCurrencyFutureDataHandler)
   }
 }
-

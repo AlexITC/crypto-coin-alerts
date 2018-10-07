@@ -13,17 +13,18 @@ class UserPostgresDAO {
   def create(email: UserEmail, password: UserHiddenPassword)(implicit conn: Connection): Option[User] = {
     val userId = UserId.create
     val userMaybe = SQL(
-      """
+        """
         |INSERT INTO users (user_id, email, password)
         |VALUES ({user_id}, {email}, {password})
         |ON CONFLICT (email) DO NOTHING
         |RETURNING user_id, email
       """.stripMargin
     ).on(
-      "user_id" -> userId.string,
-      "email" -> email.string,
-      "password" -> password.string
-    ).as(parseUser.singleOpt)
+          "user_id" -> userId.string,
+          "email" -> email.string,
+          "password" -> password.string
+      )
+      .as(parseUser.singleOpt)
 
     userMaybe
   }
@@ -32,7 +33,7 @@ class UserPostgresDAO {
     val token = UserVerificationToken.create(userId)
 
     val tokenMaybe = SQL(
-      """
+        """
         |INSERT INTO user_verification_tokens
         |  (user_id, token)
         |VALUES
@@ -41,16 +42,17 @@ class UserPostgresDAO {
         |RETURNING token
       """.stripMargin
     ).on(
-      "user_id" -> userId.string,
-      "token" -> token.string
-    ).as(parseUserVerificationToken.singleOpt)
+          "user_id" -> userId.string,
+          "token" -> token.string
+      )
+      .as(parseUserVerificationToken.singleOpt)
 
     tokenMaybe
   }
 
   def verifyEmail(token: UserVerificationToken)(implicit conn: Connection): Option[User] = {
     val userMaybe = SQL(
-      """
+        """
          |UPDATE users u
          |SET verified_on = NOW()
          |FROM user_verification_tokens t
@@ -60,76 +62,79 @@ class UserPostgresDAO {
          |RETURNING u.user_id, u.email
        """.stripMargin
     ).on(
-      "token" -> token.string
-    ).as(parseUser.singleOpt)
+          "token" -> token.string
+      )
+      .as(parseUser.singleOpt)
 
     userMaybe
   }
 
   def getVerifiedUserPassword(email: UserEmail)(implicit conn: Connection): Option[UserHiddenPassword] = {
     val passwordMaybe = SQL(
-      """
+        """
         |SELECT password
         |FROM users
         |WHERE verified_on IS NOT NULL AND
         |      email = {email}
       """.stripMargin
     ).on(
-      "email" -> email.string
-    ).as(parsePassword.singleOpt)
+          "email" -> email.string
+      )
+      .as(parsePassword.singleOpt)
 
     passwordMaybe
   }
 
   def getVerifiedUserByEmail(email: UserEmail)(implicit conn: Connection): Option[User] = {
     val userMaybe = SQL(
-      """
+        """
         |SELECT user_id, email
         |FROM users
         |WHERE verified_on IS NOT NULL AND
         |      email = {email}
       """.stripMargin
     ).on(
-      "email" -> email.string
-    ).as(parseUser.singleOpt)
+          "email" -> email.string
+      )
+      .as(parseUser.singleOpt)
 
     userMaybe
   }
 
   def getVerifiedUserById(userId: UserId)(implicit conn: Connection): Option[User] = {
     val userMaybe = SQL(
-      """
+        """
         |SELECT user_id, email
         |FROM users
         |WHERE verified_on IS NOT NULL AND
         |      user_id = {user_id}
       """.stripMargin
     ).on(
-      "user_id" -> userId.string
-    ).as(parseUser.singleOpt)
+          "user_id" -> userId.string
+      )
+      .as(parseUser.singleOpt)
 
     userMaybe
   }
 
   def getUserPreferences(userId: UserId)(implicit conn: Connection): Option[UserPreferences] = {
     SQL(
-      """
+        """
         |SELECT user_id, lang
         |FROM user_preferences
         |WHERE user_id = {user_id}
       """.stripMargin
     ).on(
-      "user_id" -> userId.string
-    ).as(parseUserPreferences.singleOpt)
+          "user_id" -> userId.string
+      )
+      .as(parseUserPreferences.singleOpt)
   }
 
-  def setUserPreferences(
-      userId: UserId,
-      preferencesModel: SetUserPreferencesModel)(
+  def setUserPreferences(userId: UserId, preferencesModel: SetUserPreferencesModel)(
       implicit conn: Connection): Option[UserPreferences] = {
 
     SQL(
-      """
+        """
         |INSERT INTO user_preferences
         |  (user_id, lang)
         |VALUES
@@ -139,8 +144,9 @@ class UserPostgresDAO {
         |RETURNING user_id, lang
       """.stripMargin
     ).on(
-      "user_id" -> userId.string,
-      "lang" -> preferencesModel.lang.code
-    ).as(parseUserPreferences.singleOpt)
+          "user_id" -> userId.string,
+          "lang" -> preferencesModel.lang.code
+      )
+      .as(parseUserPreferences.singleOpt)
   }
 }

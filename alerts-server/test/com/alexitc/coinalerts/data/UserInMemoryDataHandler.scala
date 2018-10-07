@@ -28,11 +28,12 @@ trait UserInMemoryDataHandler extends UserBlockingDataHandler {
     }
   }
 
-  override def createVerificationToken(userId: UserId): ApplicationResult[UserVerificationToken] = userList.synchronized {
-    val token = UserVerificationToken.create(userId)
-    verificationTokenList += userId -> token
-    Good(token)
-  }
+  override def createVerificationToken(userId: UserId): ApplicationResult[UserVerificationToken] =
+    userList.synchronized {
+      val token = UserVerificationToken.create(userId)
+      verificationTokenList += userId -> token
+      Good(token)
+    }
 
   override def verifyEmail(token: UserVerificationToken): ApplicationResult[User] = userList.synchronized {
     val userMaybe = for {
@@ -46,11 +47,12 @@ trait UserInMemoryDataHandler extends UserBlockingDataHandler {
     Or.from(userMaybe, One(UserVerificationTokenNotFoundError))
   }
 
-  override def getVerifiedUserPassword(email: UserEmail): ApplicationResult[UserHiddenPassword] = userList.synchronized {
-    val passwordMaybe = passwords.get(email).filter(_ => verifiedUserList.exists(_.email == email))
+  override def getVerifiedUserPassword(email: UserEmail): ApplicationResult[UserHiddenPassword] =
+    userList.synchronized {
+      val passwordMaybe = passwords.get(email).filter(_ => verifiedUserList.exists(_.email == email))
 
-    Or.from(passwordMaybe, One(VerifiedUserNotFound))
-  }
+      Or.from(passwordMaybe, One(VerifiedUserNotFound))
+    }
 
   override def getVerifiedUserByEmail(email: UserEmail): ApplicationResult[User] = userList.synchronized {
     val userMaybe = verifiedUserList.find(_.email == email)
@@ -68,15 +70,17 @@ trait UserInMemoryDataHandler extends UserBlockingDataHandler {
     Good(UserPreferences.default(userId))
   }
 
-  override def setUserPreferences(userId: UserId, preferencesModel: SetUserPreferencesModel): ApplicationResult[UserPreferences] = userList.synchronized {
+  override def setUserPreferences(
+      userId: UserId,
+      preferencesModel: SetUserPreferencesModel): ApplicationResult[UserPreferences] = userList.synchronized {
     val preferencesMaybe = verifiedUserList
-        .find(_.id == userId)
-        .map { _ =>
-          val preferences = UserPreferences.from(userId, preferencesModel)
-          userPreferences += userId -> preferences
+      .find(_.id == userId)
+      .map { _ =>
+        val preferences = UserPreferences.from(userId, preferencesModel)
+        userPreferences += userId -> preferences
 
-          preferences
-        }
+        preferences
+      }
 
     Or.from(preferencesMaybe, One(VerifiedUserNotFound))
   }

@@ -8,7 +8,7 @@ import com.alexitc.coinalerts.tasks.models.Ticker
 
 import scala.concurrent.Future
 
-class KucoinTickerCollector @Inject() (kucoinService: KucoinService) extends TickerCollector {
+class KucoinTickerCollector @Inject()(kucoinService: KucoinService) extends TickerCollector {
 
   override val exchange: Exchange = Exchange.KUCOIN
 

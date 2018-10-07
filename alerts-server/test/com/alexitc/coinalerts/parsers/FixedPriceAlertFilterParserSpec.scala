@@ -2,7 +2,12 @@ package com.alexitc.coinalerts.parsers
 
 import com.alexitc.coinalerts.core.FilterQuery
 import com.alexitc.coinalerts.errors.InvalidFilterError
-import com.alexitc.coinalerts.models.FixedPriceAlertFilter.{AnyTriggeredCondition, HasBeenTriggeredCondition, HasNotBeenTriggeredCondition, JustThisUserCondition}
+import com.alexitc.coinalerts.models.FixedPriceAlertFilter.{
+  AnyTriggeredCondition,
+  HasBeenTriggeredCondition,
+  HasNotBeenTriggeredCondition,
+  JustThisUserCondition
+}
 import com.alexitc.coinalerts.models.UserId
 import org.scalactic.Bad
 import org.scalatest.{MustMatchers, WordSpec}

@@ -14,19 +14,25 @@ object UserId {
 
   def create: UserId = UserId(RandomIdGenerator.stringId)
 
-  implicit val writes: Writes[UserId] = Writes[UserId] { userId => JsString(userId.string) }
+  implicit val writes: Writes[UserId] = Writes[UserId] { userId =>
+    JsString(userId.string)
+  }
 }
 
 case class UserEmail(string: String) extends AnyVal
 object UserEmail {
   implicit val reads: Reads[UserEmail] = JsPath.read[String].map(UserEmail.apply)
-  implicit val writes: Writes[UserEmail] = Writes[UserEmail] { userEmail => JsString(userEmail.string) }
+  implicit val writes: Writes[UserEmail] = Writes[UserEmail] { userEmail =>
+    JsString(userEmail.string)
+  }
 }
 
 case class UserPassword(string: String) extends AnyVal
 object UserPassword {
   implicit val reads: Reads[UserPassword] = JsPath.read[String].map(UserPassword.apply)
-  implicit val writes: Writes[UserPassword] = Writes[UserPassword] { userPassword => JsString(userPassword.string) }
+  implicit val writes: Writes[UserPassword] = Writes[UserPassword] { userPassword =>
+    JsString(userPassword.string)
+  }
 }
 
 class UserHiddenPassword private (val string: String) extends AnyVal
@@ -45,18 +51,12 @@ object UserHiddenPassword {
   }
 }
 
-case class CreateUserModel(
-    email: UserEmail,
-    password: UserPassword,
-    reCaptchaResponse: ReCaptchaResponse)
+case class CreateUserModel(email: UserEmail, password: UserPassword, reCaptchaResponse: ReCaptchaResponse)
 object CreateUserModel {
   implicit val reads: Reads[CreateUserModel] = Json.reads[CreateUserModel]
 }
 
-case class LoginByEmailModel(
-    email: UserEmail,
-    password: UserPassword,
-    reCaptchaResponse: ReCaptchaResponse)
+case class LoginByEmailModel(email: UserEmail, password: UserPassword, reCaptchaResponse: ReCaptchaResponse)
 object LoginByEmailModel {
   implicit val reads: Reads[LoginByEmailModel] = Json.reads[LoginByEmailModel]
 }

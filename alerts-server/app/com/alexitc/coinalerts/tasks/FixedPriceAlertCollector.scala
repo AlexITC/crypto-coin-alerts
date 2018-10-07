@@ -15,8 +15,7 @@ import scala.concurrent.Future
 
 class FixedPriceAlertCollector @Inject()(
     fixedPriceAlertDataHandler: FixedPriceAlertFutureDataHandler,
-    exchangeCurrencyFutureDataHandler: ExchangeCurrencyFutureDataHandler)(
-    implicit ec: TaskExecutionContext) {
+    exchangeCurrencyFutureDataHandler: ExchangeCurrencyFutureDataHandler)(implicit ec: TaskExecutionContext) {
 
   private val logger = LoggerFactory.getLogger(this.getClass)
 
@@ -25,29 +24,29 @@ class FixedPriceAlertCollector @Inject()(
       logger.info(s"Collecting ${tickerCollector.exchange} alerts")
 
       val alertListFuture = Future
-          .sequence {
-            tickerList.map { ticker =>
-              val currencyName = ticker.book.currencyName.getOrElse(CurrencyName.apply(""))
-              val result = for {
-                // TODO: the data handler now returns the currency, we could omit this call
-                currencyMaybe <- exchangeCurrencyFutureDataHandler
-                    .getBy(tickerCollector.exchange, ticker.book.market, ticker.book.currency, currencyName)
-                    .toFutureOr
-              } yield {
-                val futureListMaybe = for (currency <- currencyMaybe)
-                  yield getEventsForTicker(currency, ticker)
+        .sequence {
+          tickerList.map { ticker =>
+            val currencyName = ticker.book.currencyName.getOrElse(CurrencyName.apply(""))
+            val result = for {
+              // TODO: the data handler now returns the currency, we could omit this call
+              currencyMaybe <- exchangeCurrencyFutureDataHandler
+                .getBy(tickerCollector.exchange, ticker.book.market, ticker.book.currency, currencyName)
+                .toFutureOr
+            } yield {
+              val futureListMaybe = for (currency <- currencyMaybe)
+                yield getEventsForTicker(currency, ticker)
 
-                futureListMaybe.getOrElse {
-                  Future.successful(List.empty)
-                }
-              }
-
-              result.toFuture.flatMap {
-                _.getOrElse(Future.successful(List.empty))
+              futureListMaybe.getOrElse {
+                Future.successful(List.empty)
               }
             }
+
+            result.toFuture.flatMap {
+              _.getOrElse(Future.successful(List.empty))
+            }
           }
-          .map(_.flatten)
+        }
+        .map(_.flatten)
 
       alertListFuture.foreach { alertList =>
         logger.info(s"There are [${alertList.length}] alerts for ${tickerCollector.exchange}")
@@ -61,16 +60,17 @@ class FixedPriceAlertCollector @Inject()(
     val currentPrice = ticker.currentPrice
 
     fixedPriceAlertDataHandler
-        .findPendingAlertsForPrice(currency.id, currentPrice)
-        .map {
-          case Good(alertList) =>
-            alertList.map { alert =>
-              FixedPriceAlertEvent(alert, currentPrice)
-            }
+      .findPendingAlertsForPrice(currency.id, currentPrice)
+      .map {
+        case Good(alertList) =>
+          alertList.map { alert =>
+            FixedPriceAlertEvent(alert, currentPrice)
+          }
 
-          case Bad(errors) =>
-            logger.error(s"Cannot retrieve pending alerts for $currency, currentPrice = [$currentPrice], errors = [$errors]")
-            List.empty
-        }
+        case Bad(errors) =>
+          logger.error(
+              s"Cannot retrieve pending alerts for $currency, currentPrice = [$currentPrice], errors = [$errors]")
+          List.empty
+      }
   }
 }

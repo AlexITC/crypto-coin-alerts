@@ -5,7 +5,7 @@ import javax.inject.Inject
 import com.alexitc.coinalerts.models.{Exchange, ExchangeCurrencyId, Market}
 import com.alexitc.coinalerts.services.ExchangeCurrencyService
 
-class ExchangeCurrenciesController @Inject() (
+class ExchangeCurrenciesController @Inject()(
     components: MyJsonControllerComponents,
     exchangeCurrencyService: ExchangeCurrencyService)
     extends MyJsonController(components) {

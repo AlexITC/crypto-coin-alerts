@@ -46,7 +46,8 @@ class UserPostgresDataHandlerSpec extends PostgresDataHandlerSpec {
       val userId = userPostgresDataHandler.create(email, RandomDataGenerator.hiddenPassword).get.id
 
       userPostgresDataHandler.createVerificationToken(userId).isGood mustEqual true
-      userPostgresDataHandler.createVerificationToken(userId) mustEqual Bad(UserVerificationTokenAlreadyExistsError).accumulating
+      userPostgresDataHandler
+        .createVerificationToken(userId) mustEqual Bad(UserVerificationTokenAlreadyExistsError).accumulating
     }
 
     "Fail to create a verification token for an unknown user" in {

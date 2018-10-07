@@ -51,14 +51,15 @@ trait CustomPlayAPISpec extends PlayAPISpec {
   }
 
   /***********************************************************************/
-
   implicit val userDataHandler: UserBlockingDataHandler = new UserInMemoryDataHandler {}
 
   // exchange currencies is a core feature required by most tests
-  implicit val exchangeCurrencyDataHandler: ExchangeCurrencyBlockingDataHandler = new ExchangeCurrencyInMemoryDataHandler {}
+  implicit val exchangeCurrencyDataHandler: ExchangeCurrencyBlockingDataHandler =
+    new ExchangeCurrencyInMemoryDataHandler {}
   CurrencySeeder.seed
 
-  override val guiceApplicationBuilder: GuiceApplicationBuilder = GuiceApplicationBuilder(loadConfiguration = loadConfigWithoutEvolutions)
+  override val guiceApplicationBuilder: GuiceApplicationBuilder =
+    GuiceApplicationBuilder(loadConfiguration = loadConfigWithoutEvolutions)
       .in(Mode.Test)
       .disable(classOf[FixedPriceAlertsTaskModule])
       .disable(classOf[ExchangeCurrencySeederTaskModule])
@@ -72,7 +73,8 @@ trait CustomPlayAPISpec extends PlayAPISpec {
   lazy val jwtService = application.injector.instanceOf[JWTService]
 
   override protected def log[T](request: FakeRequest[T], response: Future[Result]) = {
-    logger.info(s"REQUEST > $request, headers = ${request.headers}; RESPONSE < status = ${status(response)}, body = ${contentAsString(response)}")
+    logger.info(
+        s"REQUEST > $request, headers = ${request.headers}; RESPONSE < status = ${status(response)}, body = ${contentAsString(response)}")
   }
 }
 
@@ -87,8 +89,8 @@ object CustomPlayAPISpec {
   implicit class PaginatedQueryExt(val query: PaginatedQuery) extends AnyVal {
     def toHttpQueryString: String = {
       val params = List(
-        "offset" -> query.offset.int.toString,
-        "limit" -> query.limit.int.toString
+          "offset" -> query.offset.int.toString,
+          "limit" -> query.limit.int.toString
       )
 
       params.toQueryString

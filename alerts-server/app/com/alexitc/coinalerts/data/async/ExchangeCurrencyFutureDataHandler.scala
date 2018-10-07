@@ -9,8 +9,7 @@ import com.alexitc.playsonify.core.FutureApplicationResult
 
 import scala.concurrent.Future
 
-class ExchangeCurrencyFutureDataHandler @Inject() (
-    blockingDataHandler: ExchangeCurrencyBlockingDataHandler)(
+class ExchangeCurrencyFutureDataHandler @Inject()(blockingDataHandler: ExchangeCurrencyBlockingDataHandler)(
     implicit ec: DatabaseExecutionContext)
     extends ExchangeCurrencyDataHandler[FutureApplicationResult] {
 
@@ -18,11 +17,16 @@ class ExchangeCurrencyFutureDataHandler @Inject() (
     blockingDataHandler.create(createModel)
   }
 
-  override def getBy(exchangeCurrencyId: ExchangeCurrencyId): FutureApplicationResult[Option[ExchangeCurrency]] = Future {
-    blockingDataHandler.getBy(exchangeCurrencyId)
-  }
+  override def getBy(exchangeCurrencyId: ExchangeCurrencyId): FutureApplicationResult[Option[ExchangeCurrency]] =
+    Future {
+      blockingDataHandler.getBy(exchangeCurrencyId)
+    }
 
-  override def getBy(exchange: Exchange, market: Market, currency: Currency, currencyName: CurrencyName): FutureApplicationResult[Option[ExchangeCurrency]] = Future {
+  override def getBy(
+      exchange: Exchange,
+      market: Market,
+      currency: Currency,
+      currencyName: CurrencyName): FutureApplicationResult[Option[ExchangeCurrency]] = Future {
     blockingDataHandler.getBy(exchange, market, currency, currencyName)
   }
 

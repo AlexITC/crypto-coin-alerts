@@ -7,17 +7,18 @@ import play.api.mvc.{PathBindable, QueryStringBindable}
 
 object PlayBinders {
 
-  implicit def userVerificationTokenPathBinder(implicit binder: PathBindable[String]) = new PathBindable[UserVerificationToken] {
-    override def bind(key: String, value: String): Either[String, UserVerificationToken] = {
-      for {
-        string <- binder.bind(key, value).right
-      } yield UserVerificationToken(string)
-    }
+  implicit def userVerificationTokenPathBinder(implicit binder: PathBindable[String]) =
+    new PathBindable[UserVerificationToken] {
+      override def bind(key: String, value: String): Either[String, UserVerificationToken] = {
+        for {
+          string <- binder.bind(key, value).right
+        } yield UserVerificationToken(string)
+      }
 
-    override def unbind(key: String, token: UserVerificationToken): String = {
-      token.string
+      override def unbind(key: String, token: UserVerificationToken): String = {
+        token.string
+      }
     }
-  }
 
   implicit def fixedPriceAlertIdPathBinder(implicit binder: PathBindable[Long]) = new PathBindable[FixedPriceAlertId] {
     override def bind(key: String, value: String): Either[String, FixedPriceAlertId] = {
@@ -52,9 +53,10 @@ object PlayBinders {
     override def bind(key: String, value: String): Either[String, Market] = {
       for {
         string <- binder.bind(key, value).right
-        market <- Market.from(string)
-            .map(Right(_))
-            .getOrElse(Left("market.invalid.format"))
+        market <- Market
+          .from(string)
+          .map(Right(_))
+          .getOrElse(Left("market.invalid.format"))
       } yield market
     }
 
@@ -78,23 +80,24 @@ object PlayBinders {
   private val DefaultOffset = 0
   private val DefaultLimit = 20
 
-  implicit def paginatedQueryBinder(implicit binder: QueryStringBindable[Int]) = new QueryStringBindable[PaginatedQuery] {
-    override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, PaginatedQuery]] = {
-      val result = for {
-        offsetInt <- binder.bind("offset", params).getOrElse(Right(DefaultOffset))
-        limitInt <- binder.bind("limit", params).getOrElse(Right(DefaultLimit))
-      } yield PaginatedQuery(Offset(offsetInt), Limit(limitInt))
+  implicit def paginatedQueryBinder(implicit binder: QueryStringBindable[Int]) =
+    new QueryStringBindable[PaginatedQuery] {
+      override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, PaginatedQuery]] = {
+        val result = for {
+          offsetInt <- binder.bind("offset", params).getOrElse(Right(DefaultOffset))
+          limitInt <- binder.bind("limit", params).getOrElse(Right(DefaultLimit))
+        } yield PaginatedQuery(Offset(offsetInt), Limit(limitInt))
 
-      Some(result)
+        Some(result)
+      }
+
+      override def unbind(key: String, value: PaginatedQuery): String = {
+        val offsetParam = binder.unbind("offset", value.offset.int)
+        val limitParam = binder.unbind("limit", value.limit.int)
+
+        List(offsetParam, limitParam).mkString("&")
+      }
     }
-
-    override def unbind(key: String, value: PaginatedQuery): String = {
-      val offsetParam = binder.unbind("offset", value.offset.int)
-      val limitParam = binder.unbind("limit", value.limit.int)
-
-      List(offsetParam, limitParam).mkString("&")
-    }
-  }
 
   implicit def filterQueryBinder(implicit binder: QueryStringBindable[String]) = new QueryStringBindable[FilterQuery] {
     override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, FilterQuery]] = {
@@ -111,18 +114,19 @@ object PlayBinders {
     }
   }
 
-  implicit def orderingQueryBinder(implicit binder: QueryStringBindable[String]) = new QueryStringBindable[OrderingQuery] {
-    override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, OrderingQuery]] = {
-      val result = for {
-        // the orderBy query is optional
-        string <- binder.bind("orderBy", params).getOrElse(Right(""))
-      } yield OrderingQuery(string)
+  implicit def orderingQueryBinder(implicit binder: QueryStringBindable[String]) =
+    new QueryStringBindable[OrderingQuery] {
+      override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, OrderingQuery]] = {
+        val result = for {
+          // the orderBy query is optional
+          string <- binder.bind("orderBy", params).getOrElse(Right(""))
+        } yield OrderingQuery(string)
 
-      Some(result)
-    }
+        Some(result)
+      }
 
-    override def unbind(key: String, value: OrderingQuery): String = {
-      binder.unbind("orderBy", value.string)
+      override def unbind(key: String, value: OrderingQuery): String = {
+        binder.unbind("orderBy", value.string)
+      }
     }
-  }
 }

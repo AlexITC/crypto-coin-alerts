@@ -11,20 +11,19 @@ import org.scalactic.{Bad, Good}
 
 import scala.concurrent.ExecutionContext
 
-class ExchangeCurrencyService @Inject() (
-    exchangeCurrencyFutureDataHandler: ExchangeCurrencyFutureDataHandler)(
+class ExchangeCurrencyService @Inject()(exchangeCurrencyFutureDataHandler: ExchangeCurrencyFutureDataHandler)(
     implicit ec: ExecutionContext) {
 
   def getCurrency(exchangeCurrencyId: ExchangeCurrencyId): FutureApplicationResult[ExchangeCurrency] = {
     val result = for {
       currency <- exchangeCurrencyFutureDataHandler
-          .getBy(exchangeCurrencyId)
-          .toFutureOr
-          .mapWithError[ExchangeCurrency] {
+        .getBy(exchangeCurrencyId)
+        .toFutureOr
+        .mapWithError[ExchangeCurrency] {
 
-            case Some(currency) => Good(currency)
-            case None => Bad(ExchangeCurrencyNotFoundError).accumulating
-      }
+          case Some(currency) => Good(currency)
+          case None => Bad(ExchangeCurrencyNotFoundError).accumulating
+        }
     } yield currency
 
     result.toFuture

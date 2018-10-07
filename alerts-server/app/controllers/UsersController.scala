@@ -7,7 +7,7 @@ import com.alexitc.coinalerts.services.UserService
 import com.alexitc.coinalerts.services.external.ReCaptchaService
 import com.alexitc.playsonify.core.FutureOr.Implicits.FutureOps
 
-class UsersController @Inject() (
+class UsersController @Inject()(
     reCaptchaService: ReCaptchaService,
     components: MyJsonControllerComponents,
     userService: UserService)

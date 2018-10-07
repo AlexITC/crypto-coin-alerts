@@ -34,7 +34,7 @@ case class AppURL(string: String) extends AnyVal {
   }
 }
 
-class PlayAppConfig @Inject() (config: Configuration) extends AppConfig {
+class PlayAppConfig @Inject()(config: Configuration) extends AppConfig {
 
   override def url: AppURL = {
     val string = config.get[String]("app.url")

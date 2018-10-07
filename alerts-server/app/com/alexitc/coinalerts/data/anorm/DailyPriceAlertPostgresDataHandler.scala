@@ -11,11 +11,11 @@ import com.alexitc.playsonify.models.{PaginatedQuery, PaginatedResult}
 import org.scalactic.Good
 import play.api.db.Database
 
-class DailyPriceAlertPostgresDataHandler @Inject() (
+class DailyPriceAlertPostgresDataHandler @Inject()(
     protected val database: Database,
     dailyPriceAlertDAO: DailyPriceAlertPostgresDAO)
     extends DailyPriceAlertBlockingDataHandler
-        with AnormPostgresDAL {
+    with AnormPostgresDAL {
 
   override def create(
       userId: UserId,
@@ -33,13 +33,11 @@ class DailyPriceAlertPostgresDataHandler @Inject() (
     }
   }
 
-  override def getAlerts(
-      userId: UserId,
-      query: PaginatedQuery): ApplicationResult[PaginatedResult[DailyPriceAlert]] = withConnection { implicit conn =>
-
-    val alerts = dailyPriceAlertDAO.getAlerts(userId, query)
-    val total = dailyPriceAlertDAO.countAlerts(userId)
-    val result = PaginatedResult(query.offset, query.limit, total, alerts)
-    Good(result)
-  }
+  override def getAlerts(userId: UserId, query: PaginatedQuery): ApplicationResult[PaginatedResult[DailyPriceAlert]] =
+    withConnection { implicit conn =>
+      val alerts = dailyPriceAlertDAO.getAlerts(userId, query)
+      val total = dailyPriceAlertDAO.countAlerts(userId)
+      val result = PaginatedResult(query.offset, query.limit, total, alerts)
+      Good(result)
+    }
 }

@@ -85,11 +85,11 @@ class FixedPriceAlertServiceSpec extends WordSpec with MustMatchers with ScalaFu
 
     val futureDataHandler = new FixedPriceAlertFutureDataHandler(dataHandler)
     new FixedPriceAlertService(
-      validator,
-      paginatedQueryValidator,
-      config,
-      new FixedPriceAlertFilterParser,
-      new FixedPriceAlertOrderingParser,
-      futureDataHandler)(globalEC)
+        validator,
+        paginatedQueryValidator,
+        config,
+        new FixedPriceAlertFilterParser,
+        new FixedPriceAlertOrderingParser,
+        futureDataHandler)(globalEC)
   }
 }

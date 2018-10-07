@@ -13,8 +13,8 @@ class FixedPriceAlertFilterSQLInterpreterSpec extends WordSpec with MustMatchers
   "interpreting conditions" should {
     "return empty clause when no condition is required" in {
       val conditions = Conditions(
-        triggered = AnyTriggeredCondition,
-        user = AnyUserCondition
+          triggered = AnyTriggeredCondition,
+          user = AnyUserCondition
       )
 
       val result = interpreter.toWhere(conditions)
@@ -24,8 +24,8 @@ class FixedPriceAlertFilterSQLInterpreterSpec extends WordSpec with MustMatchers
 
     "return where clause when filtering by user" in {
       val conditions = Conditions(
-        triggered = AnyTriggeredCondition,
-        user = JustThisUserCondition(userId)
+          triggered = AnyTriggeredCondition,
+          user = JustThisUserCondition(userId)
       )
 
       val result = interpreter.toWhere(conditions)
@@ -36,8 +36,8 @@ class FixedPriceAlertFilterSQLInterpreterSpec extends WordSpec with MustMatchers
 
     "return where clause when filtering by triggered alerts" in {
       val conditions = Conditions(
-        triggered = HasBeenTriggeredCondition,
-        user = AnyUserCondition
+          triggered = HasBeenTriggeredCondition,
+          user = AnyUserCondition
       )
 
       val result = interpreter.toWhere(conditions)
@@ -47,8 +47,8 @@ class FixedPriceAlertFilterSQLInterpreterSpec extends WordSpec with MustMatchers
 
     "return where clause when filtering by non triggered alerts" in {
       val conditions = Conditions(
-        triggered = HasNotBeenTriggeredCondition,
-        user = AnyUserCondition
+          triggered = HasNotBeenTriggeredCondition,
+          user = AnyUserCondition
       )
 
       val result = interpreter.toWhere(conditions)

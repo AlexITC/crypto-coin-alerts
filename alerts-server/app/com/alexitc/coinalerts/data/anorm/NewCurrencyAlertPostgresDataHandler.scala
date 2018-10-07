@@ -4,13 +4,18 @@ import javax.inject.Inject
 
 import com.alexitc.coinalerts.data.NewCurrencyAlertBlockingDataHandler
 import com.alexitc.coinalerts.data.anorm.dao.NewCurrencyAlertPostgresDAO
-import com.alexitc.coinalerts.errors.{NewCurrencyAlertNotFoundError, PostgresIntegrityViolationError, RepeatedExchangeError, VerifiedUserNotFound}
+import com.alexitc.coinalerts.errors.{
+  NewCurrencyAlertNotFoundError,
+  PostgresIntegrityViolationError,
+  RepeatedExchangeError,
+  VerifiedUserNotFound
+}
 import com.alexitc.coinalerts.models.{Exchange, NewCurrencyAlert, UserId}
 import com.alexitc.playsonify.core.ApplicationResult
 import org.scalactic.{Good, One, Or}
 import play.api.db.Database
 
-class NewCurrencyAlertPostgresDataHandler @Inject() (
+class NewCurrencyAlertPostgresDataHandler @Inject()(
     protected val database: Database,
     newCurrencyAlertDAO: NewCurrencyAlertPostgresDAO)
     extends NewCurrencyAlertBlockingDataHandler
@@ -49,9 +54,10 @@ class NewCurrencyAlertPostgresDataHandler @Inject() (
     Good(list)
   }
 
-  override def delete(userId: UserId, exchange: Exchange): ApplicationResult[NewCurrencyAlert] = withConnection { implicit conn =>
-    val maybe = newCurrencyAlertDAO.delete(userId, exchange)
+  override def delete(userId: UserId, exchange: Exchange): ApplicationResult[NewCurrencyAlert] = withConnection {
+    implicit conn =>
+      val maybe = newCurrencyAlertDAO.delete(userId, exchange)
 
-    Or.from(maybe, One(NewCurrencyAlertNotFoundError))
+      Or.from(maybe, One(NewCurrencyAlertNotFoundError))
   }
 }
