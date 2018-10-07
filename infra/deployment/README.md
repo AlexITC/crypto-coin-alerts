@@ -36,5 +36,5 @@ Execute the following command to deploy the application:
 
 1. Ensure the web-ui project is pointing to the correct host [environment.prod.ts](../../alerts-ui/src/environments/environment.prod.ts)
 
-2. Execute the following command to deploy the application:
-`ansible-playbook -i hosts.ini --ask-become-pass --vault-password-file .vault alerts-ui.yml`
+2. Execute the following command to deploy the application to a test server:
+`ansible-playbook -i test-hosts.ini --ask-become-pass --vault-password-file .vault alerts-ui.yml`
