@@ -48,4 +48,4 @@ message.alert.priceDecreased={0} has decreased to {1} {2}
 
 email.newCurrenciesAlert.subject=There are new currencies on {0}
 email.newCurrenciesAlert.footer=Do not wait, create your next alert: {0}
-message.newCurrenciesAlert.new=Trade {0} on {1} market.
+message.newCurrenciesAlert.new=Trade {0}{1} on {2} market.

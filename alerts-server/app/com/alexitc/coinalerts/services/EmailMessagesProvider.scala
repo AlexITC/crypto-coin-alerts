@@ -43,7 +43,7 @@ class EmailMessagesProvider @Inject()(messagesApi: MessagesApi, appConfig: AppCo
   def newCurrenciesAlertText(books: List[Book])(implicit lang: Lang): EmailText = {
     val body = books
       .map { book =>
-        messagesApi("message.newCurrenciesAlert.new", book.currency.string, book.market.string)
+        messagesApi("message.newCurrenciesAlert.new", book.currency.string, book.currencyName.map(name => s" (${name.string})").getOrElse(""), book.market.string)
       }
       .mkString("\n")
 
