@@ -49,6 +49,11 @@ class FixedPriceAlertFilterParserSpec extends WordSpec with MustMatchers {
       result.triggered mustEqual AnyTriggeredCondition
       result.user mustEqual JustThisUserCondition(userId)
     }
+    "fail on triggered= anything other than *, true or false" in {
+      val filter = FilterQuery("triggered:xxx")
+      val result = parser.from(filter, userId)
+      result mustEqual Bad(InvalidFilterError).accumulating
+    }
 
     "fail on unknown filter" in {
       val filter = FilterQuery("user:*")
@@ -69,6 +74,13 @@ class FixedPriceAlertFilterParserSpec extends WordSpec with MustMatchers {
       val result = parser.from(filter, userId)
 
       result mustEqual Bad(InvalidFilterError).accumulating
+    }
+  }
+
+  "serializing" should {
+    "write out the filter in a 'key=value' format" in {
+      val filter = Filter("key", "value")
+      filter.toString mustEqual "key=value"
     }
   }
 }
