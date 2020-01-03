@@ -1,19 +1,16 @@
 # Crypto Coin Alerts
 
-[![Join the chat at https://gitter.im/crypto-coin-alerts/Lobby](https://badges.gitter.im/crypto-coin-alerts/Lobby.svg)](https://gitter.im/crypto-coin-alerts/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+Crypto coin alerts is a web application that let you set alerts for the prices of several crypto currencies.
 
-Crypto coin alerts (https://cryptocoinalerts.net) is a web application that let you set alerts for the prices of several crypto currencies.
+## Status
 
-## Uptime status
-[Status](https://stats.uptimerobot.com/y97XGIn0D)
+**On 2020/Jan/02 The project was taken down**, There hasn't been any new development for a year and there is not enough adoption that justifies the costs for keeping it running.
+
 
 ## Components
 The project is composed of several sub projects, you can navigate to each folder to see the sub project documentation:
 - [alerts-server](alerts-server) is the RESTful API used by the web application.
 - [alerts-ui](alerts-ui) is the user interface that consumes the RESTful API.
-
-## Status
-While the project is already online, there are several pending things to improve, go to https://cryptocoinalerts.net to give it a try.
 
 ## Development
 You are more than welcome to improve the project, specificaly the UI.
